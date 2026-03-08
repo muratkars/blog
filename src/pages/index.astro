@@ -11,7 +11,7 @@ const posts = (await getCollection("blog", ({ data }) => !data.draft))
 
 <BaseLayout
   title="Murat Karslioglu"
-  description="Personal website of Murat Karslioglu. Product leader, writer, and builder."
+  description="Murat Karslioglu. Storage systems, AI infrastructure, and the occasional strong opinion."
 >
   {/* Hero */}
   <section class="mx-auto max-w-5xl px-6 pb-20 pt-24 md:pt-32">
@@ -23,8 +23,7 @@ const posts = (await getCollection("blog", ({ data }) => !data.draft))
     <p
       class="mt-6 max-w-2xl text-lg leading-relaxed text-[var(--color-text-secondary)] sm:text-xl"
     >
-      Product leader, writer, and builder. I work at the intersection of
-      technology and strategy, helping teams ship products that matter.
+      Storage systems, AI infrastructure, and the occasional strong opinion.
     </p>
     <SocialLinks class="mt-8" />
   </section>

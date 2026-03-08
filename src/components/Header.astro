@@ -4,8 +4,8 @@ const navItems = [
   { label: "About", href: "/about" },
   { label: "Blog", href: "/blog" },
   { label: "Books", href: "/books" },
-  { label: "Tools", href: "/tools" },
-  { label: "PM", href: "/pm" },
+  { label: "Tools", href: "/tools", disabled: true },
+  { label: "PM", href: "/pm", disabled: true },
 ];
 
 const currentPath = Astro.url.pathname;
@@ -27,17 +27,23 @@ const currentPath = Astro.url.pathname;
       {
         navItems.map((item) => (
           <li>
-            <a
-              href={item.href}
-              class:list={[
-                "text-sm transition-colors duration-200",
-                currentPath === item.href || (item.href !== "/" && currentPath.startsWith(item.href))
-                  ? "text-[var(--color-text-primary)] font-medium"
-                  : "text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]",
-              ]}
-            >
-              {item.label}
-            </a>
+            {item.disabled ? (
+              <span class="text-sm text-[var(--color-text-tertiary)]/40 cursor-default select-none">
+                {item.label}
+              </span>
+            ) : (
+              <a
+                href={item.href}
+                class:list={[
+                  "text-sm transition-colors duration-200",
+                  currentPath === item.href || (item.href !== "/" && currentPath.startsWith(item.href))
+                    ? "text-[var(--color-text-primary)] font-medium"
+                    : "text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]",
+                ]}
+              >
+                {item.label}
+              </a>
+            )}
           </li>
         ))
       }
@@ -81,17 +87,23 @@ const currentPath = Astro.url.pathname;
       {
         navItems.map((item) => (
           <li>
-            <a
-              href={item.href}
-              class:list={[
-                "block rounded-lg px-3 py-2 text-sm transition-colors duration-200",
-                currentPath === item.href || (item.href !== "/" && currentPath.startsWith(item.href))
-                  ? "bg-[var(--color-surface-alt)] text-[var(--color-text-primary)] font-medium"
-                  : "text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-alt)] hover:text-[var(--color-text-primary)]",
-              ]}
-            >
-              {item.label}
-            </a>
+            {item.disabled ? (
+              <span class="block rounded-lg px-3 py-2 text-sm text-[var(--color-text-tertiary)]/40 cursor-default select-none">
+                {item.label}
+              </span>
+            ) : (
+              <a
+                href={item.href}
+                class:list={[
+                  "block rounded-lg px-3 py-2 text-sm transition-colors duration-200",
+                  currentPath === item.href || (item.href !== "/" && currentPath.startsWith(item.href))
+                    ? "bg-[var(--color-surface-alt)] text-[var(--color-text-primary)] font-medium"
+                    : "text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-alt)] hover:text-[var(--color-text-primary)]",
+                ]}
+              >
+                {item.label}
+              </a>
+            )}
           </li>
         ))
       }

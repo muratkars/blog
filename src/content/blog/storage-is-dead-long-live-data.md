@@ -73,7 +73,7 @@ The first generation of vector databases (Pinecone, Weaviate, Qdrant, Milvus) bu
 
 AWS made this explicit with [S3 Vectors](https://aws.amazon.com/s3/features/vectors/), launched in preview in 2025 and [generally available in December 2025](https://aws.amazon.com/about-aws/whats-new/2025/12/amazon-s3-vectors-generally-available/) with support for 2 billion vectors per index. S3 Vectors reduces vector storage and query costs by up to 90% compared to purpose-built vector databases, delivers sub-second query latency for infrequent access patterns, and integrates natively with Amazon Bedrock for RAG workflows.
 
-The lesson: vectors aren't a separate workload that needs a separate database. They're a data type that belongs in the same store as the objects and tables they index. A document lives in object storage. Its Iceberg-managed metadata lives in a table. Its embedding lives in a vector index. All three should be in the same system, governed by the same policies, replicated by the same engine, and queried through the same endpoint.
+The takeaway is clear: vectors aren't a separate workload that needs a separate database. They're a data type that belongs in the same store as the objects and tables they index. A document lives in object storage. Its Iceberg-managed metadata lives in a table. Its embedding lives in a vector index. All three should be in the same system, governed by the same policies, replicated by the same engine, and queried through the same endpoint.
 
 No software-defined object store handles this today. The ones that recognize the convergence first will define the next decade.
 
@@ -123,7 +123,7 @@ ICMS doesn't replace object storage. It creates a new tier *above* it in the lat
 
 **G4, the object storage layer, is still the foundation.** It holds the durable data: training datasets, model weights, fine-tuning artifacts, Iceberg-managed analytics tables, vector embeddings, and RAG corpora. ICMS doesn't replace any of this. What it does is create a new *consumer* of object storage, one that pre-stages context from G4 into G3.5 for rapid inference access.
 
-This has profound implications:
+The downstream effects are significant:
 
 1. **Object storage must be fast enough to feed ICMS.** If the G4 tier can't deliver data to G3.5 at wire speed, the entire memory hierarchy stalls. Slow object storage becomes the bottleneck for inference latency.
 
@@ -139,7 +139,7 @@ At GTC 2026, expect NVIDIA to deepen the Dynamo + ICMS integration story, likely
 
 These three shifts (tables, vectors, and inference context) are not separate trends. They're converging into a single requirement: **the storage system must understand data, not just bytes.**
 
-Here's what that means concretely:
+What that looks like in practice:
 
 ### 1. Native Table Support (Iceberg)
 

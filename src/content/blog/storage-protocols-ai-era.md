@@ -21,7 +21,7 @@ Before we get into it, let's agree on terms. A storage protocol is the language 
 
 Think of it like ordering food. You can walk into the kitchen and grab it yourself (local storage). You can call a waiter (a network protocol). You can use a delivery app (cloud API). Each method has trade-offs in speed, convenience, and how much control you have over what arrives.
 
-The AI revolution didn't invent new physics. Data still lives on magnetic platters, flash cells, or DRAM chips. But it did change what "fast enough" means, how much data we're moving, and where it needs to go. Let's walk through every layer.
+If you just want the punchline (which protocol wins for which AI workload), skip to the cheat sheet near the end. But if you want to understand *why*, let's walk through every layer.
 
 ---
 
@@ -39,7 +39,7 @@ A spinning metal platter coated in magnetic material, with a tiny arm that float
 
 **Speed.** Sequential reads around 200-250 MB/s for modern drives. Random I/O is the killer: maybe 100-200 IOPS because each operation requires a physical seek.
 
-**Where they still win.** Cost per terabyte. An 18TB HDD costs around $250. That's roughly $0.014/GB. Nothing else comes close for bulk capacity. Cold archives, backup targets, surveillance footage, regulatory retention. Any workload where you need petabytes and can tolerate latency.
+**Where they still win.** Cost per terabyte. An 18TB HDD costs around $250 in early 2026. That's roughly $0.014/GB. Nothing else comes close for bulk capacity. Cold archives, backup targets, surveillance footage, regulatory retention. Any workload where you need petabytes and can tolerate latency.
 
 **AI relevance.** HDDs still hold the majority of the world's training data in cold storage tiers. The dataset you download from Hugging Face probably lived on spinning rust before it reached you.
 
@@ -59,19 +59,19 @@ NVMe (Non-Volatile Memory Express) is what happens when you throw away the legac
 
 **How they work.** Same NAND flash as SATA SSDs, but the protocol supports 65,535 queues with 65,536 commands each (vs SATA's single queue of 32 commands). That's the difference between a single-lane road and a 65,535-lane highway.
 
-**Speed.** PCIe Gen4 x4: 7 GB/s reads. Gen5 x4: 14 GB/s. Random IOPS: 1,000,000+. A single NVMe drive is faster than an entire rack of HDDs.
+**Speed (as of early 2026).** PCIe Gen4 x4: 7 GB/s reads. Gen5 x4: 14 GB/s. Random IOPS: 1,000,000+. A single NVMe drive is faster than an entire rack of HDDs.
 
 **Form factors.** M.2 (the little stick in your laptop), U.2 (2.5" enterprise), and the newer EDSFF (ruler-shaped, designed for maximum density: 32 drives in 1U for 4+ PB in less than 2 inches of rack space).
 
-**AI relevance.** This is where it gets interesting. A single GPU training run might read hundreds of terabytes. NVMe's bandwidth means a node with 24 drives can deliver 168 GB/s to local applications. That's enough to feed multiple GPUs without starving them. NVIDIA's GPUDirect Storage (GDS) can even bypass the CPU entirely. Data flows straight from NVMe to GPU memory over PCIe.
+**AI relevance.** This is where NVMe earns its keep. A single GPU training run might read hundreds of terabytes. NVMe's bandwidth means a node with 24 drives can deliver 168 GB/s to local applications. That's enough to feed multiple GPUs without starving them. NVIDIA's GPUDirect Storage (GDS) can even bypass the CPU entirely. Data flows straight from NVMe to GPU memory over PCIe.
 
-**The cost.** NVMe is 3-5x the price per TB of HDDs. But price-per-IOPS and price-per-GB/s tell a completely different story. For performance-sensitive workloads, NVMe is the cheapest option by far.
+**The cost (early 2026).** NVMe is 3-5x the price per TB of HDDs. But price-per-IOPS and price-per-GB/s tell a completely different story. For performance-sensitive workloads, NVMe is the cheapest option by far.
 
 ---
 
 ## Layer 2: Making Remote Storage Feel Local
 
-Here's where it gets fun. What if the storage isn't physically in your server but you want your applications to *think* it is?
+What if the storage isn't physically in your server but you want your applications to *think* it is?
 
 ### Direct-Attached Storage (DAS)
 
@@ -107,7 +107,7 @@ Block storage strips away the file abstraction entirely. No filenames, no direct
 
 ### The Rise of the SAN
 
-Storage Area Networks emerged in the late 1990s when databases outgrew local storage. The idea: build a dedicated high-speed network just for storage traffic, separate from the regular Ethernet LAN.
+Storage Area Networks emerged in the late 1990s when databases outgrew local storage. The pitch was simple: build a dedicated high-speed network just for storage traffic, separate from the regular Ethernet LAN.
 
 **The protocols:**
 
@@ -119,11 +119,9 @@ Storage Area Networks emerged in the late 1990s when databases outgrew local sto
 
 ### A Brief History of SAN Drama
 
-The SAN era (roughly 2000-2015) was the golden age of enterprise storage vendors. EMC (now Dell EMC), NetApp, IBM, Hitachi, Pure Storage. These companies built empires selling SAN arrays that cost more than sports cars. A fully loaded EMC Symmetrix could run $5 million. The sales cycle involved steak dinners and golf outings. Storage admins had dedicated SAN teams.
+The SAN era (roughly 2000-2015) was the golden age of enterprise storage vendors. EMC (now Dell EMC), NetApp, IBM, Hitachi, Pure Storage built empires selling arrays that cost more than sports cars. What made SANs dominant was databases. Oracle, SQL Server, DB2 all needed consistent, low-latency block I/O with enterprise features like snapshots, replication, and deduplication. Try doing that with a pile of local disks.
 
-What made SANs dominant was databases. Oracle, SQL Server, DB2: all needed consistent, low-latency block I/O. A SAN could deliver sub-millisecond latency with enterprise features like snapshots, replication, thin provisioning, and deduplication. Try doing that with a pile of local disks.
-
-**The decline.** The cloud changed everything. AWS EBS (Elastic Block Store) is essentially a cloud SAN (block volumes over the network) but you don't buy the hardware, configure the switches, or hire the SAN admin. On-premises SANs still exist (banks, hospitals, government), but new deployments are increasingly cloud-based or replaced by software-defined alternatives.
+**The decline.** AWS EBS (Elastic Block Store) is essentially a cloud SAN, but you don't buy the hardware, configure the switches, or hire the SAN admin. On-premises SANs still exist (banks, hospitals, government), but new deployments are increasingly cloud-based or software-defined.
 
 **AI relevance.** Block storage is critical for databases that support AI workflows: PostgreSQL for metadata, vector databases like pgvector, ML experiment tracking. But you don't train models on block storage. The block interface (read block 47,382 from LUN 3) is a terrible match for "stream 50TB of images sequentially."
 
@@ -141,9 +139,9 @@ Local NVMe is fast: 10 microsecond latency. But what if you have 1,000 NVMe driv
 
 | Transport | Latency Added | Infrastructure Required | Reality Check |
 |-----------|--------------|------------------------|---------------|
-| **RDMA (RoCEv2)** | ~5-10 us | Lossless Ethernet (PFC/ECN), specialized NICs | Fastest, but configuring lossless Ethernet correctly is an art form. Misconfigure one switch and performance craters. |
-| **InfiniBand** | ~2-5 us | Dedicated InfiniBand switches and HCAs | HPC standard, NVIDIA's home turf. Fast and reliable, but separate network fabric. |
-| **TCP** | ~30-80 us | Standard Ethernet | Easy to deploy, works everywhere. But 30-80us on top of NVMe's 10us is a 3-8x latency hit. Still way faster than iSCSI. |
+| **RDMA (RoCEv2)** | ~5-10 us | Lossless Ethernet (PFC/ECN), specialized NICs | **Fastest, but fragile.** Configuring lossless Ethernet correctly is an art form. Misconfigure one switch and performance craters. |
+| **InfiniBand** | ~2-5 us | Dedicated InfiniBand switches and HCAs | **HPC standard, NVIDIA's home turf.** Fast and reliable, but separate network fabric. |
+| **TCP** | ~30-80 us | Standard Ethernet | **Easy to deploy, works everywhere.** But 30-80us on top of NVMe's 10us is a 3-8x latency hit. Still way faster than iSCSI. |
 
 ### The Promise vs. Reality
 
@@ -201,7 +199,7 @@ Everything changed between 2020 and 2025:
 
 ### Why Object Storage Is the Future
 
-Here's the contrarian take that's rapidly becoming consensus: **object storage will eat everything.**
+The contrarian take that's rapidly becoming consensus: **object storage will eat everything.**
 
 Not because it's the fastest protocol for every workload. It isn't. But because it solves the problems that actually matter at scale:
 
@@ -209,7 +207,7 @@ Not because it's the fastest protocol for every workload. It isn't. But because 
 
 2. **Economics.** Object storage on commodity hardware costs 1/10th of enterprise SAN storage. Erasure coding gives you 11-nines durability at 1.5x raw capacity (vs. 3x for replication).
 
-3. **HTTP is universal.** Every language, every platform, every cloud speaks HTTP. No special drivers, no kernel modules, no vendor lock-in (assuming S3-compatible API).
+3. **HTTP is universal.** Any language, any platform, any cloud speaks HTTP. No special drivers, no kernel modules, no vendor lock-in (assuming S3-compatible API).
 
 4. **Metadata is first-class.** Unlike block and file storage, every object carries its own metadata. This is transformative for data management. Search, classify, govern, and lifecycle data based on its properties, not its location in a directory tree.
 
@@ -272,7 +270,7 @@ NVIDIA doesn't build storage. But NVIDIA increasingly *dictates* what storage lo
 
 ### The Current State: File and Block Still Rule
 
-Here's something that surprises people: most AI training clusters today use NFS or Lustre for training data. Not object storage. File protocols.
+Most AI training clusters today still use NFS or Lustre for training data. Not object storage. File protocols.
 
 Why? Three reasons:
 
@@ -296,7 +294,7 @@ But the tide is turning. NVIDIA's storage ecosystem is evolving in a significant
 
 ### Context Memory: From ICMS to CMX
 
-Here's where it gets really interesting, and where most storage coverage misses the point entirely.
+This is the part most storage coverage misses entirely.
 
 At CES 2026, NVIDIA announced **ICMS (Inference Context Memory Storage)**. It's not a product you buy. It's a new *tier* in the memory hierarchy, sitting between local NVMe and shared object storage.
 
@@ -314,7 +312,7 @@ The memory hierarchy for AI inference looks like this:
 
 The magic is G3.5. Without ICMS, if Agent A builds a context on Node 1 and Agent B needs related context on Node 7, it has to be recomputed from scratch. ICMS creates a *shared* flash tier across the pod, powered by BlueField-4 DPUs with 800 Gb/s RDMA connectivity.
 
-**The rebrand: CMX.** After GTC 2026 (March 16-19, San Jose), expect NVIDIA to rebrand ICMS as **CMX (Context Memory eXtensions)**. Same technology, better name. "ICMS" is a mouthful; "CMX" matches NVIDIA's naming style (think CUDA, NVLink, NIM) and positions context memory as a platform extension rather than a storage product. The technology doesn't change (BlueField-4, NVMe-oF transport, NVIDIA Dynamo orchestration) but the messaging shifts from "storage infrastructure" to "memory architecture for agentic AI."
+**The rebrand: CMX.** NVIDIA appears to be rebranding ICMS as **CMX (Context Memory eXtensions)**. The new name has already surfaced in partner announcements (VAST Data's press materials reference "NVIDIA Context Memory Storage (CMX) Platform"), and GTC 2026 (March 16-19, San Jose) is the likely stage for a formal unveiling. Same technology, better name. "ICMS" is a mouthful; "CMX" matches NVIDIA's naming style (think CUDA, NVLink, NIM) and positions context memory as a platform extension rather than a storage product. The technology doesn't change (BlueField-4, NVMe-oF transport, NVIDIA Dynamo orchestration) but the messaging shifts from "storage infrastructure" to "memory architecture for agentic AI."
 
 Why should you care? Because CMX defines what the G4 object storage layer needs to be:
 
@@ -328,7 +326,7 @@ Why should you care? Because CMX defines what the G4 object storage layer needs 
 
 ## Putting It All Together: Which Protocol for Which AI Workload?
 
-Let's get practical. Here's a cheat sheet:
+Let's get practical.
 
 ### Data Collection and Preparation
 **Winner: Object Storage**
@@ -369,7 +367,7 @@ Billions of embeddings need scale-out storage, not a single-node vector database
 
 ## The Trajectory: Where This Is All Heading
 
-Here's my prediction for the next five years:
+My prediction for the next five years:
 
 **NFS and block storage won't disappear,** but they'll shrink to niche roles. NFS for legacy compatibility and small-scale training. Block for databases. Neither grows.
 
@@ -385,4 +383,4 @@ The bytes still matter. They always will. But the protocol that just moves bytes
 
 ---
 
-*NVIDIA GTC 2026 runs March 16-19 in San Jose. Watch for the CMX announcement during Jensen Huang's keynote (Monday, March 16, 8-11 AM PDT). For current ICMS details, see the [NVIDIA Technical Blog](https://developer.nvidia.com/blog/introducing-nvidia-bluefield-4-powered-inference-context-memory-storage-platform-for-the-next-frontier-of-ai/) and [BlueField-4 announcement](https://nvidianews.nvidia.com/news/nvidia-bluefield-4-powers-new-class-of-ai-native-storage-infrastructure-for-the-next-frontier-of-ai). NVMe-oF specifications from [NVM Express](https://nvmexpress.org/developers/nvme-of-specification/). Apache Iceberg at [iceberg.apache.org](https://iceberg.apache.org/). S3 API reference at [AWS S3 documentation](https://docs.aws.amazon.com/AmazonS3/latest/API/Welcome.html).*
+*NVIDIA GTC 2026 runs March 16-19 in San Jose. Watch for context memory updates during Jensen Huang's keynote (Monday, March 16, 8-11 AM PDT). For current ICMS details, see the [NVIDIA Technical Blog](https://developer.nvidia.com/blog/introducing-nvidia-bluefield-4-powered-inference-context-memory-storage-platform-for-the-next-frontier-of-ai/) and [BlueField-4 announcement](https://nvidianews.nvidia.com/news/nvidia-bluefield-4-powers-new-class-of-ai-native-storage-infrastructure-for-the-next-frontier-of-ai). NVMe-oF specifications from [NVM Express](https://nvmexpress.org/developers/nvme-of-specification/). Apache Iceberg at [iceberg.apache.org](https://iceberg.apache.org/). S3 API reference at [AWS S3 documentation](https://docs.aws.amazon.com/AmazonS3/latest/API/Welcome.html).*

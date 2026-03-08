@@ -1,69 +1,58 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 
+const tabs = ["Self-Improvement", "Technical", "History"] as const;
+
 const currentlyReading = {
   title: "Thinking in Systems",
   author: "Donella H. Meadows",
-  category: "Systems Thinking",
+  category: "Self-Improvement",
 };
 
-const books = [
-  {
-    category: "Product Management",
-    items: [
-      {
-        title: "Inspired",
-        author: "Marty Cagan",
-        note: "The definitive guide to building products customers love.",
-      },
-      {
-        title: "Empowered",
-        author: "Marty Cagan",
-        note: "How to build empowered product teams.",
-      },
-      {
-        title: "Continuous Discovery Habits",
-        author: "Teresa Torres",
-        note: "A practical framework for continuous product discovery.",
-      },
-    ],
-  },
-  {
-    category: "Leadership",
-    items: [
-      {
-        title: "The Manager's Path",
-        author: "Camille Fournier",
-        note: "A guide for tech leaders navigating growth and change.",
-      },
-      {
-        title: "An Elegant Puzzle",
-        author: "Will Larson",
-        note: "Systems of engineering management.",
-      },
-    ],
-  },
-  {
-    category: "Technical",
-    items: [
-      {
-        title: "Designing Data-Intensive Applications",
-        author: "Martin Kleppmann",
-        note: "The big ideas behind reliable, scalable, and maintainable systems.",
-      },
-      {
-        title: "Kubernetes in Action",
-        author: "Marko Lukša",
-        note: "Comprehensive guide to Kubernetes.",
-      },
-    ],
-  },
-];
+const books: Record<string, { title: string; author: string; note?: string }[]> = {
+  "Self-Improvement": [
+    {
+      title: "Inspired",
+      author: "Marty Cagan",
+      note: "The definitive guide to building products customers love.",
+    },
+    {
+      title: "Empowered",
+      author: "Marty Cagan",
+      note: "How to build empowered product teams.",
+    },
+    {
+      title: "Continuous Discovery Habits",
+      author: "Teresa Torres",
+    },
+    {
+      title: "The Manager's Path",
+      author: "Camille Fournier",
+    },
+    {
+      title: "An Elegant Puzzle",
+      author: "Will Larson",
+      note: "Systems of engineering management.",
+    },
+  ],
+  "Technical": [
+    {
+      title: "Designing Data-Intensive Applications",
+      author: "Martin Kleppmann",
+      note: "The big ideas behind reliable, scalable, and maintainable systems.",
+    },
+    {
+      title: "Kubernetes in Action",
+      author: "Marko Lukša",
+    },
+  ],
+  "History": [],
+};
 ---
 
 <BaseLayout
   title="Books"
-  description="Books that have shaped my thinking on product management, leadership, and technology."
+  description="Books that have shaped my thinking. Physical copies only. About 30-35 a year."
 >
   <section class="mx-auto max-w-3xl px-6 py-20 md:py-28">
     <h1
@@ -72,12 +61,25 @@ const books = [
       Books
     </h1>
     <p class="mt-4 text-lg text-[var(--color-text-secondary)]">
-      A curated list of books that have shaped my thinking.
+      Physical copies only. I read about 30-35 books a year and I'm
+      stubbornly against e-readers. This page is a work in progress as I
+      migrate my full reading list over.
     </p>
+
+    {/* Update notice */}
+    <div
+      class="mt-8 rounded-xl border border-amber-500/20 bg-amber-500/5 px-5 py-4"
+    >
+      <p class="text-sm text-amber-200/80">
+        <span class="font-semibold text-amber-200">Heads up.</span> I'm still
+        adding books here. Decades of reading don't organize themselves
+        overnight. Check back soon for the full list.
+      </p>
+    </div>
 
     {/* Currently Reading */}
     <div
-      class="mt-12 rounded-2xl border border-[var(--color-accent)]/20 bg-[var(--color-accent)]/5 p-6"
+      class="mt-10 rounded-2xl border border-[var(--color-accent)]/20 bg-[var(--color-accent)]/5 p-6"
     >
       <p class="text-xs font-semibold uppercase tracking-wider text-[var(--color-accent)]">
         Currently Reading
@@ -86,19 +88,42 @@ const books = [
         {currentlyReading.title}
       </p>
       <p class="mt-1 text-sm text-[var(--color-text-secondary)]">
-        by {currentlyReading.author} &middot; {currentlyReading.category}
+        by {currentlyReading.author}
       </p>
     </div>
 
-    {/* Book List */}
-    {
-      books.map((section) => (
-        <div class="mt-14">
-          <h2 class="text-xl font-semibold text-[var(--color-text-primary)]">
-            {section.category}
-          </h2>
-          <div class="mt-6 space-y-6">
-            {section.items.map((book) => (
+    {/* Tabs */}
+    <div class="mt-12 flex gap-1 border-b border-[var(--color-border)]/50">
+      {tabs.map((tab, i) => (
+        <button
+          data-tab={tab}
+          class:list={[
+            "book-tab relative px-4 py-2.5 text-sm font-medium transition-colors duration-200",
+            i === 0
+              ? "text-[var(--color-accent)]"
+              : "text-[var(--color-text-tertiary)] hover:text-[var(--color-text-secondary)]",
+          ]}
+        >
+          {tab}
+          <span
+            class:list={[
+              "absolute bottom-0 left-0 h-0.5 w-full rounded-full bg-[var(--color-accent)] transition-opacity duration-200",
+              i === 0 ? "opacity-100" : "opacity-0",
+            ]}
+          />
+        </button>
+      ))}
+    </div>
+
+    {/* Tab panels */}
+    {tabs.map((tab, i) => (
+      <div
+        data-panel={tab}
+        class:list={["book-panel mt-8", i !== 0 && "hidden"]}
+      >
+        {books[tab].length > 0 ? (
+          <div class="space-y-6">
+            {books[tab].map((book) => (
               <div class="border-b border-[var(--color-border)]/50 pb-6 last:border-0">
                 <p class="font-medium text-[var(--color-text-primary)]">
                   {book.title}
@@ -106,14 +131,46 @@ const books = [
                 <p class="mt-1 text-sm text-[var(--color-text-tertiary)]">
                   by {book.author}
                 </p>
-                <p class="mt-2 text-sm text-[var(--color-text-secondary)]">
-                  {book.note}
-                </p>
+                {book.note && (
+                  <p class="mt-2 text-sm text-[var(--color-text-secondary)]">
+                    {book.note}
+                  </p>
+                )}
               </div>
             ))}
           </div>
-        </div>
-      ))
-    }
+        ) : (
+          <p class="py-8 text-center text-sm text-[var(--color-text-tertiary)]">
+            Coming soon. Still digging through the shelves.
+          </p>
+        )}
+      </div>
+    ))}
   </section>
 </BaseLayout>
+
+<script>
+  const tabs = document.querySelectorAll<HTMLButtonElement>(".book-tab");
+  const panels = document.querySelectorAll<HTMLDivElement>(".book-panel");
+
+  tabs.forEach((tab) => {
+    tab.addEventListener("click", () => {
+      const target = tab.dataset.tab;
+
+      tabs.forEach((t) => {
+        const isActive = t.dataset.tab === target;
+        t.classList.toggle("text-[var(--color-accent)]", isActive);
+        t.classList.toggle("text-[var(--color-text-tertiary)]", !isActive);
+        const indicator = t.querySelector("span");
+        if (indicator) {
+          indicator.classList.toggle("opacity-100", isActive);
+          indicator.classList.toggle("opacity-0", !isActive);
+        }
+      });
+
+      panels.forEach((p) => {
+        p.classList.toggle("hidden", p.dataset.panel !== target);
+      });
+    });
+  });
+</script>

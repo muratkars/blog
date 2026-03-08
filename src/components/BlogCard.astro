@@ -6,14 +6,25 @@ interface Props {
 }
 
 const { post } = Astro.props;
-const { title, date, description, readTime, tags } = post.data;
+const { title, date, description, readTime, tags, image } = post.data;
 ---
 
 <article>
   <a
     href={`/blog/${post.id}`}
-    class="group block rounded-2xl border border-[var(--color-border)]/50 p-6 transition-all duration-200 hover:border-[var(--color-border)] hover:shadow-sm"
+    class="group block overflow-hidden rounded-2xl border border-[var(--color-border)]/50 transition-all duration-200 hover:border-[var(--color-border)] hover:shadow-sm"
   >
+    {image && (
+      <div class="aspect-[16/9] overflow-hidden">
+        <img
+          src={image}
+          alt=""
+          class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+          loading="lazy"
+        />
+      </div>
+    )}
+    <div class="p-6">
     <time
       datetime={date.toISOString()}
       class="text-xs text-[var(--color-text-tertiary)]"
@@ -33,7 +44,7 @@ const { title, date, description, readTime, tags } = post.data;
     <p class="mt-2 text-sm leading-relaxed text-[var(--color-text-secondary)]">
       {description}
     </p>
-    <div class="mt-4 flex items-center gap-3">
+    <div class="mt-4 flex flex-wrap items-center gap-2">
       {
         readTime && (
           <span class="text-xs text-[var(--color-text-tertiary)]">
@@ -43,7 +54,7 @@ const { title, date, description, readTime, tags } = post.data;
       }
       {
         tags.length > 0 && (
-          <div class="flex gap-2">
+          <div class="flex flex-wrap gap-1.5">
             {tags.map((tag) => (
               <span class="rounded-full bg-[var(--color-surface-alt)] px-2 py-0.5 text-xs text-[var(--color-text-tertiary)]">
                 {tag}
@@ -52,6 +63,7 @@ const { title, date, description, readTime, tags } = post.data;
           </div>
         )
       }
+    </div>
     </div>
   </a>
 </article>

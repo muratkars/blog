@@ -185,7 +185,7 @@
           <rect x="30" y="118" width="140" height="22" rx="4" fill="var(--color-accent)" opacity="0.08" stroke="var(--color-accent)" stroke-width="1" />
           <text x="100" y="132" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)">1 HTTP request. No kernel state.</text>
 
-          <text x="100" y="160" text-anchor="middle" fill="#e74c3c" font-size="10" font-family="var(--font-sans)">Sins 4, 5, 6, 7</text>
+          <text x="100" y="160" text-anchor="middle" fill="#e74c3c" font-size="10" font-family="var(--font-sans)">Sins 4, 5, 6</text>
           <text x="100" y="175" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">Consistency, hierarchy, syscalls, perms</text>
         </g>
 
@@ -418,14 +418,13 @@
       let stage = -1;
 
       if (text.includes("where posix came from")) stage = 1;
-      else if (text.includes("seven sins")) stage = 2;
+      else if (text.includes("six sins")) stage = 2;
       else if (text.includes("metadata wall")) stage = 2;
       else if (text.includes("statefulness")) stage = 3;
       else if (text.includes("locking nightmare")) stage = 4;
       else if (text.includes("consistency trap")) stage = 5;
       else if (text.includes("hierarchy illusion")) stage = 5;
       else if (text.includes("syscall overhead")) stage = 5;
-      else if (text.includes("permission model")) stage = 5;
       else if (text.includes("gateway trap")) stage = 6;
       else if (text.includes("quantum")) stage = 7;
       else if (text.includes("quantum storage")) stage = 7;

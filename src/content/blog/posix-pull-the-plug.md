@@ -31,11 +31,11 @@ For three decades, this model worked. It worked for workstations, for databases,
 
 It worked because the fundamental assumption held: **storage is local, or close enough to local that the abstraction doesn't leak.**
 
-That assumption is now false.
+That assumption is now false. If you want the short version of why, skip to "The Way Forward" at the end. But if you want the full case, here are six reasons POSIX doesn't hold up at modern scale.
 
 ---
 
-## The Seven Sins of POSIX at Scale
+## The Six Sins of POSIX at Scale
 
 ### 1. The Metadata Wall
 
@@ -77,7 +77,7 @@ POSIX guarantees close-to-open consistency at minimum, and many implementations 
 
 CephFS, which implements POSIX semantics over a distributed object store (RADOS), [documents its deviations from POSIX](https://docs.ceph.com/en/latest/cephfs/posix/) explicitly, because full compliance is either impossible or prohibitively expensive at scale. Lustre similarly relaxes POSIX guarantees under concurrent access to maintain performance.
 
-The irony: most modern applications don't need POSIX consistency. AI training reads are embarrassingly parallel. Each worker reads different files, no sharing. Analytics queries read immutable Parquet files. Log ingestion appends to different partitions. The consistency guarantees that POSIX enforces (at enormous cost) are consumed by almost nobody.
+But here's the thing: most modern applications don't need POSIX consistency. AI training reads are embarrassingly parallel. Each worker reads different files, no sharing. Analytics queries read immutable Parquet files. Log ingestion appends to different partitions. The consistency guarantees that POSIX enforces (at enormous cost) are consumed by almost nobody.
 
 Object storage offers tunable consistency. S3 achieved strong read-after-write consistency in December 2020, not because POSIX demanded it, but because applications needed it. The system provides exactly the guarantee required, no more.
 
@@ -85,13 +85,11 @@ Object storage offers tunable consistency. S3 achieved strong read-after-write c
 
 POSIX namespaces are hierarchical: directories contain files and other directories, forming a tree. This model assumes that the organizational structure of data is known at write time and doesn't change.
 
-Modern data infrastructure violates this constantly:
+Modern data infrastructure violates this constantly. AI datasets are organized by task, not by filesystem path. The same image appears in training, validation, and test splits, requiring symlinks, hardlinks, or copies. Lakehouse tables are organized by partitions (year/month/day) that span many directories. A query for "all sales in Q3" must enumerate and `stat()` thousands of directory entries.
 
-- **AI datasets** are organized by task, not by filesystem path. The same image appears in training, validation, and test splits, requiring symlinks, hardlinks, or copies.
-- **Lakehouse tables** are organized by partitions (year/month/day) that span many directories. A query for "all sales in Q3" must enumerate and `stat()` thousands of directory entries.
-- **Multi-tenant systems** must enforce isolation at the namespace level, turning directory permissions into a security boundary they were never designed to be.
+And the permission model is just as rigid. POSIX permissions (owner/group/other, rwx bits) were designed for multi-user Unix workstations: numeric UIDs, small local groups, per-file granularity. None of this maps to modern cloud infrastructure, where identity is federated (OAuth, OIDC, SAML), access control is policy-based (IAM), granularity is per-API-call (allow `GetObject` but deny `ListBucket` for the same prefix), and temporary credentials (STS, pre-signed URLs) have no POSIX equivalent.
 
-Object storage's flat namespace with prefix-based listing is simpler and faster. `ListObjectsV2(prefix="sales/2025/Q3/")` returns matching keys without traversing a directory tree. Prefixes are metadata, not structure.
+Object storage solves both problems. Flat namespace with prefix-based listing: `ListObjectsV2(prefix="sales/2025/Q3/")` returns matching keys without traversing a directory tree. IAM policies attached to identities and evaluated per-request replace the rwx permission bits entirely.
 
 ### 6. The Syscall Overhead
 
@@ -107,21 +105,6 @@ That's 4+ syscalls per file, millions of files, hundreds of nanoseconds each. **
 
 Object storage replaces this with a single HTTP request: `GET /key`. One network round-trip, one response, no kernel state transitions.
 
-### 7. The Permission Model Mismatch
-
-POSIX permissions (owner/group/other, rwx bits) and even POSIX ACLs were designed for multi-user Unix workstations. They assume:
-- Users are identified by numeric UIDs that are consistent across the system
-- Groups are small and managed locally (or via NIS/LDAP)
-- Permissions are per-file and per-directory
-
-None of this maps to modern cloud infrastructure:
-- **Identity is federated** (OAuth, OIDC, SAML), not UID-based
-- **Access control is policy-based** (IAM), not permission-bit-based
-- **Granularity is per-API-call**, not per-file. You might allow `GetObject` but deny `ListBucket` for the same prefix
-- **Temporary credentials** (STS, pre-signed URLs) have no POSIX equivalent
-
-Object storage's IAM model (policies attached to identities, evaluated per-request) is fundamentally more expressive and more secure than anything POSIX can offer.
-
 ---
 
 ## The Gateway Trap: Why Translation Layers Are a Dead End
@@ -132,31 +115,33 @@ The storage industry's instinct, when confronted with a new paradigm, is to buil
 
 This is how we got:
 
-- **Ceph RGW.** An S3-compatible gateway that translates HTTP requests into RADOS operations. Every S3 PUT becomes a series of internal RADOS writes with metadata bookkeeping. Small objects suffer disproportionately. The translation overhead (multipart handling, bucket index updates, metadata journal writes) can exceed the actual data I/O.
+- **Ceph RGW.** S3-compatible gateway over RADOS. Every PUT becomes a chain of internal writes with metadata bookkeeping. Translation overhead (multipart handling, bucket index updates, journal writes) can exceed actual data I/O.
 
-- **S3FS-FUSE.** Mounts an S3 bucket as a local filesystem. Every `read()` becomes an HTTP GET. Every `stat()` becomes a HEAD request. Every `readdir()` becomes a ListObjects call. The latency of each operation goes from microseconds (local VFS cache) to milliseconds (network round-trip). [SNIA has documented](https://www.snia.org/sniadeveloper/session/19445) why S3FS fails for AI/ML workloads. The performance penalty is 10-100x compared to local filesystem access.
+- **S3FS-FUSE.** Mounts an S3 bucket as a local filesystem. Each `read()` becomes an HTTP GET, each `stat()` a HEAD request, each `readdir()` a ListObjects call. Microsecond operations become millisecond round-trips. [SNIA documented](https://www.snia.org/sniadeveloper/session/19445) why this fails for AI/ML workloads: 10-100x performance penalty.
 
-- **HDFS.** Attempted to provide a filesystem interface over distributed storage while relaxing POSIX semantics (append-only, no random writes). Still requires a centralized NameNode for all metadata operations, which becomes the bottleneck at scale.
+- **HDFS.** Filesystem interface over distributed storage with relaxed POSIX semantics (append-only, no random writes). Still bottlenecked by a centralized NameNode for all metadata.
 
-- **JuiceFS, cunoFS, Alluxio.** Modern attempts to provide high-performance POSIX over object storage. Better engineered than S3FS, but still fundamentally constrained by the impedance mismatch: every POSIX operation must be translated into one or more object operations, with metadata consistency maintained by an external database (Redis, TiKV, PostgreSQL).
+- **JuiceFS, cunoFS, Alluxio.** Modern attempts at high-performance POSIX over object storage. Better engineered than S3FS, but still constrained by the same impedance mismatch: every POSIX operation translates into one or more object operations, with metadata consistency maintained by an external database (Redis, TiKV, PostgreSQL).
 
-Every translation layer adds latency, complexity, and failure modes. Every gateway is a bottleneck. Every bridge is a constraint.
+Translation layers add latency, complexity, and failure modes. Gateways become bottlenecks. Bridges become constraints.
 
 **The solution is not a better bridge. The solution is to stop crossing the river.**
 
-Applications that need POSIX (legacy databases, desktop file managers, NFS-based workflows) will continue to use local or network filesystems. They always will. But every new application, every new training pipeline, every new analytics platform, every new AI agent framework should be built on native object storage APIs. Not because POSIX is bad. It was great for what it was designed to do. But the workloads have changed, the scale has changed, and the assumptions have changed.
+Applications that need POSIX (legacy databases, desktop file managers, NFS-based workflows) will continue to use local or network filesystems. They always will. But new applications, new training pipelines, new analytics platforms, and new AI agent frameworks should be built on native object storage APIs. Not because POSIX is bad. It was great for what it was designed to do. But the workloads have changed, the scale has changed, and the assumptions have changed.
+
+So if POSIX is the past and object storage is the present, what about the future?
 
 ---
 
 ## But What About Quantum Computing?
 
-Here's the question that keeps appearing in storage futurism panels: "Will quantum computing make all of this obsolete? Will quantum storage replace object storage entirely?"
+If POSIX is legacy, could quantum computing leapfrog the whole debate? Could quantum storage replace object storage entirely?
 
-The short answer: no. Not in your career, and probably not in your children's careers.
+The short answer: no. Not in any timeline that matters for infrastructure decisions today.
 
 ### Why Quantum Storage Is Not a Thing (Yet)
 
-Quantum computing's fundamental unit, the qubit, has a property that makes it useless for persistent storage: **decoherence**. A qubit's quantum state (the superposition that gives it computational power) decays over time as the qubit interacts with its environment. Current coherence times range from microseconds to milliseconds for superconducting qubits.
+Quantum computing's fundamental unit, the qubit, has a property that makes it useless for persistent storage: **decoherence**. A qubit's quantum state (the superposition that gives it computational power) decays over time as the qubit interacts with its environment. As of early 2026, coherence times range from microseconds to milliseconds for superconducting qubits.
 
 For context: a modern NVMe SSD retains data for *years*. A qubit retains its state for *millionths of a second*.
 
@@ -183,7 +168,7 @@ Shor's algorithm, running on a sufficiently powerful quantum computer, can facto
 
 These are the cryptographic primitives that protect data at rest (AES key wrapping, disk encryption key management), data in transit (TLS), and data integrity (digital signatures on checksums).
 
-The timeline is debated but converging: **cryptographically relevant quantum computers (CRQCs) are projected for the 2030s**, with nation-state actors potentially arriving earlier. Citi Research published a trillion-dollar security assessment in January 2026 calling this "the trillion-dollar security race." The "harvest now, decrypt later" threat (adversaries capturing encrypted traffic today to decrypt it when quantum computers arrive) is [already considered active](https://www.bcg.com/publications/2025/how-quantum-computing-will-upend-cybersecurity) by intelligence agencies.
+The timeline is debated but converging: **as of early 2026, cryptographically relevant quantum computers (CRQCs) are projected for the 2030s**, with nation-state actors potentially arriving earlier. Citi Research published a trillion-dollar security assessment in January 2026 calling this "the trillion-dollar security race." The "harvest now, decrypt later" threat (adversaries capturing encrypted traffic today to decrypt it when quantum computers arrive) is [already considered active](https://www.bcg.com/publications/2025/how-quantum-computing-will-upend-cybersecurity) by intelligence agencies.
 
 NIST responded by finalizing three post-quantum cryptography standards in August 2024:
 - **ML-KEM** (formerly CRYSTALS-Kyber, FIPS 203). Lattice-based key encapsulation.
@@ -202,13 +187,13 @@ For storage systems, this means:
 
 ---
 
-## The Way Forward: Native Object, No Apologies
+## The Way Forward: Native Object Storage
 
-The path forward is not incremental. It's not "POSIX with some object features" or "object storage with a POSIX gateway." It's a clean break.
+The path forward is not incremental. You can't bolt object features onto POSIX or slap a POSIX gateway onto object storage and call it done. Clean break.
 
 ### 1. S3 API as the Universal Data Interface
 
-The S3 API (PUT, GET, DELETE, HEAD, ListObjects, multipart upload, pre-signed URLs) is the lingua franca of modern data infrastructure. Every cloud provider speaks it. Every AI framework reads from it. Every analytics engine queries through it. Kubernetes has [COSI](https://kubernetes.io/blog/2022/09/02/cosi-kubernetes-object-storage-management/) (Container Object Storage Interface) as the native standard for provisioning S3-compatible buckets, complementing CSI for block/filesystem storage.
+The S3 API (PUT, GET, DELETE, HEAD, ListObjects, multipart upload, pre-signed URLs) is the closest thing data infrastructure has to a universal language. Cloud providers speak it natively. AI frameworks read from it. Analytics engines query through it. Kubernetes has [COSI](https://kubernetes.io/blog/2022/09/02/cosi-kubernetes-object-storage-management/) (Container Object Storage Interface) as the native standard for provisioning S3-compatible buckets, complementing CSI for block/filesystem storage.
 
 New storage systems should speak S3 natively. Not through a gateway, not through a translation layer, but as their primary and only data interface. No POSIX shim. No FUSE mount. No NFS gateway. If an application needs POSIX, it can use a local filesystem or a purpose-built network filesystem. The object store should not contort itself to emulate something it isn't.
 
