@@ -154,3 +154,38 @@ body {
   border-top: 1px solid var(--color-border);
   margin: 2rem 0;
 }
+
+.prose table {
+  width: 100%;
+  margin: 1.5rem 0;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+}
+
+.prose thead {
+  border-bottom: 2px solid var(--color-border);
+}
+
+.prose th {
+  padding: 0.625rem 0.75rem;
+  text-align: left;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  font-size: 0.8125rem;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.prose td {
+  padding: 0.625rem 0.75rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.prose tbody tr:hover {
+  background-color: var(--color-surface-alt);
+}
+
+.prose strong {
+  color: var(--color-text-primary);
+}

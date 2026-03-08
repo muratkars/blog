@@ -1,6 +1,6 @@
 ---
 title: "A Field Guide to Storage Protocols in the AI Era"
-date: 2026-03-14
+date: 2026-03-08
 description: "From spinning rust to inference memory: every storage protocol you need to understand, why it exists, and which ones will survive the next decade."
 tags: ["storage", "ai", "protocols", "infrastructure"]
 type: "standard"

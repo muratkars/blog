@@ -1,6 +1,6 @@
 ---
 title: "Storage Is Dead. Long Live Data."
-date: 2026-03-10
+date: 2026-03-01
 description: "The 40-year journey from NAS to block to S3 was just the prologue. The real story starts with Iceberg tables, vector indexes, and NVIDIA's new memory tier for AI inference."
 tags: ["storage", "ai", "infrastructure"]
 type: "standard"

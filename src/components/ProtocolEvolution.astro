@@ -1,0 +1,522 @@
+---
+---
+
+<aside class="protocol-evolution hidden lg:block">
+  <div class="sticky top-24">
+    <p class="mb-3 text-[10px] font-semibold uppercase tracking-widest text-[var(--color-text-tertiary)]">
+      Protocol Evolution
+    </p>
+
+    <div class="svg-container">
+      <svg viewBox="0 0 200 230" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full">
+
+        <!-- Stage 1: HDD -->
+        <g id="proto-stage-1" class="proto-stage active">
+          <!-- Spinning platter -->
+          <ellipse cx="100" cy="65" rx="50" ry="50" stroke="var(--color-text-tertiary)" stroke-width="1.5" fill="var(--color-surface-alt)" />
+          <ellipse cx="100" cy="65" rx="35" ry="35" stroke="var(--color-border)" stroke-width="0.75" fill="none" />
+          <ellipse cx="100" cy="65" rx="20" ry="20" stroke="var(--color-border)" stroke-width="0.75" fill="none" />
+          <circle cx="100" cy="65" r="5" fill="var(--color-border)" />
+          <!-- Read arm -->
+          <line x1="100" y1="65" x2="140" y2="40" stroke="var(--color-text-tertiary)" stroke-width="2.5" stroke-linecap="round" />
+          <circle cx="140" cy="40" r="3" fill="var(--color-accent)" opacity="0.6" />
+          <!-- Spin indicator -->
+          <path d="M 70 45 Q 80 30 95 35" stroke="var(--color-accent)" stroke-width="0.75" fill="none" class="spin-hint" />
+          <!-- Specs -->
+          <text x="100" y="135" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="9" font-family="var(--font-mono)">200 MB/s seq</text>
+          <text x="100" y="148" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="9" font-family="var(--font-mono)">~150 IOPS</text>
+          <text x="100" y="165" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="10" font-family="var(--font-sans)">Hard Disk Drive</text>
+          <text x="100" y="180" text-anchor="middle" fill="var(--color-accent)" font-size="9" font-family="var(--font-mono)">$0.014/GB</text>
+        </g>
+
+        <!-- Stage 2: SSD SATA -->
+        <g id="proto-stage-2" class="proto-stage">
+          <!-- SSD chip package -->
+          <rect x="45" y="30" width="110" height="70" rx="6" stroke="var(--color-text-tertiary)" stroke-width="1.5" fill="var(--color-surface-alt)" />
+          <!-- NAND chips inside -->
+          <rect x="55" y="40" width="18" height="14" rx="2" fill="var(--color-accent)" opacity="0.15" stroke="var(--color-accent)" stroke-width="0.75" />
+          <rect x="78" y="40" width="18" height="14" rx="2" fill="var(--color-accent)" opacity="0.15" stroke="var(--color-accent)" stroke-width="0.75" />
+          <rect x="101" y="40" width="18" height="14" rx="2" fill="var(--color-accent)" opacity="0.15" stroke="var(--color-accent)" stroke-width="0.75" />
+          <rect x="124" y="40" width="18" height="14" rx="2" fill="var(--color-accent)" opacity="0.15" stroke="var(--color-accent)" stroke-width="0.75" />
+          <rect x="55" y="62" width="18" height="14" rx="2" fill="var(--color-accent)" opacity="0.15" stroke="var(--color-accent)" stroke-width="0.75" />
+          <rect x="78" y="62" width="18" height="14" rx="2" fill="var(--color-accent)" opacity="0.15" stroke="var(--color-accent)" stroke-width="0.75" />
+          <rect x="101" y="62" width="18" height="14" rx="2" fill="var(--color-accent)" opacity="0.15" stroke="var(--color-accent)" stroke-width="0.75" />
+          <rect x="124" y="62" width="18" height="14" rx="2" fill="var(--color-accent)" opacity="0.15" stroke="var(--color-accent)" stroke-width="0.75" />
+          <!-- SATA connector -->
+          <rect x="70" y="100" width="60" height="8" rx="2" fill="var(--color-border)" stroke="var(--color-text-tertiary)" stroke-width="0.75" />
+          <text x="100" y="107" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">SATA III</text>
+          <!-- Bottleneck indicator -->
+          <rect x="60" y="115" width="80" height="16" rx="3" fill="none" stroke="var(--color-accent)" stroke-width="1" stroke-dasharray="3 2" />
+          <text x="100" y="126" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)">600 MB/s ceiling</text>
+          <!-- Specs -->
+          <text x="100" y="148" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="9" font-family="var(--font-mono)">~80K IOPS</text>
+          <text x="100" y="165" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="10" font-family="var(--font-sans)">SATA SSD</text>
+          <text x="100" y="180" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">Interface bottleneck</text>
+        </g>
+
+        <!-- Stage 3: NVMe -->
+        <g id="proto-stage-3" class="proto-stage">
+          <!-- M.2 stick shape -->
+          <rect x="35" y="45" width="130" height="28" rx="4" stroke="var(--color-accent)" stroke-width="1.5" fill="var(--color-surface-alt)" />
+          <!-- PCIe lanes visualization -->
+          <line x1="50" y1="85" x2="50" y2="55" stroke="var(--color-accent)" stroke-width="1" opacity="0.4" />
+          <line x1="65" y1="85" x2="65" y2="55" stroke="var(--color-accent)" stroke-width="1" opacity="0.5" />
+          <line x1="80" y1="85" x2="80" y2="55" stroke="var(--color-accent)" stroke-width="1" opacity="0.6" />
+          <line x1="95" y1="85" x2="95" y2="55" stroke="var(--color-accent)" stroke-width="1" opacity="0.7" />
+          <line x1="110" y1="85" x2="110" y2="55" stroke="var(--color-accent)" stroke-width="1" opacity="0.8" />
+          <line x1="125" y1="85" x2="125" y2="55" stroke="var(--color-accent)" stroke-width="1" opacity="0.9" />
+          <line x1="140" y1="85" x2="140" y2="55" stroke="var(--color-accent)" stroke-width="1" />
+          <line x1="155" y1="85" x2="155" y2="55" stroke="var(--color-accent)" stroke-width="1" />
+          <!-- Data flowing up (animated dots) -->
+          <circle cx="80" cy="78" r="2" fill="var(--color-accent)" class="data-flow-up" />
+          <circle cx="110" cy="72" r="2" fill="var(--color-accent)" class="data-flow-up" style="animation-delay: 0.3s" />
+          <circle cx="140" cy="75" r="2" fill="var(--color-accent)" class="data-flow-up" style="animation-delay: 0.6s" />
+          <!-- PCIe bus bar -->
+          <rect x="40" y="85" width="120" height="10" rx="2" fill="var(--color-accent)" opacity="0.12" stroke="var(--color-accent)" stroke-width="0.75" />
+          <text x="100" y="93" text-anchor="middle" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)">PCIe Gen5 x4</text>
+          <!-- Queue visualization -->
+          <text x="100" y="115" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="7" font-family="var(--font-mono)">65,535 queues x 65,536 cmds</text>
+          <!-- Specs -->
+          <text x="100" y="135" text-anchor="middle" fill="var(--color-accent)" font-size="11" font-family="var(--font-mono)" font-weight="bold">14 GB/s</text>
+          <text x="100" y="150" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="9" font-family="var(--font-mono)">1,000,000+ IOPS</text>
+          <text x="100" y="167" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="10" font-family="var(--font-sans)">NVMe SSD</text>
+          <text x="100" y="182" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">Direct PCIe, no legacy stack</text>
+        </g>
+
+        <!-- Stage 4: DAS / JBOF -->
+        <g id="proto-stage-4" class="proto-stage">
+          <!-- Server box -->
+          <rect x="65" y="20" width="70" height="35" rx="4" stroke="var(--color-text-tertiary)" stroke-width="1.5" fill="var(--color-surface-alt)" />
+          <text x="100" y="42" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-mono)">SERVER</text>
+          <!-- Direct cable -->
+          <line x1="100" y1="55" x2="100" y2="72" stroke="var(--color-accent)" stroke-width="2.5" stroke-linecap="round" />
+          <text x="115" y="67" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)">SAS</text>
+          <!-- JBOF enclosure -->
+          <rect x="30" y="75" width="140" height="55" rx="5" stroke="var(--color-accent)" stroke-width="1.5" fill="var(--color-surface-alt)" />
+          <text x="100" y="88" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)">JBOF (Just a Bunch of Flash)</text>
+          <!-- NVMe drives in JBOF -->
+          <rect x="38" y="95" width="10" height="25" rx="1.5" fill="var(--color-accent)" opacity="0.2" stroke="var(--color-accent)" stroke-width="0.5" />
+          <rect x="52" y="95" width="10" height="25" rx="1.5" fill="var(--color-accent)" opacity="0.2" stroke="var(--color-accent)" stroke-width="0.5" />
+          <rect x="66" y="95" width="10" height="25" rx="1.5" fill="var(--color-accent)" opacity="0.2" stroke="var(--color-accent)" stroke-width="0.5" />
+          <rect x="80" y="95" width="10" height="25" rx="1.5" fill="var(--color-accent)" opacity="0.2" stroke="var(--color-accent)" stroke-width="0.5" />
+          <rect x="94" y="95" width="10" height="25" rx="1.5" fill="var(--color-accent)" opacity="0.2" stroke="var(--color-accent)" stroke-width="0.5" />
+          <rect x="108" y="95" width="10" height="25" rx="1.5" fill="var(--color-accent)" opacity="0.2" stroke="var(--color-accent)" stroke-width="0.5" />
+          <rect x="122" y="95" width="10" height="25" rx="1.5" fill="var(--color-accent)" opacity="0.2" stroke="var(--color-accent)" stroke-width="0.5" />
+          <rect x="136" y="95" width="10" height="25" rx="1.5" fill="var(--color-accent)" opacity="0.2" stroke="var(--color-accent)" stroke-width="0.5" />
+
+          <text x="100" y="148" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="10" font-family="var(--font-sans)">Direct Attached Storage</text>
+          <text x="100" y="163" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">No network, no sharing</text>
+        </g>
+
+        <!-- Stage 5: NAS / NFS -->
+        <g id="proto-stage-5" class="proto-stage">
+          <!-- NAS appliance -->
+          <rect x="65" y="25" width="70" height="40" rx="5" stroke="var(--color-text-tertiary)" stroke-width="1.5" fill="var(--color-surface-alt)" />
+          <rect x="73" y="33" width="8" height="24" rx="1.5" fill="var(--color-border)" />
+          <rect x="84" y="33" width="8" height="24" rx="1.5" fill="var(--color-border)" />
+          <rect x="95" y="33" width="8" height="24" rx="1.5" fill="var(--color-border)" />
+          <rect x="106" y="33" width="8" height="24" rx="1.5" fill="var(--color-border)" />
+          <rect x="117" y="33" width="8" height="24" rx="1.5" fill="var(--color-border)" />
+          <!-- Ethernet network -->
+          <line x1="100" y1="65" x2="100" y2="80" stroke="var(--color-accent)" stroke-width="1.5" />
+          <!-- Network switch -->
+          <rect x="60" y="80" width="80" height="14" rx="3" fill="var(--color-accent)" opacity="0.1" stroke="var(--color-accent)" stroke-width="0.75" />
+          <text x="100" y="90" text-anchor="middle" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)">ETHERNET</text>
+          <!-- Client mounts -->
+          <line x1="70" y1="94" x2="40" y2="112" stroke="var(--color-accent)" stroke-width="0.75" stroke-dasharray="3 2" />
+          <line x1="100" y1="94" x2="100" y2="112" stroke="var(--color-accent)" stroke-width="0.75" stroke-dasharray="3 2" />
+          <line x1="130" y1="94" x2="160" y2="112" stroke="var(--color-accent)" stroke-width="0.75" stroke-dasharray="3 2" />
+          <!-- Client machines with mount paths -->
+          <rect x="25" y="112" width="30" height="20" rx="2" fill="var(--color-surface-alt)" stroke="var(--color-text-tertiary)" stroke-width="1" />
+          <text x="40" y="125" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">/mnt</text>
+          <rect x="85" y="112" width="30" height="20" rx="2" fill="var(--color-surface-alt)" stroke="var(--color-text-tertiary)" stroke-width="1" />
+          <text x="100" y="125" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">/mnt</text>
+          <rect x="145" y="112" width="30" height="20" rx="2" fill="var(--color-surface-alt)" stroke="var(--color-text-tertiary)" stroke-width="1" />
+          <text x="160" y="125" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">/mnt</text>
+
+          <text x="100" y="150" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="10" font-family="var(--font-sans)">Network Attached Storage</text>
+          <text x="100" y="165" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">NFS / POSIX / Shared</text>
+        </g>
+
+        <!-- Stage 6: SAN -->
+        <g id="proto-stage-6" class="proto-stage">
+          <!-- Servers -->
+          <rect x="25" y="18" width="32" height="20" rx="3" fill="var(--color-surface-alt)" stroke="var(--color-text-tertiary)" stroke-width="1" />
+          <rect x="84" y="18" width="32" height="20" rx="3" fill="var(--color-surface-alt)" stroke="var(--color-text-tertiary)" stroke-width="1" />
+          <rect x="143" y="18" width="32" height="20" rx="3" fill="var(--color-surface-alt)" stroke="var(--color-text-tertiary)" stroke-width="1" />
+          <!-- FC HBAs -->
+          <circle cx="41" cy="28" r="3" fill="var(--color-accent)" opacity="0.4" />
+          <circle cx="100" cy="28" r="3" fill="var(--color-accent)" opacity="0.4" />
+          <circle cx="159" cy="28" r="3" fill="var(--color-accent)" opacity="0.4" />
+          <!-- Dedicated FC fabric -->
+          <rect x="30" y="52" width="140" height="22" rx="4" fill="var(--color-accent)" opacity="0.08" stroke="var(--color-accent)" stroke-width="1.5" />
+          <text x="100" y="66" text-anchor="middle" fill="var(--color-accent)" font-size="8" font-family="var(--font-mono)" font-weight="bold">FC FABRIC</text>
+          <!-- FC connections (dense) -->
+          <line x1="41" y1="38" x2="55" y2="52" stroke="var(--color-accent)" stroke-width="1" />
+          <line x1="100" y1="38" x2="100" y2="52" stroke="var(--color-accent)" stroke-width="1" />
+          <line x1="159" y1="38" x2="145" y2="52" stroke="var(--color-accent)" stroke-width="1" />
+          <!-- Storage arrays -->
+          <rect x="25" y="88" width="65" height="35" rx="4" stroke="var(--color-text-tertiary)" stroke-width="1.5" fill="var(--color-surface-alt)" />
+          <rect x="110" y="88" width="65" height="35" rx="4" stroke="var(--color-text-tertiary)" stroke-width="1.5" fill="var(--color-surface-alt)" />
+          <!-- Drive slots in arrays -->
+          <rect x="30" y="94" width="6" height="22" rx="1" fill="var(--color-border)" />
+          <rect x="39" y="94" width="6" height="22" rx="1" fill="var(--color-border)" />
+          <rect x="48" y="94" width="6" height="22" rx="1" fill="var(--color-border)" />
+          <rect x="57" y="94" width="6" height="22" rx="1" fill="var(--color-border)" />
+          <rect x="66" y="94" width="6" height="22" rx="1" fill="var(--color-border)" />
+          <rect x="78" y="94" width="6" height="22" rx="1" fill="var(--color-border)" />
+          <rect x="115" y="94" width="6" height="22" rx="1" fill="var(--color-border)" />
+          <rect x="124" y="94" width="6" height="22" rx="1" fill="var(--color-border)" />
+          <rect x="133" y="94" width="6" height="22" rx="1" fill="var(--color-border)" />
+          <rect x="142" y="94" width="6" height="22" rx="1" fill="var(--color-border)" />
+          <rect x="151" y="94" width="6" height="22" rx="1" fill="var(--color-border)" />
+          <rect x="160" y="94" width="6" height="22" rx="1" fill="var(--color-border)" />
+          <!-- Fabric to arrays -->
+          <line x1="57" y1="74" x2="57" y2="88" stroke="var(--color-accent)" stroke-width="1" />
+          <line x1="143" y1="74" x2="143" y2="88" stroke="var(--color-accent)" stroke-width="1" />
+
+          <text x="100" y="142" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="10" font-family="var(--font-sans)">Storage Area Network</text>
+          <text x="100" y="157" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">Dedicated fabric, block I/O</text>
+        </g>
+
+        <!-- Stage 7: NVMe-oF -->
+        <g id="proto-stage-7" class="proto-stage">
+          <!-- Compute pool -->
+          <rect x="25" y="18" width="65" height="30" rx="4" stroke="var(--color-text-tertiary)" stroke-width="1" fill="var(--color-surface-alt)" />
+          <text x="57" y="30" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="6" font-family="var(--font-mono)">COMPUTE POOL</text>
+          <rect x="30" y="35" width="12" height="8" rx="1" fill="var(--color-border)" />
+          <rect x="46" y="35" width="12" height="8" rx="1" fill="var(--color-border)" />
+          <rect x="62" y="35" width="12" height="8" rx="1" fill="var(--color-border)" />
+          <!-- Storage pool -->
+          <rect x="110" y="18" width="65" height="30" rx="4" stroke="var(--color-accent)" stroke-width="1" fill="var(--color-surface-alt)" />
+          <text x="142" y="30" text-anchor="middle" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)">STORAGE POOL</text>
+          <rect x="115" y="35" width="12" height="8" rx="1" fill="var(--color-accent)" opacity="0.3" />
+          <rect x="131" y="35" width="12" height="8" rx="1" fill="var(--color-accent)" opacity="0.3" />
+          <rect x="147" y="35" width="12" height="8" rx="1" fill="var(--color-accent)" opacity="0.3" />
+          <!-- RDMA fabric -->
+          <rect x="25" y="60" width="150" height="22" rx="4" fill="var(--color-accent)" opacity="0.08" stroke="var(--color-accent)" stroke-width="1.5" />
+          <text x="100" y="74" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)" font-weight="bold">RDMA / NVMe-oF FABRIC</text>
+          <!-- Bidirectional data flows -->
+          <line x1="57" y1="48" x2="57" y2="60" stroke="var(--color-accent)" stroke-width="1" />
+          <line x1="142" y1="48" x2="142" y2="60" stroke="var(--color-accent)" stroke-width="1" />
+          <!-- Disaggregation arrows -->
+          <line x1="90" y1="65" x2="110" y2="65" stroke="var(--color-accent)" stroke-width="0.75" stroke-dasharray="2 2" />
+          <line x1="90" y1="75" x2="110" y2="75" stroke="var(--color-accent)" stroke-width="0.75" stroke-dasharray="2 2" />
+          <!-- Latency labels -->
+          <rect x="30" y="92" width="50" height="18" rx="3" fill="none" stroke="var(--color-border)" stroke-width="0.75" />
+          <text x="55" y="104" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="6" font-family="var(--font-mono)">RDMA ~5us</text>
+          <rect x="85" y="92" width="50" height="18" rx="3" fill="none" stroke="var(--color-border)" stroke-width="0.75" />
+          <text x="110" y="104" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="6" font-family="var(--font-mono)">IB ~2us</text>
+          <rect x="140" y="92" width="50" height="18" rx="3" fill="none" stroke="var(--color-border)" stroke-width="0.75" />
+          <text x="165" y="104" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="6" font-family="var(--font-mono)">TCP ~50us</text>
+
+          <text x="100" y="130" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="10" font-family="var(--font-sans)">NVMe over Fabrics</text>
+          <text x="100" y="145" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">Disaggregated compute + storage</text>
+        </g>
+
+        <!-- Stage 8: S3 Object Storage -->
+        <g id="proto-stage-8" class="proto-stage">
+          <!-- Cloud shape -->
+          <path d="M50,75 Q50,50 75,50 Q80,30 105,35 Q130,25 140,50 Q160,50 160,70 Q160,90 140,90 L50,90 Q30,90 30,75 Q30,60 50,75 Z" stroke="var(--color-accent)" stroke-width="1.5" fill="var(--color-accent)" fill-opacity="0.06" />
+          <!-- Objects as varied shapes -->
+          <rect x="55" y="60" width="12" height="12" rx="2" fill="var(--color-accent)" opacity="0.25" />
+          <rect x="75" y="55" width="14" height="14" rx="2" fill="var(--color-accent)" opacity="0.2" />
+          <rect x="97" y="62" width="11" height="11" rx="2" fill="var(--color-accent)" opacity="0.3" />
+          <rect x="115" y="55" width="13" height="13" rx="2" fill="var(--color-accent)" opacity="0.2" />
+          <rect x="135" y="60" width="10" height="10" rx="2" fill="var(--color-accent)" opacity="0.25" />
+          <rect x="67" y="73" width="10" height="10" rx="2" fill="var(--color-accent)" opacity="0.15" />
+          <rect x="107" y="73" width="12" height="12" rx="2" fill="var(--color-accent)" opacity="0.2" />
+          <!-- HTTP verbs -->
+          <text x="55" y="110" text-anchor="middle" fill="var(--color-accent)" font-size="8" font-family="var(--font-mono)">PUT</text>
+          <text x="90" y="110" text-anchor="middle" fill="var(--color-accent)" font-size="8" font-family="var(--font-mono)">GET</text>
+          <text x="130" y="110" text-anchor="middle" fill="var(--color-accent)" font-size="8" font-family="var(--font-mono)">LIST</text>
+          <text x="160" y="110" text-anchor="middle" fill="var(--color-accent)" font-size="8" font-family="var(--font-mono)">DEL</text>
+          <!-- Key-value concept -->
+          <text x="100" y="130" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="7" font-family="var(--font-mono)">key → data + metadata</text>
+
+          <text x="100" y="152" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="10" font-family="var(--font-sans)">Object Storage (S3)</text>
+          <text x="100" y="167" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">HTTP API, flat namespace</text>
+        </g>
+
+        <!-- Stage 9: Data Lakehouse -->
+        <g id="proto-stage-9" class="proto-stage">
+          <!-- S3 base (small) -->
+          <path d="M55,105 Q55,95 65,95 Q68,88 80,89 Q90,86 95,93 Q102,93 102,100 Q102,108 95,108 L55,108 Q47,108 47,100 Q47,93 55,105 Z" stroke="var(--color-border)" stroke-width="0.75" fill="var(--color-surface-alt)" />
+          <text x="75" y="103" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">S3</text>
+          <!-- Table above -->
+          <rect x="30" y="20" width="140" height="65" rx="5" stroke="var(--color-accent)" stroke-width="1.5" fill="var(--color-surface-alt)" />
+          <!-- Header -->
+          <rect x="30" y="20" width="140" height="15" rx="5" fill="var(--color-accent)" opacity="0.12" />
+          <line x1="30" y1="35" x2="170" y2="35" stroke="var(--color-accent)" stroke-width="0.75" />
+          <!-- Column lines -->
+          <line x1="75" y1="20" x2="75" y2="85" stroke="var(--color-border)" stroke-width="0.5" />
+          <line x1="125" y1="20" x2="125" y2="85" stroke="var(--color-border)" stroke-width="0.5" />
+          <!-- Headers -->
+          <text x="52" y="31" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)">schema</text>
+          <text x="100" y="31" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)">data</text>
+          <text x="148" y="31" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)">version</text>
+          <!-- Row lines -->
+          <line x1="30" y1="47" x2="170" y2="47" stroke="var(--color-border)" stroke-width="0.5" />
+          <line x1="30" y1="59" x2="170" y2="59" stroke="var(--color-border)" stroke-width="0.5" />
+          <line x1="30" y1="71" x2="170" y2="71" stroke="var(--color-border)" stroke-width="0.5" />
+          <!-- Features -->
+          <text x="100" y="100" text-anchor="middle" fill="var(--color-accent)" font-size="8" font-family="var(--font-mono)">Apache Iceberg</text>
+          <!-- Feature tags -->
+          <rect x="25" y="115" width="36" height="14" rx="7" fill="var(--color-accent)" opacity="0.1" stroke="var(--color-accent)" stroke-width="0.5" />
+          <text x="43" y="125" text-anchor="middle" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)">ACID</text>
+          <rect x="66" y="115" width="50" height="14" rx="7" fill="var(--color-accent)" opacity="0.1" stroke="var(--color-accent)" stroke-width="0.5" />
+          <text x="91" y="125" text-anchor="middle" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)">time travel</text>
+          <rect x="121" y="115" width="54" height="14" rx="7" fill="var(--color-accent)" opacity="0.1" stroke="var(--color-accent)" stroke-width="0.5" />
+          <text x="148" y="125" text-anchor="middle" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)">partitions</text>
+
+          <text x="100" y="150" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="10" font-family="var(--font-sans)">Data Lakehouse</text>
+          <text x="100" y="165" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">Schema + versioning on S3</text>
+        </g>
+
+        <!-- Stage 10: CMX / ICMS Memory Tiers -->
+        <g id="proto-stage-10" class="proto-stage">
+          <!-- GPU at top -->
+          <rect x="55" y="12" width="90" height="20" rx="4" fill="var(--color-accent)" opacity="0.2" stroke="var(--color-accent)" stroke-width="1" />
+          <text x="100" y="26" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)" font-weight="bold">GPU CLUSTER</text>
+          <!-- Tier bars descending -->
+          <rect x="40" y="40" width="120" height="16" rx="3" fill="var(--color-accent)" opacity="0.18" stroke="var(--color-accent)" stroke-width="0.75" />
+          <text x="100" y="51" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)">G1: HBM</text>
+          <text x="165" y="51" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">ns</text>
+
+          <rect x="40" y="60" width="120" height="16" rx="3" fill="var(--color-accent)" opacity="0.12" stroke="var(--color-accent)" stroke-width="0.5" />
+          <text x="100" y="71" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)">G2: Host RAM</text>
+          <text x="165" y="71" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">us</text>
+
+          <rect x="40" y="80" width="120" height="16" rx="3" fill="var(--color-accent)" opacity="0.08" stroke="var(--color-accent)" stroke-width="0.5" />
+          <text x="100" y="91" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)">G3: NVMe</text>
+          <text x="165" y="91" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">100us</text>
+
+          <!-- CMX highlighted with pulse -->
+          <rect x="35" y="100" width="130" height="20" rx="4" fill="var(--color-accent)" opacity="0.1" stroke="var(--color-accent)" stroke-width="2" />
+          <text x="100" y="113" text-anchor="middle" fill="var(--color-accent)" font-size="8" font-family="var(--font-mono)" font-weight="bold">G3.5: CMX</text>
+          <text x="170" y="113" fill="var(--color-accent)" font-size="5" font-family="var(--font-mono)">RDMA</text>
+          <rect x="35" y="100" width="130" height="20" rx="4" fill="none" stroke="var(--color-accent)" stroke-width="1" class="cmx-pulse" />
+
+          <rect x="40" y="124" width="120" height="16" rx="3" fill="var(--color-surface-alt)" stroke="var(--color-border)" stroke-width="0.75" />
+          <text x="100" y="135" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="7" font-family="var(--font-mono)">G4: Object Storage</text>
+          <text x="165" y="135" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">ms</text>
+
+          <text x="100" y="160" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="10" font-family="var(--font-sans)">AI Memory Hierarchy</text>
+          <text x="100" y="175" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">Context Memory eXtensions</text>
+        </g>
+      </svg>
+    </div>
+
+    <!-- Speed/capacity indicator -->
+    <div class="mt-4 rounded-lg bg-[var(--color-surface-alt)] px-3 py-2.5 text-center">
+      <p class="text-[9px] uppercase tracking-widest text-[var(--color-text-tertiary)]" id="proto-metric-label">Drive Throughput</p>
+      <p class="mt-1 font-mono text-lg font-bold text-[var(--color-accent)]">
+        <span id="proto-metric-value">200</span>
+        <span id="proto-metric-unit" class="text-sm font-normal"> MB/s</span>
+      </p>
+      <p id="proto-metric-sub" class="text-[9px] text-[var(--color-text-tertiary)]">Sequential read</p>
+    </div>
+
+    <!-- Stage dots -->
+    <div class="mt-3 flex justify-center gap-1">
+      <div class="proto-dot active" data-stage="1"></div>
+      <div class="proto-dot" data-stage="2"></div>
+      <div class="proto-dot" data-stage="3"></div>
+      <div class="proto-dot" data-stage="4"></div>
+      <div class="proto-dot" data-stage="5"></div>
+      <div class="proto-dot" data-stage="6"></div>
+      <div class="proto-dot" data-stage="7"></div>
+      <div class="proto-dot" data-stage="8"></div>
+      <div class="proto-dot" data-stage="9"></div>
+      <div class="proto-dot" data-stage="10"></div>
+    </div>
+  </div>
+</aside>
+
+<style>
+  .proto-stage {
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
+  }
+
+  .proto-stage.active {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+  }
+
+  .proto-stage.past {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+
+  .proto-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--color-border);
+    transition: background 0.3s, transform 0.3s;
+  }
+
+  .proto-dot.active {
+    background: var(--color-accent);
+    transform: scale(1.5);
+  }
+
+  .proto-dot.past {
+    background: var(--color-accent);
+    opacity: 0.4;
+  }
+
+  .data-flow-up {
+    animation: flowUp 1.5s ease-in-out infinite;
+  }
+
+  @keyframes flowUp {
+    0% { opacity: 0; transform: translateY(8px); }
+    50% { opacity: 1; }
+    100% { opacity: 0; transform: translateY(-8px); }
+  }
+
+  .spin-hint {
+    animation: spinHint 2s ease-in-out infinite;
+  }
+
+  @keyframes spinHint {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.8; }
+  }
+
+  .cmx-pulse {
+    animation: cmxPulse 2s ease-in-out infinite;
+  }
+
+  @keyframes cmxPulse {
+    0%, 100% { opacity: 0; }
+    50% { opacity: 0.5; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .proto-stage { transition: none; }
+    .proto-dot { transition: none; }
+    .data-flow-up, .spin-hint, .cmx-pulse { animation: none; }
+  }
+</style>
+
+<script>
+  function initProtocolEvolution() {
+    const prose = document.querySelector(".prose");
+    if (!prose) return;
+
+    const allHeadings = prose.querySelectorAll("h2, h3");
+    if (allHeadings.length === 0) return;
+
+    const stageMap: { el: Element; stage: number }[] = [];
+
+    allHeadings.forEach((h) => {
+      const text = (h.textContent || "").toLowerCase();
+      let stage = -1;
+
+      if (text.includes("what is") && text.includes("storage protocol")) stage = 1;
+      else if (text.includes("hard disk")) stage = 1;
+      else if (text.includes("solid state") || text.includes("ssd") && text.includes("sata")) stage = 2;
+      else if (text.includes("nvme ssd") || text.includes("game changer")) stage = 3;
+      else if (text.includes("layer 1")) stage = 1;
+      else if (text.includes("direct-attached") || text.includes("layer 2")) stage = 4;
+      else if (text.includes("network-attached") || text.includes("nas") && text.includes("nfs")) stage = 5;
+      else if (text.includes("block storage") || text.includes("layer 3")) stage = 6;
+      else if (text.includes("rise of the san")) stage = 6;
+      else if (text.includes("san drama")) stage = 6;
+      else if (text.includes("nvme over") || text.includes("san reborn") || text.includes("layer 4")) stage = 7;
+      else if (text.includes("nvme-of exists")) stage = 7;
+      else if (text.includes("transport option")) stage = 7;
+      else if (text.includes("promise vs")) stage = 7;
+      else if (text.includes("object storage") && (text.includes("layer 5") || text.includes("quiet"))) stage = 8;
+      else if (text.includes("what object storage")) stage = 8;
+      else if (text.includes("origin story")) stage = 8;
+      else if (text.includes("slow") && text.includes("reputation")) stage = 8;
+      else if (text.includes("transformation")) stage = 8;
+      else if (text.includes("why object storage")) stage = 8;
+      else if (text.includes("data lake") || text.includes("layer 6")) stage = 9;
+      else if (text.includes("lakehouse")) stage = 9;
+      else if (text.includes("nvidia factor")) stage = 10;
+      else if (text.includes("current state")) stage = 10;
+      else if (text.includes("shift") && text.includes("object storage is coming")) stage = 10;
+      else if (text.includes("context memory") || text.includes("icms") || text.includes("cmx")) stage = 10;
+      else if (text.includes("putting it all")) stage = 10;
+      else if (text.includes("trajectory")) stage = 10;
+
+      if (stage > 0) {
+        stageMap.push({ el: h, stage });
+      }
+    });
+
+    if (stageMap.length === 0) return;
+
+    let currentStage = 1;
+
+    const stages = document.querySelectorAll(".proto-stage");
+    const dots = document.querySelectorAll(".proto-dot");
+    const metricLabel = document.getElementById("proto-metric-label");
+    const metricValue = document.getElementById("proto-metric-value");
+    const metricUnit = document.getElementById("proto-metric-unit");
+    const metricSub = document.getElementById("proto-metric-sub");
+
+    const metricData = [
+      { label: "Drive Throughput", value: "200", unit: " MB/s", sub: "HDD sequential read" },
+      { label: "Drive Throughput", value: "600", unit: " MB/s", sub: "SATA ceiling" },
+      { label: "Drive Throughput", value: "14", unit: " GB/s", sub: "PCIe Gen5 x4" },
+      { label: "Aggregate BW", value: "168", unit: " GB/s", sub: "24x NVMe DAS" },
+      { label: "Access Latency", value: "~1", unit: " ms", sub: "NFS over Ethernet" },
+      { label: "Access Latency", value: "<1", unit: " ms", sub: "FC SAN block I/O" },
+      { label: "Added Latency", value: "5-80", unit: " us", sub: "RDMA to TCP range" },
+      { label: "Durability", value: "11", unit: " nines", sub: "99.999999999%" },
+      { label: "Query Speedup", value: "3x", unit: "", sub: "Iceberg vs self-managed" },
+      { label: "Inference Boost", value: "5x", unit: "", sub: "tokens/sec with CMX" },
+    ];
+
+    function setStage(stage: number) {
+      if (stage === currentStage) return;
+      currentStage = stage;
+
+      stages.forEach((s, i) => {
+        const stageNum = i + 1;
+        s.classList.remove("active", "past");
+        if (stageNum === stage) s.classList.add("active");
+        else if (stageNum < stage) s.classList.add("past");
+      });
+
+      dots.forEach((d, i) => {
+        const dotStage = i + 1;
+        d.classList.remove("active", "past");
+        if (dotStage === stage) d.classList.add("active");
+        else if (dotStage < stage) d.classList.add("past");
+      });
+
+      const data = metricData[stage - 1];
+      if (data && metricLabel && metricValue && metricUnit && metricSub) {
+        metricLabel.textContent = data.label;
+        metricValue.textContent = data.value;
+        metricUnit.textContent = data.unit;
+        metricSub.textContent = data.sub;
+      }
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const match = stageMap.find((s) => s.el === entry.target);
+          if (match) setStage(match.stage);
+        }
+      });
+    }, { rootMargin: "-15% 0px -75% 0px" });
+
+    stageMap.forEach(({ el }) => observer.observe(el));
+    setStage(1);
+  }
+
+  initProtocolEvolution();
+</script>

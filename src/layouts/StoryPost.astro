@@ -32,6 +32,7 @@ const { title, date, description, readTime, tags = [], image, lastUpdated } = As
           year: "numeric",
           month: "long",
           day: "numeric",
+          timeZone: "UTC",
         })}
       </time>
       {readTime && <span>&middot; {readTime}</span>}
@@ -43,6 +44,7 @@ const { title, date, description, readTime, tags = [], image, lastUpdated } = As
             year: "numeric",
             month: "long",
             day: "numeric",
+            timeZone: "UTC",
           })}
         </time>
       </p>

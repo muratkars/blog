@@ -1,0 +1,508 @@
+---
+---
+
+<aside class="posix-evolution hidden lg:block">
+  <div class="sticky top-24">
+    <p class="mb-3 text-[10px] font-semibold uppercase tracking-widest text-[var(--color-text-tertiary)]">
+      POSIX vs Object Storage
+    </p>
+
+    <div class="svg-container">
+      <svg viewBox="0 0 200 230" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full">
+
+        <!-- Stage 1: POSIX 1988 - Clean, simple, working -->
+        <g id="posix-stage-1" class="posix-stage active">
+          <!-- Terminal -->
+          <rect x="40" y="20" width="120" height="85" rx="6" stroke="var(--color-text-tertiary)" stroke-width="1.5" fill="var(--color-surface-alt)" />
+          <rect x="40" y="20" width="120" height="14" rx="6" fill="var(--color-border)" />
+          <!-- Window buttons -->
+          <circle cx="52" cy="27" r="3" fill="#ff5f57" />
+          <circle cx="62" cy="27" r="3" fill="#febc2e" />
+          <circle cx="72" cy="27" r="3" fill="#28c840" />
+          <!-- Terminal text -->
+          <text x="50" y="48" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)">$ ls /home/user/</text>
+          <text x="50" y="58" fill="var(--color-text-tertiary)" font-size="6" font-family="var(--font-mono)">docs/  src/  data/</text>
+          <text x="50" y="68" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)">$ cat data/file.txt</text>
+          <text x="50" y="78" fill="var(--color-text-tertiary)" font-size="6" font-family="var(--font-mono)">Hello, World!</text>
+          <text x="50" y="88" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)">$ _</text>
+          <!-- Local disk -->
+          <rect x="75" y="115" width="50" height="22" rx="4" stroke="var(--color-text-tertiary)" stroke-width="1" fill="var(--color-surface-alt)" />
+          <text x="100" y="130" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="6" font-family="var(--font-mono)">LOCAL DISK</text>
+          <!-- Direct connection -->
+          <line x1="100" y1="105" x2="100" y2="115" stroke="var(--color-text-tertiary)" stroke-width="1.5" />
+          <!-- Checkmark - it works! -->
+          <circle cx="100" cy="155" r="10" fill="var(--color-accent)" opacity="0.1" stroke="var(--color-accent)" stroke-width="1" />
+          <polyline points="94,155 98,159 106,151" stroke="var(--color-accent)" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+
+          <text x="100" y="180" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="10" font-family="var(--font-sans)">POSIX (1988)</text>
+          <text x="100" y="195" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">One machine. It just works.</text>
+        </g>
+
+        <!-- Stage 2: Metadata Wall - MDS bottleneck -->
+        <g id="posix-stage-2" class="posix-stage">
+          <!-- MDS server (stressed) -->
+          <rect x="65" y="15" width="70" height="28" rx="4" stroke="#e74c3c" stroke-width="1.5" fill="var(--color-surface-alt)" />
+          <text x="100" y="27" text-anchor="middle" fill="#e74c3c" font-size="7" font-family="var(--font-mono)" font-weight="bold">MDS</text>
+          <text x="100" y="37" text-anchor="middle" fill="#e74c3c" font-size="5" font-family="var(--font-mono)">BOTTLENECK</text>
+          <!-- Stress indicator -->
+          <rect x="65" y="15" width="70" height="28" rx="4" fill="none" stroke="#e74c3c" stroke-width="1" class="stress-pulse" />
+          <!-- Incoming metadata requests (overwhelming) -->
+          <line x1="30" y1="55" x2="72" y2="35" stroke="#e74c3c" stroke-width="0.75" opacity="0.5" />
+          <line x1="40" y1="65" x2="72" y2="38" stroke="#e74c3c" stroke-width="0.75" opacity="0.6" />
+          <line x1="35" y1="75" x2="72" y2="40" stroke="#e74c3c" stroke-width="0.75" opacity="0.4" />
+          <line x1="170" y1="55" x2="128" y2="35" stroke="#e74c3c" stroke-width="0.75" opacity="0.5" />
+          <line x1="160" y1="65" x2="128" y2="38" stroke="#e74c3c" stroke-width="0.75" opacity="0.6" />
+          <line x1="165" y1="75" x2="128" y2="40" stroke="#e74c3c" stroke-width="0.75" opacity="0.4" />
+          <!-- stat() calls -->
+          <text x="25" y="52" fill="#e74c3c" font-size="5" font-family="var(--font-mono)">stat()</text>
+          <text x="20" y="62" fill="#e74c3c" font-size="5" font-family="var(--font-mono)">open()</text>
+          <text x="28" y="72" fill="#e74c3c" font-size="5" font-family="var(--font-mono)">readdir()</text>
+          <text x="148" y="52" fill="#e74c3c" font-size="5" font-family="var(--font-mono)">stat()</text>
+          <text x="155" y="62" fill="#e74c3c" font-size="5" font-family="var(--font-mono)">stat()</text>
+          <text x="150" y="72" fill="#e74c3c" font-size="5" font-family="var(--font-mono)">open()</text>
+          <!-- Directory tree (deep, slow) -->
+          <text x="100" y="65" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="6" font-family="var(--font-mono)">/a/b/c/d/e/f/g/file</text>
+          <text x="100" y="78" text-anchor="middle" fill="#e74c3c" font-size="6" font-family="var(--font-mono)">7 inode lookups</text>
+          <!-- VS: Object storage flat -->
+          <line x1="30" y1="95" x2="170" y2="95" stroke="var(--color-border)" stroke-width="0.5" />
+          <text x="100" y="110" text-anchor="middle" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)">key = "a/b/c/d/e/f/g/file"</text>
+          <text x="100" y="123" text-anchor="middle" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)">hash(key) → node</text>
+          <text x="100" y="138" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)">1 lookup. No MDS.</text>
+
+          <text x="100" y="170" text-anchor="middle" fill="#e74c3c" font-size="10" font-family="var(--font-sans)">The Metadata Wall</text>
+          <text x="100" y="185" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">MDS can't scale to billions of files</text>
+        </g>
+
+        <!-- Stage 3: Statefulness Tax -->
+        <g id="posix-stage-3" class="posix-stage">
+          <!-- File descriptor table (overflowing) -->
+          <rect x="30" y="18" width="140" height="75" rx="4" stroke="#e74c3c" stroke-width="1" fill="var(--color-surface-alt)" />
+          <text x="100" y="30" text-anchor="middle" fill="#e74c3c" font-size="7" font-family="var(--font-mono)" font-weight="bold">KERNEL STATE</text>
+          <!-- FD rows -->
+          <line x1="30" y1="35" x2="170" y2="35" stroke="var(--color-border)" stroke-width="0.5" />
+          <text x="38" y="45" fill="var(--color-text-tertiary)" font-size="5.5" font-family="var(--font-mono)">fd:3  pos:4096  /data/a.txt</text>
+          <text x="38" y="54" fill="var(--color-text-tertiary)" font-size="5.5" font-family="var(--font-mono)">fd:4  pos:0     /data/b.txt</text>
+          <text x="38" y="63" fill="var(--color-text-tertiary)" font-size="5.5" font-family="var(--font-mono)">fd:5  pos:8192  /log/c.txt</text>
+          <text x="38" y="72" fill="var(--color-text-tertiary)" font-size="5.5" font-family="var(--font-mono)">fd:6  pos:512   /tmp/d.dat</text>
+          <text x="38" y="81" fill="#e74c3c" font-size="5.5" font-family="var(--font-mono)">... x 100,000 per node</text>
+          <text x="38" y="90" fill="#e74c3c" font-size="5.5" font-family="var(--font-mono)">... x 1,000 nodes</text>
+          <!-- Arrow: crash = orphaned state -->
+          <text x="100" y="110" text-anchor="middle" fill="#e74c3c" font-size="7" font-family="var(--font-mono)">Client crash = leaked state</text>
+          <!-- VS: Stateless -->
+          <line x1="30" y1="120" x2="170" y2="120" stroke="var(--color-border)" stroke-width="0.5" />
+          <rect x="45" y="128" width="110" height="22" rx="4" fill="var(--color-accent)" opacity="0.08" stroke="var(--color-accent)" stroke-width="1" />
+          <text x="100" y="142" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)">GET /key → response. Done.</text>
+          <text x="100" y="160" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)">No open. No close. No state.</text>
+
+          <text x="100" y="185" text-anchor="middle" fill="#e74c3c" font-size="10" font-family="var(--font-sans)">The Statefulness Tax</text>
+          <text x="100" y="200" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">100M file descriptors to track</text>
+        </g>
+
+        <!-- Stage 4: Locking Nightmare -->
+        <g id="posix-stage-4" class="posix-stage">
+          <!-- Two nodes fighting over a lock -->
+          <rect x="20" y="25" width="55" height="30" rx="4" stroke="var(--color-text-tertiary)" stroke-width="1" fill="var(--color-surface-alt)" />
+          <text x="47" y="44" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="7" font-family="var(--font-mono)">Node A</text>
+          <rect x="125" y="25" width="55" height="30" rx="4" stroke="var(--color-text-tertiary)" stroke-width="1" fill="var(--color-surface-alt)" />
+          <text x="152" y="44" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="7" font-family="var(--font-mono)">Node B</text>
+          <!-- Lock icon (conflicting) -->
+          <rect x="82" y="30" width="36" height="24" rx="4" stroke="#e74c3c" stroke-width="1.5" fill="var(--color-surface-alt)" />
+          <text x="100" y="46" text-anchor="middle" fill="#e74c3c" font-size="8" font-family="var(--font-mono)">LOCK</text>
+          <!-- Conflict arrows -->
+          <line x1="75" y1="40" x2="82" y2="40" stroke="#e74c3c" stroke-width="1.5" />
+          <line x1="125" y1="40" x2="118" y2="40" stroke="#e74c3c" stroke-width="1.5" />
+          <!-- X marks -->
+          <line x1="88" y1="60" x2="95" y2="67" stroke="#e74c3c" stroke-width="1.5" />
+          <line x1="95" y1="60" x2="88" y2="67" stroke="#e74c3c" stroke-width="1.5" />
+          <line x1="105" y1="60" x2="112" y2="67" stroke="#e74c3c" stroke-width="1.5" />
+          <line x1="112" y1="60" x2="105" y2="67" stroke="#e74c3c" stroke-width="1.5" />
+          <!-- Broken protocols list -->
+          <text x="100" y="82" text-anchor="middle" fill="#e74c3c" font-size="6" font-family="var(--font-mono)">flock() fails on NFS</text>
+          <text x="100" y="93" text-anchor="middle" fill="#e74c3c" font-size="6" font-family="var(--font-mono)">fcntl() fails on SMB</text>
+          <text x="100" y="104" text-anchor="middle" fill="#e74c3c" font-size="6" font-family="var(--font-mono)">No reliable distributed lock</text>
+          <!-- VS -->
+          <line x1="30" y1="115" x2="170" y2="115" stroke="var(--color-border)" stroke-width="0.5" />
+          <rect x="40" y="122" width="120" height="28" rx="4" fill="var(--color-accent)" opacity="0.08" stroke="var(--color-accent)" stroke-width="1" />
+          <text x="100" y="136" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)">Objects are immutable.</text>
+          <text x="100" y="147" text-anchor="middle" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)">No locks needed. ETags + If-Match.</text>
+
+          <text x="100" y="175" text-anchor="middle" fill="#e74c3c" font-size="10" font-family="var(--font-sans)">The Locking Nightmare</text>
+          <text x="100" y="190" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">No POSIX lock works everywhere</text>
+        </g>
+
+        <!-- Stage 5: Consistency + Hierarchy + Syscalls (combined "sins") -->
+        <g id="posix-stage-5" class="posix-stage">
+          <!-- Three broken pillars -->
+          <!-- Pillar 1: Consistency -->
+          <rect x="15" y="25" width="50" height="70" rx="3" stroke="#e74c3c" stroke-width="1" fill="var(--color-surface-alt)" />
+          <text x="40" y="40" text-anchor="middle" fill="#e74c3c" font-size="6" font-family="var(--font-mono)" font-weight="bold">SYNC</text>
+          <!-- Expensive sync arrows -->
+          <line x1="25" y1="50" x2="55" y2="50" stroke="#e74c3c" stroke-width="0.5" />
+          <line x1="55" y1="55" x2="25" y2="55" stroke="#e74c3c" stroke-width="0.5" />
+          <line x1="25" y1="60" x2="55" y2="60" stroke="#e74c3c" stroke-width="0.5" />
+          <line x1="55" y1="65" x2="25" y2="65" stroke="#e74c3c" stroke-width="0.5" />
+          <line x1="25" y1="70" x2="55" y2="70" stroke="#e74c3c" stroke-width="0.5" />
+          <line x1="55" y1="75" x2="25" y2="75" stroke="#e74c3c" stroke-width="0.5" />
+          <line x1="25" y1="80" x2="55" y2="80" stroke="#e74c3c" stroke-width="0.5" />
+          <text x="40" y="92" text-anchor="middle" fill="#e74c3c" font-size="5" font-family="var(--font-mono)">nobody</text>
+          <text x="40" y="99" text-anchor="middle" fill="#e74c3c" font-size="5" font-family="var(--font-mono)">needs this</text>
+
+          <!-- Pillar 2: Hierarchy -->
+          <rect x="75" y="25" width="50" height="70" rx="3" stroke="#e74c3c" stroke-width="1" fill="var(--color-surface-alt)" />
+          <text x="100" y="38" text-anchor="middle" fill="#e74c3c" font-size="6" font-family="var(--font-mono)" font-weight="bold">TREE</text>
+          <!-- Directory tree cracking -->
+          <line x1="100" y1="45" x2="100" y2="55" stroke="var(--color-text-tertiary)" stroke-width="0.75" />
+          <line x1="100" y1="55" x2="85" y2="65" stroke="var(--color-text-tertiary)" stroke-width="0.75" />
+          <line x1="100" y1="55" x2="115" y2="65" stroke="var(--color-text-tertiary)" stroke-width="0.75" />
+          <line x1="85" y1="65" x2="80" y2="75" stroke="var(--color-text-tertiary)" stroke-width="0.75" />
+          <line x1="85" y1="65" x2="90" y2="75" stroke="var(--color-text-tertiary)" stroke-width="0.75" />
+          <line x1="115" y1="65" x2="110" y2="75" stroke="var(--color-text-tertiary)" stroke-width="0.75" />
+          <line x1="115" y1="65" x2="120" y2="75" stroke="var(--color-text-tertiary)" stroke-width="0.75" />
+          <!-- Crack -->
+          <line x1="93" y1="50" x2="107" y2="72" stroke="#e74c3c" stroke-width="1.5" stroke-dasharray="2 1" />
+          <text x="100" y="92" text-anchor="middle" fill="#e74c3c" font-size="5" font-family="var(--font-mono)">wrong</text>
+          <text x="100" y="99" text-anchor="middle" fill="#e74c3c" font-size="5" font-family="var(--font-mono)">model</text>
+
+          <!-- Pillar 3: Syscalls -->
+          <rect x="135" y="25" width="50" height="70" rx="3" stroke="#e74c3c" stroke-width="1" fill="var(--color-surface-alt)" />
+          <text x="160" y="38" text-anchor="middle" fill="#e74c3c" font-size="5.5" font-family="var(--font-mono)" font-weight="bold">SYSCALL</text>
+          <!-- User/kernel boundary -->
+          <line x1="140" y1="55" x2="180" y2="55" stroke="#e74c3c" stroke-width="1" stroke-dasharray="2 2" />
+          <text x="160" y="50" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="4.5" font-family="var(--font-mono)">user</text>
+          <text x="160" y="63" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="4.5" font-family="var(--font-mono)">kernel</text>
+          <!-- Bounce arrows -->
+          <line x1="145" y1="48" x2="145" y2="62" stroke="#e74c3c" stroke-width="0.5" />
+          <line x1="152" y1="62" x2="152" y2="48" stroke="#e74c3c" stroke-width="0.5" />
+          <line x1="159" y1="48" x2="159" y2="62" stroke="#e74c3c" stroke-width="0.5" />
+          <line x1="166" y1="62" x2="166" y2="48" stroke="#e74c3c" stroke-width="0.5" />
+          <line x1="173" y1="48" x2="173" y2="62" stroke="#e74c3c" stroke-width="0.5" />
+          <text x="160" y="78" text-anchor="middle" fill="#e74c3c" font-size="5" font-family="var(--font-mono)">4+ calls</text>
+          <text x="160" y="85" text-anchor="middle" fill="#e74c3c" font-size="5" font-family="var(--font-mono)">per file</text>
+          <text x="160" y="99" text-anchor="middle" fill="#e74c3c" font-size="5" font-family="var(--font-mono)">millions</text>
+
+          <!-- Bottom: Object storage alternative -->
+          <line x1="15" y1="110" x2="185" y2="110" stroke="var(--color-border)" stroke-width="0.5" />
+          <rect x="30" y="118" width="140" height="22" rx="4" fill="var(--color-accent)" opacity="0.08" stroke="var(--color-accent)" stroke-width="1" />
+          <text x="100" y="132" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)">1 HTTP request. No kernel state.</text>
+
+          <text x="100" y="160" text-anchor="middle" fill="#e74c3c" font-size="10" font-family="var(--font-sans)">Sins 4, 5, 6, 7</text>
+          <text x="100" y="175" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">Consistency, hierarchy, syscalls, perms</text>
+        </g>
+
+        <!-- Stage 6: Gateway Trap - Bridges that fail -->
+        <g id="posix-stage-6" class="posix-stage">
+          <!-- Left bank: POSIX world -->
+          <rect x="10" y="60" width="55" height="55" rx="4" stroke="var(--color-text-tertiary)" stroke-width="1" fill="var(--color-surface-alt)" />
+          <text x="37" y="78" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="7" font-family="var(--font-mono)">POSIX</text>
+          <text x="37" y="90" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="6" font-family="var(--font-mono)">open()</text>
+          <text x="37" y="100" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="6" font-family="var(--font-mono)">read()</text>
+          <text x="37" y="110" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="6" font-family="var(--font-mono)">stat()</text>
+
+          <!-- Right bank: Object storage -->
+          <rect x="135" y="60" width="55" height="55" rx="4" stroke="var(--color-accent)" stroke-width="1" fill="var(--color-surface-alt)" />
+          <text x="162" y="78" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)">S3</text>
+          <text x="162" y="90" text-anchor="middle" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)">PUT</text>
+          <text x="162" y="100" text-anchor="middle" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)">GET</text>
+          <text x="162" y="110" text-anchor="middle" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)">LIST</text>
+
+          <!-- Broken bridges -->
+          <!-- S3FS bridge -->
+          <line x1="65" y1="70" x2="135" y2="70" stroke="#e74c3c" stroke-width="1" stroke-dasharray="4 3" />
+          <text x="100" y="66" text-anchor="middle" fill="#e74c3c" font-size="5.5" font-family="var(--font-mono)">S3FS-FUSE</text>
+          <line x1="95" y1="63" x2="105" y2="73" stroke="#e74c3c" stroke-width="1.5" />
+          <line x1="105" y1="63" x2="95" y2="73" stroke="#e74c3c" stroke-width="1.5" />
+
+          <!-- JuiceFS bridge -->
+          <line x1="65" y1="88" x2="135" y2="88" stroke="#e74c3c" stroke-width="1" stroke-dasharray="4 3" />
+          <text x="100" y="84" text-anchor="middle" fill="#e74c3c" font-size="5.5" font-family="var(--font-mono)">JuiceFS</text>
+          <line x1="95" y1="81" x2="105" y2="91" stroke="#e74c3c" stroke-width="1.5" />
+          <line x1="105" y1="81" x2="95" y2="91" stroke="#e74c3c" stroke-width="1.5" />
+
+          <!-- Alluxio bridge -->
+          <line x1="65" y1="106" x2="135" y2="106" stroke="#e74c3c" stroke-width="1" stroke-dasharray="4 3" />
+          <text x="100" y="102" text-anchor="middle" fill="#e74c3c" font-size="5.5" font-family="var(--font-mono)">Alluxio</text>
+          <line x1="95" y1="99" x2="105" y2="109" stroke="#e74c3c" stroke-width="1.5" />
+          <line x1="105" y1="99" x2="95" y2="109" stroke="#e74c3c" stroke-width="1.5" />
+
+          <!-- Latency penalties -->
+          <text x="100" y="130" text-anchor="middle" fill="#e74c3c" font-size="7" font-family="var(--font-mono)">10-100x penalty</text>
+
+          <!-- Stop crossing the river -->
+          <text x="100" y="155" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)" font-weight="bold">Stop crossing the river.</text>
+
+          <text x="100" y="180" text-anchor="middle" fill="#e74c3c" font-size="10" font-family="var(--font-sans)">The Gateway Trap</text>
+          <text x="100" y="195" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">Every bridge is a bottleneck</text>
+        </g>
+
+        <!-- Stage 7: Quantum - Not replacing, breaking security -->
+        <g id="posix-stage-7" class="posix-stage">
+          <!-- Quantum computer icon -->
+          <circle cx="100" cy="40" r="25" stroke="var(--color-accent)" stroke-width="1" fill="var(--color-accent)" fill-opacity="0.05" />
+          <circle cx="100" cy="40" r="15" stroke="var(--color-accent)" stroke-width="0.75" fill="none" stroke-dasharray="3 2" class="qubit-orbit" />
+          <circle cx="100" cy="40" r="4" fill="var(--color-accent)" opacity="0.6" />
+          <!-- Qubit labels -->
+          <circle cx="115" cy="40" r="2.5" fill="var(--color-accent)" opacity="0.4" class="qubit-dot" />
+          <circle cx="85" cy="40" r="2.5" fill="var(--color-accent)" opacity="0.4" class="qubit-dot" style="animation-delay: 0.5s" />
+          <!-- What quantum breaks -->
+          <line x1="100" y1="70" x2="100" y2="82" stroke="#e74c3c" stroke-width="1" />
+          <text x="100" y="78" text-anchor="middle" fill="#e74c3c" font-size="8" font-family="var(--font-mono)">breaks</text>
+          <!-- Broken algorithms -->
+          <rect x="25" y="88" width="40" height="16" rx="3" fill="none" stroke="#e74c3c" stroke-width="1" />
+          <text x="45" y="99" text-anchor="middle" fill="#e74c3c" font-size="6.5" font-family="var(--font-mono)">RSA</text>
+          <rect x="72" y="88" width="56" height="16" rx="3" fill="none" stroke="#e74c3c" stroke-width="1" />
+          <text x="100" y="99" text-anchor="middle" fill="#e74c3c" font-size="6.5" font-family="var(--font-mono)">ECDSA</text>
+          <rect x="135" y="88" width="40" height="16" rx="3" fill="none" stroke="#e74c3c" stroke-width="1" />
+          <text x="155" y="99" text-anchor="middle" fill="#e74c3c" font-size="6.5" font-family="var(--font-mono)">DSA</text>
+          <!-- Arrow to PQC -->
+          <line x1="100" y1="110" x2="100" y2="122" stroke="var(--color-accent)" stroke-width="1" />
+          <text x="100" y="118" text-anchor="middle" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)">migrate to</text>
+          <!-- PQC algorithms -->
+          <rect x="20" y="126" width="48" height="16" rx="3" fill="var(--color-accent)" opacity="0.1" stroke="var(--color-accent)" stroke-width="1" />
+          <text x="44" y="137" text-anchor="middle" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)">ML-KEM</text>
+          <rect x="74" y="126" width="52" height="16" rx="3" fill="var(--color-accent)" opacity="0.1" stroke="var(--color-accent)" stroke-width="1" />
+          <text x="100" y="137" text-anchor="middle" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)">ML-DSA</text>
+          <rect x="132" y="126" width="48" height="16" rx="3" fill="var(--color-accent)" opacity="0.1" stroke="var(--color-accent)" stroke-width="1" />
+          <text x="156" y="137" text-anchor="middle" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)">SLH-DSA</text>
+
+          <text x="100" y="165" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="10" font-family="var(--font-sans)">Quantum Impact</text>
+          <text x="100" y="180" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">Breaks security, not storage itself</text>
+        </g>
+
+        <!-- Stage 8: The Way Forward - Clean S3, no gateway -->
+        <g id="posix-stage-8" class="posix-stage">
+          <!-- Clean S3 endpoint -->
+          <circle cx="100" cy="50" r="35" stroke="var(--color-accent)" stroke-width="1.5" fill="var(--color-accent)" fill-opacity="0.05" />
+          <text x="100" y="42" text-anchor="middle" fill="var(--color-accent)" font-size="10" font-family="var(--font-mono)" font-weight="bold">S3 API</text>
+          <text x="100" y="55" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)">Single endpoint</text>
+          <!-- Features radiating out -->
+          <!-- Top: Tables -->
+          <line x1="100" y1="15" x2="100" y2="5" stroke="var(--color-accent)" stroke-width="0.75" />
+          <text x="100" y="3" text-anchor="middle" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)">Iceberg</text>
+          <!-- Top-right: Vectors -->
+          <line x1="128" y1="25" x2="145" y2="12" stroke="var(--color-accent)" stroke-width="0.75" />
+          <text x="158" y="15" text-anchor="middle" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)">Vectors</text>
+          <!-- Right: PQC -->
+          <line x1="135" y1="50" x2="150" y2="50" stroke="var(--color-accent)" stroke-width="0.75" />
+          <text x="170" y="53" text-anchor="middle" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)">PQC</text>
+          <!-- Bottom-right: RDMA -->
+          <line x1="128" y1="75" x2="145" y2="88" stroke="var(--color-accent)" stroke-width="0.75" />
+          <text x="160" y="92" text-anchor="middle" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)">NVMe-oF</text>
+          <!-- Left: No MDS -->
+          <line x1="65" y1="50" x2="50" y2="50" stroke="var(--color-accent)" stroke-width="0.75" />
+          <text x="35" y="53" text-anchor="middle" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)">No MDS</text>
+          <!-- Bottom-left -->
+          <line x1="72" y1="75" x2="55" y2="88" stroke="var(--color-accent)" stroke-width="0.75" />
+          <text x="40" y="92" text-anchor="middle" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)">Stateless</text>
+
+          <!-- Crossed out items below -->
+          <text x="100" y="115" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="7" font-family="var(--font-mono)" text-decoration="line-through">POSIX shim</text>
+          <text x="100" y="128" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="7" font-family="var(--font-mono)" text-decoration="line-through">FUSE mount</text>
+          <text x="100" y="141" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="7" font-family="var(--font-mono)" text-decoration="line-through">NFS gateway</text>
+          <text x="100" y="154" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="7" font-family="var(--font-mono)" text-decoration="line-through">Metadata server</text>
+
+          <text x="100" y="180" text-anchor="middle" fill="var(--color-accent)" font-size="10" font-family="var(--font-sans)" font-weight="600">Native Object. No Apologies.</text>
+          <text x="100" y="195" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">The river has moved.</text>
+        </g>
+      </svg>
+    </div>
+
+    <!-- Metric panel -->
+    <div class="mt-4 rounded-lg bg-[var(--color-surface-alt)] px-3 py-2.5 text-center">
+      <p class="text-[9px] uppercase tracking-widest text-[var(--color-text-tertiary)]" id="posix-metric-label">Year Designed</p>
+      <p class="mt-1 font-mono text-lg font-bold text-[var(--color-accent)]">
+        <span id="posix-metric-value">1988</span>
+        <span id="posix-metric-unit" class="text-sm font-normal"></span>
+      </p>
+      <p id="posix-metric-sub" class="text-[9px] text-[var(--color-text-tertiary)]">IEEE Std 1003.1</p>
+    </div>
+
+    <!-- Stage dots -->
+    <div class="mt-3 flex justify-center gap-1.5">
+      <div class="posix-dot active" data-stage="1"></div>
+      <div class="posix-dot" data-stage="2"></div>
+      <div class="posix-dot" data-stage="3"></div>
+      <div class="posix-dot" data-stage="4"></div>
+      <div class="posix-dot" data-stage="5"></div>
+      <div class="posix-dot" data-stage="6"></div>
+      <div class="posix-dot" data-stage="7"></div>
+      <div class="posix-dot" data-stage="8"></div>
+    </div>
+  </div>
+</aside>
+
+<style>
+  .posix-stage {
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
+  }
+
+  .posix-stage.active {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+  }
+
+  .posix-stage.past {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+
+  .posix-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-border);
+    transition: background 0.3s, transform 0.3s;
+  }
+
+  .posix-dot.active {
+    background: var(--color-accent);
+    transform: scale(1.4);
+  }
+
+  .posix-dot.past {
+    background: var(--color-accent);
+    opacity: 0.4;
+  }
+
+  .stress-pulse {
+    animation: stressPulse 1s ease-in-out infinite;
+  }
+
+  @keyframes stressPulse {
+    0%, 100% { opacity: 0.2; }
+    50% { opacity: 0.8; }
+  }
+
+  .qubit-orbit {
+    animation: qubitSpin 4s linear infinite;
+    transform-origin: 100px 40px;
+  }
+
+  @keyframes qubitSpin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  .qubit-dot {
+    animation: qubitPulse 1.5s ease-in-out infinite;
+  }
+
+  @keyframes qubitPulse {
+    0%, 100% { opacity: 0.2; r: 2; }
+    50% { opacity: 0.8; r: 3; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .posix-stage { transition: none; }
+    .posix-dot { transition: none; }
+    .stress-pulse, .qubit-orbit, .qubit-dot { animation: none; }
+  }
+</style>
+
+<script>
+  function initPosixEvolution() {
+    const prose = document.querySelector(".prose");
+    if (!prose) return;
+
+    const allHeadings = prose.querySelectorAll("h2, h3");
+    if (allHeadings.length === 0) return;
+
+    const stageMap: { el: Element; stage: number }[] = [];
+
+    allHeadings.forEach((h) => {
+      const text = (h.textContent || "").toLowerCase();
+      let stage = -1;
+
+      if (text.includes("where posix came from")) stage = 1;
+      else if (text.includes("seven sins")) stage = 2;
+      else if (text.includes("metadata wall")) stage = 2;
+      else if (text.includes("statefulness")) stage = 3;
+      else if (text.includes("locking nightmare")) stage = 4;
+      else if (text.includes("consistency trap")) stage = 5;
+      else if (text.includes("hierarchy illusion")) stage = 5;
+      else if (text.includes("syscall overhead")) stage = 5;
+      else if (text.includes("permission model")) stage = 5;
+      else if (text.includes("gateway trap")) stage = 6;
+      else if (text.includes("quantum")) stage = 7;
+      else if (text.includes("quantum storage")) stage = 7;
+      else if (text.includes("actually impacts")) stage = 7;
+      else if (text.includes("way forward")) stage = 8;
+      else if (text.includes("s3 api")) stage = 8;
+      else if (text.includes("data-aware")) stage = 8;
+      else if (text.includes("post-quantum security")) stage = 8;
+      else if (text.includes("no metadata server")) stage = 8;
+      else if (text.includes("conclusion")) stage = 8;
+
+      if (stage > 0) {
+        stageMap.push({ el: h, stage });
+      }
+    });
+
+    if (stageMap.length === 0) return;
+
+    let currentStage = 1;
+
+    const stages = document.querySelectorAll(".posix-stage");
+    const dots = document.querySelectorAll(".posix-dot");
+    const metricLabel = document.getElementById("posix-metric-label");
+    const metricValue = document.getElementById("posix-metric-value");
+    const metricUnit = document.getElementById("posix-metric-unit");
+    const metricSub = document.getElementById("posix-metric-sub");
+
+    const metricData = [
+      { label: "Year Designed", value: "1988", unit: "", sub: "IEEE Std 1003.1" },
+      { label: "MDS Bottleneck", value: "M+", unit: " ops/min", sub: "14M files = MDS meltdown" },
+      { label: "Kernel State", value: "100M", unit: "", sub: "file descriptors across cluster" },
+      { label: "Reliable Locks", value: "0", unit: "", sub: "on network filesystems" },
+      { label: "Wasted Overhead", value: "4+", unit: " syscalls", sub: "per file, millions of files" },
+      { label: "Translation Cost", value: "10-100", unit: "x", sub: "latency penalty vs native" },
+      { label: "CRQC Timeline", value: "2030s", unit: "", sub: "post-quantum migration needed" },
+      { label: "API Calls", value: "1", unit: "", sub: "HTTP request per operation" },
+    ];
+
+    function setStage(stage: number) {
+      if (stage === currentStage) return;
+      currentStage = stage;
+
+      stages.forEach((s, i) => {
+        const stageNum = i + 1;
+        s.classList.remove("active", "past");
+        if (stageNum === stage) s.classList.add("active");
+        else if (stageNum < stage) s.classList.add("past");
+      });
+
+      dots.forEach((d, i) => {
+        const dotStage = i + 1;
+        d.classList.remove("active", "past");
+        if (dotStage === stage) d.classList.add("active");
+        else if (dotStage < stage) d.classList.add("past");
+      });
+
+      const data = metricData[stage - 1];
+      if (data && metricLabel && metricValue && metricUnit && metricSub) {
+        metricLabel.textContent = data.label;
+        metricValue.textContent = data.value;
+        metricUnit.textContent = data.unit;
+        metricSub.textContent = data.sub;
+      }
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const match = stageMap.find((s) => s.el === entry.target);
+          if (match) setStage(match.stage);
+        }
+      });
+    }, { rootMargin: "-15% 0px -75% 0px" });
+
+    stageMap.forEach(({ el }) => observer.observe(el));
+    setStage(1);
+  }
+
+  initPosixEvolution();
+</script>

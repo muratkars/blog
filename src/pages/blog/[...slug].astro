@@ -2,6 +2,9 @@
 import { getCollection, render } from "astro:content";
 import BlogPost from "../../layouts/BlogPost.astro";
 import StoryPost from "../../layouts/StoryPost.astro";
+import StorageEvolution from "../../components/StorageEvolution.astro";
+import ProtocolEvolution from "../../components/ProtocolEvolution.astro";
+import PosixEvolution from "../../components/PosixEvolution.astro";
 
 export async function getStaticPaths() {
   const posts = await getCollection("blog");
@@ -16,6 +19,9 @@ const { Content } = await render(post);
 const { title, date, description, readTime, tags, image, type, lastUpdated } = post.data;
 
 const Layout = type === "story" ? StoryPost : BlogPost;
+const showStorageEvolution = post.id === "storage-is-dead-long-live-data";
+const showProtocolEvolution = post.id === "storage-protocols-ai-era";
+const showPosixEvolution = post.id === "posix-pull-the-plug";
 ---
 
 <Layout
@@ -28,4 +34,13 @@ const Layout = type === "story" ? StoryPost : BlogPost;
   lastUpdated={lastUpdated}
 >
   <Content />
+  {showStorageEvolution && (
+    <StorageEvolution slot="right-sidebar" />
+  )}
+  {showProtocolEvolution && (
+    <ProtocolEvolution slot="right-sidebar" />
+  )}
+  {showPosixEvolution && (
+    <PosixEvolution slot="right-sidebar" />
+  )}
 </Layout>

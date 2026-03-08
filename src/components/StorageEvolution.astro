@@ -1,0 +1,412 @@
+---
+---
+
+<aside class="storage-evolution hidden lg:block">
+  <div class="sticky top-24">
+    <p class="mb-3 text-[10px] font-semibold uppercase tracking-widest text-[var(--color-text-tertiary)]">
+      Storage Evolution
+    </p>
+
+    <div class="svg-container">
+      <svg viewBox="0 0 200 220" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full">
+        <!-- Stage 1: Individual Drives -->
+        <g id="evo-stage-1" class="evo-stage active">
+          <!-- Three hard drives scattered -->
+          <rect x="30" y="50" width="40" height="55" rx="4" stroke="var(--color-text-tertiary)" stroke-width="1.5" fill="var(--color-surface-alt)" transform="rotate(-5 50 77)" />
+          <rect x="35" y="55" width="30" height="8" rx="2" fill="var(--color-border)" transform="rotate(-5 50 59)" />
+          <circle cx="50" cy="90" r="4" stroke="var(--color-text-tertiary)" stroke-width="1" fill="none" transform="rotate(-5 50 90)" />
+
+          <rect x="80" y="40" width="40" height="55" rx="4" stroke="var(--color-text-tertiary)" stroke-width="1.5" fill="var(--color-surface-alt)" />
+          <rect x="85" y="45" width="30" height="8" rx="2" fill="var(--color-border)" />
+          <circle cx="100" cy="80" r="4" stroke="var(--color-text-tertiary)" stroke-width="1" fill="none" />
+
+          <rect x="130" y="55" width="40" height="55" rx="4" stroke="var(--color-text-tertiary)" stroke-width="1.5" fill="var(--color-surface-alt)" transform="rotate(3 150 82)" />
+          <rect x="135" y="60" width="30" height="8" rx="2" fill="var(--color-border)" transform="rotate(3 150 64)" />
+          <circle cx="150" cy="95" r="4" stroke="var(--color-text-tertiary)" stroke-width="1" fill="none" transform="rotate(3 150 95)" />
+
+          <text x="100" y="140" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="10" font-family="var(--font-sans)">Individual Drives</text>
+          <text x="100" y="155" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">DAS / Local Storage</text>
+        </g>
+
+        <!-- Stage 2: RAID Array -->
+        <g id="evo-stage-2" class="evo-stage">
+          <rect x="35" y="35" width="130" height="75" rx="6" stroke="var(--color-text-tertiary)" stroke-width="1.5" fill="none" stroke-dasharray="4 2" />
+          <rect x="45" y="45" width="22" height="50" rx="3" stroke="var(--color-accent)" stroke-width="1.5" fill="var(--color-surface-alt)" />
+          <rect x="72" y="45" width="22" height="50" rx="3" stroke="var(--color-accent)" stroke-width="1.5" fill="var(--color-surface-alt)" />
+          <rect x="99" y="45" width="22" height="50" rx="3" stroke="var(--color-accent)" stroke-width="1.5" fill="var(--color-surface-alt)" />
+          <rect x="126" y="45" width="22" height="50" rx="3" stroke="var(--color-accent)" stroke-width="1.5" fill="var(--color-surface-alt)" />
+          <!-- Parity stripe -->
+          <rect x="126" y="45" width="22" height="50" rx="3" fill="var(--color-accent)" opacity="0.15" />
+          <text x="137" y="73" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)">P</text>
+          <!-- Lines connecting drives -->
+          <line x1="56" y1="100" x2="56" y2="110" stroke="var(--color-border)" stroke-width="1" />
+          <line x1="83" y1="100" x2="83" y2="110" stroke="var(--color-border)" stroke-width="1" />
+          <line x1="110" y1="100" x2="110" y2="110" stroke="var(--color-border)" stroke-width="1" />
+          <line x1="137" y1="100" x2="137" y2="110" stroke="var(--color-border)" stroke-width="1" />
+          <line x1="56" y1="110" x2="137" y2="110" stroke="var(--color-border)" stroke-width="1" />
+
+          <text x="100" y="140" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="10" font-family="var(--font-sans)">RAID Array</text>
+          <text x="100" y="155" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">Redundancy + Speed</text>
+        </g>
+
+        <!-- Stage 3: NAS / NFS -->
+        <g id="evo-stage-3" class="evo-stage">
+          <!-- NAS box -->
+          <rect x="60" y="30" width="80" height="50" rx="6" stroke="var(--color-text-tertiary)" stroke-width="1.5" fill="var(--color-surface-alt)" />
+          <rect x="70" y="40" width="12" height="30" rx="2" fill="var(--color-border)" />
+          <rect x="86" y="40" width="12" height="30" rx="2" fill="var(--color-border)" />
+          <rect x="102" y="40" width="12" height="30" rx="2" fill="var(--color-border)" />
+          <rect x="118" y="40" width="12" height="30" rx="2" fill="var(--color-border)" />
+          <!-- Network lines -->
+          <line x1="100" y1="80" x2="100" y2="100" stroke="var(--color-accent)" stroke-width="1.5" />
+          <circle cx="100" cy="100" r="3" fill="var(--color-accent)" />
+          <!-- Client nodes -->
+          <line x1="100" y1="100" x2="50" y2="120" stroke="var(--color-accent)" stroke-width="1" stroke-dasharray="3 2" />
+          <line x1="100" y1="100" x2="100" y2="125" stroke="var(--color-accent)" stroke-width="1" stroke-dasharray="3 2" />
+          <line x1="100" y1="100" x2="150" y2="120" stroke="var(--color-accent)" stroke-width="1" stroke-dasharray="3 2" />
+          <rect x="40" y="120" width="20" height="14" rx="2" fill="var(--color-surface-alt)" stroke="var(--color-text-tertiary)" stroke-width="1" />
+          <rect x="90" y="125" width="20" height="14" rx="2" fill="var(--color-surface-alt)" stroke="var(--color-text-tertiary)" stroke-width="1" />
+          <rect x="140" y="120" width="20" height="14" rx="2" fill="var(--color-surface-alt)" stroke="var(--color-text-tertiary)" stroke-width="1" />
+
+          <text x="100" y="160" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="10" font-family="var(--font-sans)">Network Storage</text>
+          <text x="100" y="175" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">NAS / NFS / POSIX</text>
+        </g>
+
+        <!-- Stage 4: SAN (FC / iSCSI) -->
+        <g id="evo-stage-4" class="evo-stage">
+          <!-- SAN fabric switch -->
+          <rect x="70" y="65" width="60" height="25" rx="4" stroke="var(--color-accent)" stroke-width="1.5" fill="var(--color-surface-alt)" />
+          <text x="100" y="82" text-anchor="middle" fill="var(--color-accent)" font-size="8" font-family="var(--font-mono)">FC SWITCH</text>
+          <!-- Storage arrays -->
+          <rect x="25" y="110" width="50" height="30" rx="4" stroke="var(--color-text-tertiary)" stroke-width="1.5" fill="var(--color-surface-alt)" />
+          <rect x="125" y="110" width="50" height="30" rx="4" stroke="var(--color-text-tertiary)" stroke-width="1.5" fill="var(--color-surface-alt)" />
+          <text x="50" y="129" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="7" font-family="var(--font-mono)">LUN 0</text>
+          <text x="150" y="129" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="7" font-family="var(--font-mono)">LUN 1</text>
+          <!-- Servers -->
+          <rect x="35" y="20" width="30" height="22" rx="3" fill="var(--color-surface-alt)" stroke="var(--color-text-tertiary)" stroke-width="1" />
+          <rect x="85" y="20" width="30" height="22" rx="3" fill="var(--color-surface-alt)" stroke="var(--color-text-tertiary)" stroke-width="1" />
+          <rect x="135" y="20" width="30" height="22" rx="3" fill="var(--color-surface-alt)" stroke="var(--color-text-tertiary)" stroke-width="1" />
+          <!-- Fabric connections -->
+          <line x1="50" y1="42" x2="85" y2="65" stroke="var(--color-accent)" stroke-width="1" />
+          <line x1="100" y1="42" x2="100" y2="65" stroke="var(--color-accent)" stroke-width="1" />
+          <line x1="150" y1="42" x2="115" y2="65" stroke="var(--color-accent)" stroke-width="1" />
+          <line x1="85" y1="90" x2="50" y2="110" stroke="var(--color-accent)" stroke-width="1" />
+          <line x1="115" y1="90" x2="150" y2="110" stroke="var(--color-accent)" stroke-width="1" />
+
+          <text x="100" y="160" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="10" font-family="var(--font-sans)">Storage Area Network</text>
+          <text x="100" y="175" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">FC / iSCSI / Block</text>
+        </g>
+
+        <!-- Stage 5: Cloud / S3 -->
+        <g id="evo-stage-5" class="evo-stage">
+          <!-- Cloud shape -->
+          <path d="M55,80 Q55,55 80,55 Q85,35 110,40 Q135,30 145,55 Q165,55 165,75 Q165,95 145,95 L55,95 Q35,95 35,80 Q35,65 55,80 Z" stroke="var(--color-accent)" stroke-width="1.5" fill="var(--color-accent)" fill-opacity="0.08" />
+          <!-- Objects inside cloud -->
+          <circle cx="70" cy="72" r="5" fill="var(--color-accent)" opacity="0.3" />
+          <circle cx="90" cy="65" r="6" fill="var(--color-accent)" opacity="0.25" />
+          <circle cx="110" cy="75" r="5" fill="var(--color-accent)" opacity="0.35" />
+          <circle cx="130" cy="68" r="4" fill="var(--color-accent)" opacity="0.3" />
+          <circle cx="85" cy="82" r="4" fill="var(--color-accent)" opacity="0.2" />
+          <circle cx="120" cy="83" r="5" fill="var(--color-accent)" opacity="0.25" />
+          <!-- HTTP arrows -->
+          <text x="100" y="115" text-anchor="middle" fill="var(--color-accent)" font-size="8" font-family="var(--font-mono)">PUT / GET / DELETE</text>
+          <!-- Bucket label -->
+          <text x="100" y="50" text-anchor="middle" fill="var(--color-accent)" font-size="9" font-family="var(--font-mono)" opacity="0.8">s3://bucket</text>
+
+          <text x="100" y="145" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="10" font-family="var(--font-sans)">Object Storage</text>
+          <text x="100" y="160" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">S3 API / Flat Namespace</text>
+        </g>
+
+        <!-- Stage 6: Data Lakehouse / Iceberg -->
+        <g id="evo-stage-6" class="evo-stage">
+          <!-- Cloud base (smaller) -->
+          <path d="M60,100 Q60,85 75,85 Q78,75 95,77 Q108,72 115,82 Q125,82 125,92 Q125,102 115,102 L60,102 Q48,102 48,92 Q48,82 60,100 Z" stroke="var(--color-border)" stroke-width="1" fill="var(--color-surface-alt)" />
+          <!-- Table grid -->
+          <rect x="45" y="25" width="110" height="55" rx="4" stroke="var(--color-accent)" stroke-width="1.5" fill="var(--color-surface-alt)" />
+          <!-- Header row -->
+          <rect x="45" y="25" width="110" height="14" rx="4" fill="var(--color-accent)" opacity="0.15" />
+          <line x1="45" y1="39" x2="155" y2="39" stroke="var(--color-accent)" stroke-width="0.75" />
+          <!-- Columns -->
+          <line x1="82" y1="25" x2="82" y2="80" stroke="var(--color-border)" stroke-width="0.5" />
+          <line x1="118" y1="25" x2="118" y2="80" stroke="var(--color-border)" stroke-width="0.5" />
+          <!-- Column headers -->
+          <text x="63" y="35" text-anchor="middle" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)">id</text>
+          <text x="100" y="35" text-anchor="middle" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)">data</text>
+          <text x="137" y="35" text-anchor="middle" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)">ts</text>
+          <!-- Rows -->
+          <line x1="45" y1="50" x2="155" y2="50" stroke="var(--color-border)" stroke-width="0.5" />
+          <line x1="45" y1="61" x2="155" y2="61" stroke="var(--color-border)" stroke-width="0.5" />
+          <line x1="45" y1="72" x2="155" y2="72" stroke="var(--color-border)" stroke-width="0.5" />
+          <!-- Arrow from table to cloud -->
+          <line x1="100" y1="80" x2="100" y2="85" stroke="var(--color-border)" stroke-width="1" />
+          <text x="100" y="93" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="6" font-family="var(--font-mono)">.parquet</text>
+          <!-- Iceberg logo hint -->
+          <text x="100" y="120" text-anchor="middle" fill="var(--color-accent)" font-size="9" font-family="var(--font-mono)">Apache Iceberg</text>
+
+          <text x="100" y="145" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="10" font-family="var(--font-sans)">Data Lakehouse</text>
+          <text x="100" y="160" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">Tables on Object Storage</text>
+        </g>
+
+        <!-- Stage 7: Vectors -->
+        <g id="evo-stage-7" class="evo-stage">
+          <!-- Axis lines -->
+          <line x1="40" y1="130" x2="40" y2="25" stroke="var(--color-border)" stroke-width="1" />
+          <line x1="40" y1="130" x2="170" y2="130" stroke="var(--color-border)" stroke-width="1" />
+          <text x="38" y="20" text-anchor="end" fill="var(--color-text-tertiary)" font-size="7" font-family="var(--font-mono)">dim₂</text>
+          <text x="175" y="133" text-anchor="start" fill="var(--color-text-tertiary)" font-size="7" font-family="var(--font-mono)">dim₁</text>
+          <!-- Vector points - cluster 1 -->
+          <circle cx="70" cy="50" r="4" fill="var(--color-accent)" opacity="0.7" />
+          <circle cx="80" cy="45" r="3" fill="var(--color-accent)" opacity="0.5" />
+          <circle cx="65" cy="58" r="3.5" fill="var(--color-accent)" opacity="0.6" />
+          <circle cx="78" cy="55" r="2.5" fill="var(--color-accent)" opacity="0.4" />
+          <circle cx="72" cy="42" r="2" fill="var(--color-accent)" opacity="0.5" />
+          <!-- Cluster 1 boundary -->
+          <ellipse cx="73" cy="50" rx="18" ry="14" stroke="var(--color-accent)" stroke-width="0.75" stroke-dasharray="3 2" fill="none" />
+          <!-- Vector points - cluster 2 -->
+          <circle cx="130" cy="90" r="4" fill="#e67e22" opacity="0.7" />
+          <circle cx="140" cy="85" r="3" fill="#e67e22" opacity="0.5" />
+          <circle cx="125" cy="98" r="3.5" fill="#e67e22" opacity="0.6" />
+          <circle cx="138" cy="95" r="2.5" fill="#e67e22" opacity="0.4" />
+          <circle cx="145" cy="92" r="2" fill="#e67e22" opacity="0.5" />
+          <!-- Cluster 2 boundary -->
+          <ellipse cx="135" cy="92" rx="18" ry="14" stroke="#e67e22" stroke-width="0.75" stroke-dasharray="3 2" fill="none" />
+          <!-- Query point -->
+          <circle cx="105" cy="70" r="5" fill="none" stroke="var(--color-accent)" stroke-width="2" />
+          <text x="112" y="68" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)">query</text>
+          <!-- Nearest neighbor lines -->
+          <line x1="105" y1="70" x2="80" y2="55" stroke="var(--color-accent)" stroke-width="0.75" stroke-dasharray="2 2" />
+          <line x1="105" y1="70" x2="130" y2="90" stroke="#e67e22" stroke-width="0.75" stroke-dasharray="2 2" />
+
+          <text x="100" y="155" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="10" font-family="var(--font-sans)">Vector Embeddings</text>
+          <text x="100" y="170" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">Nearest Neighbor Search</text>
+        </g>
+
+        <!-- Stage 8: ICMS / Context Memory Tiers -->
+        <g id="evo-stage-8" class="evo-stage">
+          <!-- Tier bars -->
+          <rect x="30" y="20" width="140" height="22" rx="4" fill="var(--color-accent)" opacity="0.25" stroke="var(--color-accent)" stroke-width="1" />
+          <text x="100" y="34" text-anchor="middle" fill="var(--color-accent)" font-size="8" font-family="var(--font-mono)" font-weight="bold">G1: GPU HBM</text>
+          <text x="175" y="34" text-anchor="start" fill="var(--color-text-tertiary)" font-size="6" font-family="var(--font-mono)">ns</text>
+
+          <rect x="30" y="48" width="140" height="22" rx="4" fill="var(--color-accent)" opacity="0.18" stroke="var(--color-accent)" stroke-width="0.75" />
+          <text x="100" y="62" text-anchor="middle" fill="var(--color-accent)" font-size="8" font-family="var(--font-mono)">G2: Host RAM</text>
+          <text x="175" y="62" text-anchor="start" fill="var(--color-text-tertiary)" font-size="6" font-family="var(--font-mono)">us</text>
+
+          <rect x="30" y="76" width="140" height="22" rx="4" fill="var(--color-accent)" opacity="0.12" stroke="var(--color-accent)" stroke-width="0.75" />
+          <text x="100" y="90" text-anchor="middle" fill="var(--color-accent)" font-size="8" font-family="var(--font-mono)">G3: Local NVMe</text>
+          <text x="175" y="90" text-anchor="start" fill="var(--color-text-tertiary)" font-size="6" font-family="var(--font-mono)">~100us</text>
+
+          <!-- ICMS highlighted -->
+          <rect x="25" y="104" width="150" height="26" rx="5" fill="var(--color-accent)" opacity="0.1" stroke="var(--color-accent)" stroke-width="2" />
+          <text x="100" y="121" text-anchor="middle" fill="var(--color-accent)" font-size="9" font-family="var(--font-mono)" font-weight="bold">G3.5: ICMS / CMX</text>
+          <text x="180" y="121" text-anchor="start" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)">RDMA</text>
+          <!-- Pulse animation on ICMS -->
+          <rect x="25" y="104" width="150" height="26" rx="5" fill="none" stroke="var(--color-accent)" stroke-width="1" class="icms-pulse" />
+
+          <rect x="30" y="136" width="140" height="22" rx="4" fill="var(--color-surface-alt)" stroke="var(--color-border)" stroke-width="1" />
+          <text x="100" y="150" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-mono)">G4: Object Storage</text>
+          <text x="175" y="150" text-anchor="start" fill="var(--color-text-tertiary)" font-size="6" font-family="var(--font-mono)">ms</text>
+
+          <text x="100" y="180" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="10" font-family="var(--font-sans)">Memory Hierarchy</text>
+          <text x="100" y="195" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">AI Inference Tiers</text>
+        </g>
+      </svg>
+    </div>
+
+    <!-- Data scale counter -->
+    <div class="mt-4 rounded-lg bg-[var(--color-surface-alt)] px-3 py-2.5 text-center">
+      <p class="text-[9px] uppercase tracking-widest text-[var(--color-text-tertiary)]">Data Created Per Year</p>
+      <p class="mt-1 font-mono text-lg font-bold text-[var(--color-accent)]">
+        <span id="evo-scale-value">0.1</span>
+        <span id="evo-scale-unit" class="text-sm font-normal"> EB</span>
+      </p>
+      <p id="evo-scale-year" class="text-[9px] text-[var(--color-text-tertiary)]">~1990</p>
+      <p class="mt-0.5 text-[8px] text-[var(--color-text-tertiary)] opacity-60">Source: IDC Global DataSphere</p>
+    </div>
+
+    <!-- Stage dots -->
+    <div class="mt-3 flex justify-center gap-1.5">
+      <div class="evo-dot active" data-stage="1"></div>
+      <div class="evo-dot" data-stage="2"></div>
+      <div class="evo-dot" data-stage="3"></div>
+      <div class="evo-dot" data-stage="4"></div>
+      <div class="evo-dot" data-stage="5"></div>
+      <div class="evo-dot" data-stage="6"></div>
+      <div class="evo-dot" data-stage="7"></div>
+      <div class="evo-dot" data-stage="8"></div>
+    </div>
+  </div>
+</aside>
+
+<style>
+  .evo-stage {
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
+  }
+
+  .evo-stage.active {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+  }
+
+  .evo-stage.past {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+
+  .evo-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-border);
+    transition: background 0.3s, transform 0.3s;
+  }
+
+  .evo-dot.active {
+    background: var(--color-accent);
+    transform: scale(1.4);
+  }
+
+  .evo-dot.past {
+    background: var(--color-accent);
+    opacity: 0.4;
+  }
+
+  .icms-pulse {
+    animation: icmsPulse 2s ease-in-out infinite;
+  }
+
+  @keyframes icmsPulse {
+    0%, 100% { opacity: 0; }
+    50% { opacity: 0.5; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .evo-stage {
+      transition: none;
+    }
+    .evo-dot {
+      transition: none;
+    }
+    .icms-pulse {
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  function initStorageEvolution() {
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    const prose = document.querySelector(".prose");
+    if (!prose) return;
+
+    const allHeadings = prose.querySelectorAll("h2, h3");
+    if (allHeadings.length === 0) return;
+
+    // Map headings to stages by matching text content
+    const stageMap: { el: Element; stage: number }[] = [];
+
+    allHeadings.forEach((h) => {
+      const text = (h.textContent || "").toLowerCase();
+      let stage = -1;
+
+      // H3 sub-stages within "Four Eras"
+      if (text.includes("era 1") || text.includes("the file")) stage = 1;
+      else if (text.includes("era 2") || text.includes("the block")) stage = 2;
+      else if (text.includes("era 3") || text.includes("the object")) stage = 3;
+      else if (text.includes("era 4") || text.includes("the data")) stage = 4;
+      // H2 main sections
+      else if (text.includes("four eras")) stage = 1;
+      else if (text.includes("tables are eating")) stage = 5;
+      else if (text.includes("vectors are becoming")) stage = 6;
+      else if (text.includes("nvidia") && text.includes("memory")) stage = 7;
+      else if (text.includes("convergence")) stage = 8;
+      else if (text.includes("who gets it")) stage = 8;
+      else if (text.includes("opportunity")) stage = 8;
+
+      if (stage > 0) {
+        stageMap.push({ el: h, stage });
+      }
+    });
+
+    if (stageMap.length === 0) return;
+
+    // Show the component (it self-hides if no matching headings)
+    const aside = document.querySelector(".storage-evolution") as HTMLElement;
+    if (!aside) return;
+
+    let currentStage = 1;
+
+    const stages = document.querySelectorAll(".evo-stage");
+    const dots = document.querySelectorAll(".evo-dot");
+    const scaleValue = document.getElementById("evo-scale-value");
+    const scaleUnit = document.getElementById("evo-scale-unit");
+    const scaleYear = document.getElementById("evo-scale-year");
+
+    // IDC Global DataSphere: data created, captured, copied, and consumed per year
+    const scaleData = [
+      { value: "0.1", unit: "EB", year: "~1990" },
+      { value: "2", unit: "EB", year: "~2000" },
+      { value: "5", unit: "EB", year: "~2003" },
+      { value: "0.2", unit: "ZB", year: "~2006" },
+      { value: "2", unit: "ZB", year: "~2010" },
+      { value: "15", unit: "ZB", year: "~2015" },
+      { value: "64", unit: "ZB", year: "~2020" },
+      { value: "181", unit: "ZB", year: "2025" },
+    ];
+
+    function setStage(stage: number) {
+      if (stage === currentStage) return;
+      currentStage = stage;
+
+      stages.forEach((s, i) => {
+        const stageNum = i + 1;
+        s.classList.remove("active", "past");
+        if (stageNum === stage) s.classList.add("active");
+        else if (stageNum < stage) s.classList.add("past");
+      });
+
+      dots.forEach((d, i) => {
+        const dotStage = i + 1;
+        d.classList.remove("active", "past");
+        if (dotStage === stage) d.classList.add("active");
+        else if (dotStage < stage) d.classList.add("past");
+      });
+
+      const data = scaleData[stage - 1];
+      if (data && scaleValue && scaleUnit && scaleYear) {
+        scaleValue.textContent = data.value;
+        scaleUnit.textContent = ` ${data.unit}`;
+        scaleYear.textContent = data.year;
+      }
+    }
+
+    // Use IntersectionObserver to detect which section is in view
+    const observerOptions = {
+      rootMargin: "-15% 0px -75% 0px",
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const match = stageMap.find((s) => s.el === entry.target);
+          if (match) {
+            setStage(match.stage);
+          }
+        }
+      });
+    }, observerOptions);
+
+    stageMap.forEach(({ el }) => observer.observe(el));
+
+    // Set initial stage
+    setStage(1);
+  }
+
+  initStorageEvolution();
+</script>

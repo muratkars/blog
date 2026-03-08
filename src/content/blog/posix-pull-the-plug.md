@@ -1,6 +1,6 @@
 ---
 title: "Pull the Plug on POSIX"
-date: 2026-03-12
+date: 2026-03-07
 description: "POSIX was a masterpiece of 1988 engineering. It also encodes assumptions about storage that are fundamentally incompatible with how data infrastructure works in 2026. It's time to stop building bridges to the past."
 tags: ["storage", "posix", "infrastructure"]
 type: "standard"

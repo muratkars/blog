@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "./BaseLayout.astro";
+import ProgressBar from "../components/ProgressBar.astro";
 
 interface Props {
   title: string;
@@ -21,57 +22,84 @@ const { title, date, description, readTime, tags = [], image, lastUpdated } = As
   type="article"
   publishedTime={date.toISOString()}
 >
-  <article class="mx-auto max-w-3xl px-6 py-20 md:py-28">
-    <header class="mb-12">
-      <div class="flex items-center gap-3 text-sm text-[var(--color-text-tertiary)]">
-        <time datetime={date.toISOString()}>
-          {date.toLocaleDateString("en-US", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          })}
-        </time>
-        {readTime && <span>&middot; {readTime}</span>}
-      </div>
-      {lastUpdated && (
-        <p class="mt-2 text-xs text-[var(--color-text-tertiary)]">
-          Last updated: <time datetime={lastUpdated.toISOString()}>
-            {lastUpdated.toLocaleDateString("en-US", {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            })}
-          </time>
-        </p>
-      )}
-      <h1
-        class="mt-4 text-3xl font-bold tracking-tight text-[var(--color-text-primary)] sm:text-4xl md:text-5xl"
-      >
-        {title}
-      </h1>
-      {
-        tags.length > 0 && (
-          <div class="mt-4 flex gap-2">
-            {tags.map((tag) => (
-              <span class="rounded-full bg-[var(--color-surface-alt)] px-3 py-1 text-xs text-[var(--color-text-tertiary)]">
-                {tag}
-              </span>
-            ))}
+  <ProgressBar />
+
+  <article class="relative mx-auto max-w-7xl px-6 py-20 md:py-28">
+    <div class="lg:grid lg:grid-cols-[1fr_minmax(0,720px)_1fr] lg:gap-8">
+
+      {/* Floating TOC sidebar */}
+      <aside class="hidden lg:block">
+        <nav id="toc" class="sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto pr-4">
+          <p class="mb-3 text-xs font-semibold uppercase tracking-wider text-[var(--color-text-tertiary)]">
+            On this page
+          </p>
+          <ul id="toc-list" class="space-y-1 border-l border-[var(--color-border)] text-sm">
+            {/* Populated by JS */}
+          </ul>
+        </nav>
+      </aside>
+
+      {/* Main content column */}
+      <div>
+        <header class="mb-12">
+          <div class="flex items-center gap-3 text-sm text-[var(--color-text-tertiary)]">
+            <time datetime={date.toISOString()}>
+              {date.toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+                timeZone: "UTC",
+              })}
+            </time>
+            {readTime && <span>&middot; {readTime}</span>}
           </div>
-        )
-      }
-    </header>
+          {lastUpdated && (
+            <p class="mt-2 text-xs text-[var(--color-text-tertiary)]">
+              Last updated: <time datetime={lastUpdated.toISOString()}>
+                {lastUpdated.toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                  timeZone: "UTC",
+                })}
+              </time>
+            </p>
+          )}
+          <h1
+            class="mt-4 text-3xl font-bold tracking-tight text-[var(--color-text-primary)] sm:text-4xl md:text-5xl blog-reveal"
+          >
+            {title}
+          </h1>
+          {
+            tags.length > 0 && (
+              <div class="mt-4 flex gap-2 blog-reveal">
+                {tags.map((tag) => (
+                  <span class="rounded-full bg-[var(--color-surface-alt)] px-3 py-1 text-xs text-[var(--color-text-tertiary)]">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            )
+          }
+        </header>
 
-    <div class="prose">
-      <slot />
+        <div class="prose">
+          <slot />
+        </div>
+
+        <footer class="mt-12 border-t border-[var(--color-border)] pt-6">
+          <p class="text-xs text-[var(--color-text-tertiary)]">
+            The views expressed here are my own.
+            <a href="/about" class="underline hover:text-[var(--color-text-secondary)]">Disclaimer</a>
+          </p>
+        </footer>
+      </div>
+
+      {/* Right sidebar: optional slot for scroll-driven animations */}
+      <slot name="right-sidebar">
+        <div class="hidden lg:block"></div>
+      </slot>
     </div>
-
-    <footer class="mt-12 border-t border-[var(--color-border)] pt-6">
-      <p class="text-xs text-[var(--color-text-tertiary)]">
-        The views expressed here are my own.
-        <a href="/about" class="underline hover:text-[var(--color-text-secondary)]">Disclaimer</a>
-      </p>
-    </footer>
   </article>
 
   <script
@@ -90,3 +118,151 @@ const { title, date, description, readTime, tags = [], image, lastUpdated } = As
     })}
   />
 </BaseLayout>
+
+<style>
+  /* Scroll reveal animations for blog content */
+  :global(.blog-reveal) {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  :global(.blog-reveal.visible) {
+    opacity: 1;
+    transform: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :global(.blog-reveal) {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+  }
+
+  /* Full-bleed images that break out of the prose column */
+  .prose :global(img) {
+    border-radius: 0.75rem;
+    margin: 2.5rem -2rem;
+    max-width: calc(100% + 4rem);
+    width: calc(100% + 4rem);
+  }
+
+  @media (max-width: 640px) {
+    .prose :global(img) {
+      margin: 2rem -0.5rem;
+      max-width: calc(100% + 1rem);
+      width: calc(100% + 1rem);
+    }
+  }
+
+  /* TOC link styles */
+  #toc-list :global(a) {
+    display: block;
+    padding: 0.25rem 0 0.25rem 1rem;
+    color: var(--color-text-tertiary);
+    text-decoration: none;
+    border-left: 2px solid transparent;
+    margin-left: -1px;
+    transition: color 0.2s, border-color 0.2s;
+    line-height: 1.4;
+  }
+
+  #toc-list :global(a:hover) {
+    color: var(--color-text-secondary);
+  }
+
+  #toc-list :global(a.active) {
+    color: var(--color-accent);
+    border-left-color: var(--color-accent);
+  }
+
+  #toc-list :global(li.toc-h3 a) {
+    padding-left: 2rem;
+    font-size: 0.8125rem;
+  }
+</style>
+
+<script>
+  function initBlogPost() {
+    // --- Table of Contents ---
+    const tocList = document.getElementById("toc-list");
+    const prose = document.querySelector(".prose");
+    if (!tocList || !prose) return;
+
+    const headings = prose.querySelectorAll("h2, h3");
+    if (headings.length === 0) return;
+
+    // Build TOC
+    headings.forEach((heading, i) => {
+      const id = heading.id || `section-${i}`;
+      heading.id = id;
+
+      const li = document.createElement("li");
+      if (heading.tagName === "H3") li.classList.add("toc-h3");
+
+      const a = document.createElement("a");
+      a.href = `#${id}`;
+      a.textContent = heading.textContent || "";
+      a.addEventListener("click", (e) => {
+        e.preventDefault();
+        heading.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+
+      li.appendChild(a);
+      tocList.appendChild(li);
+    });
+
+    // Highlight active section
+    const tocLinks = tocList.querySelectorAll("a");
+    const headingEls = Array.from(headings) as HTMLElement[];
+
+    function updateActive() {
+      let current = 0;
+      for (let i = 0; i < headingEls.length; i++) {
+        if (headingEls[i].getBoundingClientRect().top <= 100) {
+          current = i;
+        }
+      }
+      tocLinks.forEach((link, i) => {
+        link.classList.toggle("active", i === current);
+      });
+    }
+
+    window.addEventListener("scroll", updateActive, { passive: true });
+    updateActive();
+
+    // --- Open external links in new tab ---
+    prose.querySelectorAll("a[href]").forEach((link) => {
+      const href = link.getAttribute("href") || "";
+      if (href.startsWith("http") && !href.includes(window.location.hostname)) {
+        link.setAttribute("target", "_blank");
+        link.setAttribute("rel", "noopener noreferrer");
+      }
+    });
+
+    // --- Scroll reveal for headings, images, and content blocks ---
+    const revealTargets = prose.querySelectorAll("h2, h3, img, blockquote, pre, table");
+    revealTargets.forEach((el) => el.classList.add("blog-reveal"));
+
+    // Also reveal elements already marked
+    const allRevealEls = document.querySelectorAll(".blog-reveal");
+
+    const revealObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("visible");
+            revealObserver.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.15, rootMargin: "0px 0px -50px 0px" }
+    );
+
+    allRevealEls.forEach((el) => revealObserver.observe(el));
+  }
+
+  initBlogPost();
+</script>
