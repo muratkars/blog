@@ -65,6 +65,13 @@ const { title, date, description, readTime, tags = [], image, lastUpdated } = As
     <div class="prose">
       <slot />
     </div>
+
+    <footer class="mt-12 border-t border-[var(--color-border)] pt-6">
+      <p class="text-xs text-[var(--color-text-tertiary)]">
+        The views expressed here are my own.
+        <a href="/about" class="underline hover:text-[var(--color-text-secondary)]">Disclaimer</a>
+      </p>
+    </footer>
   </article>
 
   <script

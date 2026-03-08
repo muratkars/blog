@@ -15,15 +15,18 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
     <div class="mt-10 space-y-6 text-lg leading-relaxed text-[var(--color-text-secondary)]">
       <p>
-        I'm Murat Karslioglu, a product leader with a passion for building
-        technology that solves real problems. I've spent my career at the
-        intersection of engineering and product strategy, working with teams
-        of all sizes to bring ideas to life.
+        I'm Murat Karslioglu, a product leader and 3x startup founder
+        specializing in storage systems and AI infrastructure. I currently
+        work as a Staff Product Manager for Cloud Storage at Lambda, where I
+        focus on building storage infrastructure for GPU compute and AI
+        workloads.
       </p>
       <p>
-        Currently, I focus on product management and strategy in the
-        cloud-native and open-source ecosystem. I enjoy working on complex
-        technical products and making them accessible to a broader audience.
+        I've spent over a decade working across the storage stack, from
+        distributed filesystems and object storage to cloud-native
+        infrastructure and Kubernetes. Before Lambda, I led the Global Field
+        Architects pre-sales team at MinIO. I hold a patent for modular
+        interface-independent storage solutions.
       </p>
     </div>
 
@@ -35,14 +38,18 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       </h2>
       <div class="mt-6 space-y-4 text-[var(--color-text-secondary)]">
         <p>
-          With a background spanning engineering and product management, I
-          bring a technical perspective to product decisions. I've worked on
-          storage systems, cloud infrastructure, and developer tools.
+          I've founded three startups and worked at companies ranging from
+          early-stage to enterprise scale. My career has been at the
+          intersection of storage engineering and product strategy, building
+          products across distributed storage, desktop virtualization, and
+          cloud infrastructure.
         </p>
         <p>
-          I'm also a published author and frequent speaker at industry
-          conferences, where I share insights on product management,
-          Kubernetes, and cloud-native technologies.
+          I'm the author of
+          <em>Kubernetes in Production Best Practices</em> (Packt, 2021) and
+          <em>Kubernetes: A Complete DevOps Cookbook</em> (Packt, 2020), and a
+          frequent speaker at industry conferences on storage, Kubernetes,
+          and cloud-native infrastructure.
         </p>
       </div>
     </div>
@@ -56,12 +63,12 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       <ul class="mt-6 grid gap-3 text-[var(--color-text-secondary)] sm:grid-cols-2">
         {
           [
-            "Product Strategy",
+            "Storage Systems & Architecture",
+            "AI Infrastructure",
             "Cloud-Native & Kubernetes",
-            "Open Source",
-            "Developer Experience",
-            "Go-to-Market",
-            "Technical Writing",
+            "Distributed Systems",
+            "Product Strategy & GTM",
+            "Technical Writing & Patents",
           ].map((skill) => (
             <li class="flex items-center gap-2">
               <span class="h-1.5 w-1.5 rounded-full bg-[var(--color-accent)]" />
@@ -81,6 +88,15 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       >
         Connect on LinkedIn &rarr;
       </a>
+    </div>
+
+    <div class="mt-16 border-t border-[var(--color-border)] pt-8">
+      <p class="text-sm text-[var(--color-text-tertiary)]">
+        The views and opinions expressed on this site are my own and do not
+        necessarily reflect the views, positions, or policies of my employer or
+        any organization I am affiliated with. All content is provided for
+        informational purposes only.
+      </p>
     </div>
   </section>
 </BaseLayout>
