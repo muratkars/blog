@@ -1,0 +1,119 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const currentlyReading = {
+  title: "Thinking in Systems",
+  author: "Donella H. Meadows",
+  category: "Systems Thinking",
+};
+
+const books = [
+  {
+    category: "Product Management",
+    items: [
+      {
+        title: "Inspired",
+        author: "Marty Cagan",
+        note: "The definitive guide to building products customers love.",
+      },
+      {
+        title: "Empowered",
+        author: "Marty Cagan",
+        note: "How to build empowered product teams.",
+      },
+      {
+        title: "Continuous Discovery Habits",
+        author: "Teresa Torres",
+        note: "A practical framework for continuous product discovery.",
+      },
+    ],
+  },
+  {
+    category: "Leadership",
+    items: [
+      {
+        title: "The Manager's Path",
+        author: "Camille Fournier",
+        note: "A guide for tech leaders navigating growth and change.",
+      },
+      {
+        title: "An Elegant Puzzle",
+        author: "Will Larson",
+        note: "Systems of engineering management.",
+      },
+    ],
+  },
+  {
+    category: "Technical",
+    items: [
+      {
+        title: "Designing Data-Intensive Applications",
+        author: "Martin Kleppmann",
+        note: "The big ideas behind reliable, scalable, and maintainable systems.",
+      },
+      {
+        title: "Kubernetes in Action",
+        author: "Marko Lukša",
+        note: "Comprehensive guide to Kubernetes.",
+      },
+    ],
+  },
+];
+---
+
+<BaseLayout
+  title="Books"
+  description="Books that have shaped my thinking on product management, leadership, and technology."
+>
+  <section class="mx-auto max-w-3xl px-6 py-20 md:py-28">
+    <h1
+      class="text-4xl font-bold tracking-tight text-[var(--color-text-primary)] sm:text-5xl"
+    >
+      Books
+    </h1>
+    <p class="mt-4 text-lg text-[var(--color-text-secondary)]">
+      A curated list of books that have shaped my thinking.
+    </p>
+
+    {/* Currently Reading */}
+    <div
+      class="mt-12 rounded-2xl border border-[var(--color-accent)]/20 bg-[var(--color-accent)]/5 p-6"
+    >
+      <p class="text-xs font-semibold uppercase tracking-wider text-[var(--color-accent)]">
+        Currently Reading
+      </p>
+      <p class="mt-2 text-lg font-semibold text-[var(--color-text-primary)]">
+        {currentlyReading.title}
+      </p>
+      <p class="mt-1 text-sm text-[var(--color-text-secondary)]">
+        by {currentlyReading.author} &middot; {currentlyReading.category}
+      </p>
+    </div>
+
+    {/* Book List */}
+    {
+      books.map((section) => (
+        <div class="mt-14">
+          <h2 class="text-xl font-semibold text-[var(--color-text-primary)]">
+            {section.category}
+          </h2>
+          <div class="mt-6 space-y-6">
+            {section.items.map((book) => (
+              <div class="border-b border-[var(--color-border)]/50 pb-6 last:border-0">
+                <p class="font-medium text-[var(--color-text-primary)]">
+                  {book.title}
+                </p>
+                <p class="mt-1 text-sm text-[var(--color-text-tertiary)]">
+                  by {book.author}
+                </p>
+                <p class="mt-2 text-sm text-[var(--color-text-secondary)]">
+                  {book.note}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      ))
+    }
+  </section>
+</BaseLayout>

@@ -1,0 +1,256 @@
+---
+import MagazineLayout from "../layouts/MagazineLayout.astro";
+import MagazineViewer from "../components/MagazineViewer.astro";
+import MagazineCover from "../components/MagazineCover.astro";
+import MagazineTOC from "../components/MagazineTOC.astro";
+import { getCollection, render } from "astro:content";
+
+const allPosts = (await getCollection("blog", ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+);
+
+// Sort by magazineOrder if set, then by date
+const posts = [...allPosts].sort((a, b) => {
+  const orderA = a.data.magazineOrder ?? Infinity;
+  const orderB = b.data.magazineOrder ?? Infinity;
+  if (orderA !== orderB) return orderA - orderB;
+  return b.data.date.valueOf() - a.data.date.valueOf();
+});
+
+// Render all posts to get Content components
+const renderedPosts = await Promise.all(
+  posts.map(async (post) => {
+    const { Content } = await render(post);
+    return { post, Content };
+  })
+);
+
+const issueDate = new Date().toLocaleDateString("en-US", {
+  year: "numeric",
+  month: "long",
+});
+
+// Helper: resolve magazine-specific fields with fallbacks
+function magCategory(post: (typeof posts)[0]) {
+  return (post.data.magazineCategory || post.data.tags[0] || "Article").toUpperCase();
+}
+function magExcerpt(post: (typeof posts)[0]) {
+  return post.data.magazineExcerpt || post.data.description;
+}
+function magImage(post: (typeof posts)[0]) {
+  return post.data.magazineImage || post.data.image || "";
+}
+
+const featuredArticles = posts.slice(0, 3).map((p) => ({
+  title: p.data.title,
+  description: magExcerpt(p),
+}));
+
+// TOC entries (page numbers will be updated by JS after pagination)
+const tocEntries = posts.map((post) => ({
+  title: post.data.title,
+  description: magExcerpt(post),
+  category: magCategory(post),
+  pageNumber: 0,
+}));
+---
+
+<MagazineLayout
+  title="Magazine | The MK Review"
+  description="Read all articles in a virtual magazine format with realistic page-flip navigation."
+>
+  <MagazineViewer>
+    {/* Page 0: Front Cover (hard density for rigid cover) */}
+    <MagazineCover
+      type="front"
+      issueDate={issueDate}
+      featuredArticles={featuredArticles}
+    />
+
+    {/* Page 1: Inside Cover (left page = page 2) */}
+    <div class="magazine-page">
+      <div class="inside-cover">
+        <div class="mag-bc mag-bc-left">
+          <span class="mag-bc-parent">THE MK REVIEW</span>
+          <span class="mag-bc-sep">&rsaquo;</span>
+          <span class="mag-bc-child">EDITORIAL</span>
+        </div>
+        <div class="mag-accent-line" />
+        <div class="ic-body">
+          <p class="ic-greeting">Welcome, reader.</p>
+          <p>
+            This is the magazine edition of my blog. Each article is presented
+            in a classic three-column print layout, inspired by the tech
+            magazines I grew up reading.
+          </p>
+          <p>
+            Use the arrow keys or click the page edges to flip through. On
+            mobile, swipe left or right.
+          </p>
+          <p>
+            Every article links back to its full version on the blog if you want
+            to read more or share it.
+          </p>
+          <p class="ic-sign">Murat Karslioglu</p>
+        </div>
+        <div class="mag-ft mag-ft-left">
+          <span class="mag-ft-pgnum">2 &rsaquo;</span>
+          <span class="mag-ft-info">THE MK REVIEW &rsaquo; {issueDate}</span>
+        </div>
+      </div>
+    </div>
+
+    {/* Page 2: Table of Contents */}
+    <MagazineTOC entries={tocEntries} issueDate={issueDate} />
+
+    {/* Page 3: Editorial / In This Issue (left page = page 4) */}
+    <div class="magazine-page">
+      <div class="editorial-page">
+        <div class="mag-bc mag-bc-left">
+          <span class="mag-bc-parent">THE MK REVIEW</span>
+          <span class="mag-bc-sep">&rsaquo;</span>
+          <span class="mag-bc-child">IN THIS ISSUE</span>
+        </div>
+        <div class="mag-accent-line" />
+        <div class="ed-content">
+          {
+            posts.slice(0, 4).map((post) => (
+              <div class="ed-item">
+                <div class="ed-item-cat">{magCategory(post)}</div>
+                <div class="ed-item-title">{post.data.title}</div>
+                <div class="ed-item-desc">{magExcerpt(post)}</div>
+              </div>
+            ))
+          }
+        </div>
+        <div class="mag-ft mag-ft-left">
+          <span class="mag-ft-pgnum">4 &rsaquo;</span>
+          <span class="mag-ft-info">THE MK REVIEW &rsaquo; {issueDate}</span>
+        </div>
+      </div>
+    </div>
+
+    {/* Article pages will be dynamically inserted here by JS pagination */}
+
+    {/* Back Cover */}
+    <MagazineCover type="back" />
+  </MagazineViewer>
+
+  {/* Hidden article content sources (used by JS for pagination, then removed) */}
+  <div
+    id="article-sources"
+    aria-hidden="true"
+    style="position:absolute;left:-9999px;top:0;width:0;height:0;overflow:hidden;"
+  >
+    {
+      renderedPosts.map(({ post, Content }) => (
+        <div
+          class="article-source"
+          data-title={post.data.title}
+          data-subtitle={post.data.magazineSubtitle || post.data.description}
+          data-description={post.data.description}
+          data-category={magCategory(post)}
+          data-date={post.data.date.toISOString()}
+          data-slug={post.id}
+          data-image={magImage(post)}
+          data-issuedate={issueDate}
+        >
+          <Content />
+        </div>
+      ))
+    }
+  </div>
+</MagazineLayout>
+
+<style>
+  /* Inside Cover */
+  .inside-cover {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 28px;
+    box-sizing: border-box;
+    background: #fafaf8;
+  }
+
+  .ic-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 11px;
+    line-height: 1.7;
+    color: #444;
+  }
+
+  .ic-body p {
+    margin-bottom: 10px;
+  }
+
+  .ic-greeting {
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-weight: 600;
+    color: #1a1a1a;
+  }
+
+  .ic-sign {
+    font-style: italic;
+    color: #1a1a1a;
+    font-weight: 500;
+    margin-top: 8px;
+  }
+
+  /* Editorial page */
+  .editorial-page {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 28px;
+    box-sizing: border-box;
+    background: #fafaf8;
+  }
+
+  .ed-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-top: 8px;
+  }
+
+  .ed-item {
+    padding-bottom: 12px;
+    border-bottom: 1px solid #e8e8e4;
+  }
+
+  .ed-item:last-child {
+    border-bottom: none;
+  }
+
+  .ed-item-cat {
+    font-family: var(--font-sans);
+    font-size: 7.5px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: #c0392b;
+    margin-bottom: 2px;
+  }
+
+  .ed-item-title {
+    font-family: var(--font-sans);
+    font-size: 13px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 3px;
+    line-height: 1.25;
+  }
+
+  .ed-item-desc {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 10px;
+    color: #6e6e73;
+    line-height: 1.5;
+  }
+</style>

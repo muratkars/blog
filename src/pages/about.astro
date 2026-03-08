@@ -1,0 +1,86 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="About"
+  description="Learn more about Murat Karslioglu. Background, experience, and interests."
+>
+  <section class="mx-auto max-w-3xl px-6 py-20 md:py-28">
+    <h1
+      class="text-4xl font-bold tracking-tight text-[var(--color-text-primary)] sm:text-5xl"
+    >
+      About
+    </h1>
+
+    <div class="mt-10 space-y-6 text-lg leading-relaxed text-[var(--color-text-secondary)]">
+      <p>
+        I'm Murat Karslioglu, a product leader with a passion for building
+        technology that solves real problems. I've spent my career at the
+        intersection of engineering and product strategy, working with teams
+        of all sizes to bring ideas to life.
+      </p>
+      <p>
+        Currently, I focus on product management and strategy in the
+        cloud-native and open-source ecosystem. I enjoy working on complex
+        technical products and making them accessible to a broader audience.
+      </p>
+    </div>
+
+    <div class="mt-16">
+      <h2
+        class="text-2xl font-semibold tracking-tight text-[var(--color-text-primary)]"
+      >
+        Background
+      </h2>
+      <div class="mt-6 space-y-4 text-[var(--color-text-secondary)]">
+        <p>
+          With a background spanning engineering and product management, I
+          bring a technical perspective to product decisions. I've worked on
+          storage systems, cloud infrastructure, and developer tools.
+        </p>
+        <p>
+          I'm also a published author and frequent speaker at industry
+          conferences, where I share insights on product management,
+          Kubernetes, and cloud-native technologies.
+        </p>
+      </div>
+    </div>
+
+    <div class="mt-16">
+      <h2
+        class="text-2xl font-semibold tracking-tight text-[var(--color-text-primary)]"
+      >
+        Expertise
+      </h2>
+      <ul class="mt-6 grid gap-3 text-[var(--color-text-secondary)] sm:grid-cols-2">
+        {
+          [
+            "Product Strategy",
+            "Cloud-Native & Kubernetes",
+            "Open Source",
+            "Developer Experience",
+            "Go-to-Market",
+            "Technical Writing",
+          ].map((skill) => (
+            <li class="flex items-center gap-2">
+              <span class="h-1.5 w-1.5 rounded-full bg-[var(--color-accent)]" />
+              {skill}
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <div class="mt-16">
+      <a
+        href="https://www.linkedin.com/in/muratkarslioglu/"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center gap-2 text-sm font-medium text-[var(--color-accent)] hover:underline"
+      >
+        Connect on LinkedIn &rarr;
+      </a>
+    </div>
+  </section>
+</BaseLayout>

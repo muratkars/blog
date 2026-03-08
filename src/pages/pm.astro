@@ -1,0 +1,117 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const frameworks = [
+  {
+    name: "Jobs to Be Done",
+    description:
+      "Understand the underlying job customers are hiring your product for.",
+  },
+  {
+    name: "Opportunity Solution Trees",
+    description:
+      "Map desired outcomes to opportunities and solutions systematically.",
+  },
+  {
+    name: "RICE Scoring",
+    description:
+      "Prioritize features using Reach, Impact, Confidence, and Effort.",
+  },
+  {
+    name: "North Star Metric",
+    description:
+      "Align teams around a single metric that captures customer value.",
+  },
+];
+
+const resources = [
+  {
+    name: "Lenny's Newsletter",
+    url: "https://www.lennysnewsletter.com",
+    description: "Product management advice from Lenny Rachitsky.",
+  },
+  {
+    name: "SVPG Blog",
+    url: "https://www.svpg.com/articles/",
+    description: "Silicon Valley Product Group insights on product teams.",
+  },
+  {
+    name: "Stratechery",
+    url: "https://stratechery.com",
+    description: "Ben Thompson's analysis on tech strategy.",
+  },
+];
+---
+
+<BaseLayout
+  title="PM"
+  description="Product management frameworks, resources, and insights."
+>
+  <section class="mx-auto max-w-3xl px-6 py-20 md:py-28">
+    <h1
+      class="text-4xl font-bold tracking-tight text-[var(--color-text-primary)] sm:text-5xl"
+    >
+      Product Management
+    </h1>
+    <p class="mt-4 text-lg text-[var(--color-text-secondary)]">
+      Frameworks and resources I find valuable in product work.
+    </p>
+
+    {/* Frameworks */}
+    <div class="mt-14">
+      <h2 class="text-2xl font-semibold text-[var(--color-text-primary)]">
+        Frameworks
+      </h2>
+      <div class="mt-6 grid gap-4 sm:grid-cols-2">
+        {
+          frameworks.map((fw) => (
+            <div class="rounded-xl border border-[var(--color-border)]/50 p-5">
+              <p class="font-medium text-[var(--color-text-primary)]">
+                {fw.name}
+              </p>
+              <p class="mt-2 text-sm text-[var(--color-text-secondary)]">
+                {fw.description}
+              </p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+
+    {/* Resources */}
+    <div class="mt-14">
+      <h2 class="text-2xl font-semibold text-[var(--color-text-primary)]">
+        Resources
+      </h2>
+      <div class="mt-6 space-y-4">
+        {
+          resources.map((res) => (
+            <a
+              href={res.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="block rounded-xl border border-[var(--color-border)]/50 p-5 transition-colors duration-200 hover:border-[var(--color-border)]"
+            >
+              <p class="font-medium text-[var(--color-text-primary)]">
+                {res.name}
+              </p>
+              <p class="mt-1 text-sm text-[var(--color-text-secondary)]">
+                {res.description}
+              </p>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+
+    {/* Blog link */}
+    <div class="mt-14">
+      <a
+        href="/blog?tag=pm"
+        class="text-sm font-medium text-[var(--color-accent)] hover:underline"
+      >
+        Read PM-related blog posts &rarr;
+      </a>
+    </div>
+  </section>
+</BaseLayout>

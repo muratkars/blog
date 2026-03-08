@@ -1,0 +1,839 @@
+---
+title: "The Product Manager's MacBook Setup Guide"
+date: 2025-02-10
+description: "Getting your Mac ready to ship MVPs and write PRDs on day one. A 2025 guide for PMs who want to be technical enough to be dangerous."
+tags: ["pm", "tools", "dev"]
+type: "story"
+readTime: "18 min read"
+featured: true
+image: /images/pm-macbook-setup-hero.jpg
+lastUpdated: 2026-02-14
+magazineSubtitle: "From blank laptop to shipping machine in one afternoon"
+magazineCategory: "Gear & Setup"
+magazineExcerpt: "A step-by-step walkthrough of how to set up a new MacBook Pro for product management work, covering everything from terminal and dev tools to AI assistants and note-taking apps."
+magazineOrder: 1
+---
+
+import ScrollReveal from "../../components/ScrollReveal.astro";
+import StatCounter from "../../components/StatCounter.astro";
+import Callout from "../../components/Callout.astro";
+import ParallaxImage from "../../components/ParallaxImage.astro";
+import TerminalWindow from "../../components/TerminalWindow.astro";
+
+<section>
+  <div class="story-section-narrow">
+    <ScrollReveal>
+      I just started a new role as a Staff Product Manager. Day one was approaching fast, and I had a blank MacBook Pro sitting on my desk. A 14-inch M4 Pro with 24GB of RAM and a 512GB SSD.
+
+      The question wasn't *what* to install. It was *how to set up a machine that lets a PM move at the speed of thought*: writing PRDs to spinning up prototypes to jumping on a customer call, all without friction.
+
+      This is the guide I wish I'd had.
+    </ScrollReveal>
+  </div>
+</section>
+
+<section class="bg-[var(--color-surface-alt)]">
+  <div class="story-section-wide">
+    <ScrollReveal>
+      <div class="grid gap-8 sm:grid-cols-3 text-center py-8">
+        <StatCounter value={45} label="Tools Installed" />
+        <StatCounter value={1} label="Hour to Set Up" />
+        <StatCounter value={0} label="Excuses Left" />
+      </div>
+    </ScrollReveal>
+  </div>
+</section>
+
+{/* ── Philosophy ────────────────────────────────────── */}
+
+<section>
+  <div class="story-section-narrow">
+    <ScrollReveal>
+      ## The PM's Dilemma
+
+      There's a tension at the heart of every PM's toolkit. You're not an engineer, but you need to speak their language. You're not a designer, but you need to give precise feedback. You're not in sales, but you need to demo the product on the fly.
+
+      My philosophy is simple:
+    </ScrollReveal>
+
+    <ScrollReveal delay={150}>
+      <blockquote class="my-8 border-l-4 border-[var(--color-accent)] pl-6 text-xl italic text-[var(--color-text-secondary)]">
+        Be technical enough to prototype, clear enough to document, and fast enough to never block your team.
+      </blockquote>
+    </ScrollReveal>
+
+    <ScrollReveal delay={200}>
+      That means optimizing for **speed**, **clarity**, and **collaboration**, not engineering perfection. Every tool below earns its place by making me faster at one of three jobs:
+
+      1. **Writing.** PRDs, specs, customer insights
+      2. **Building.** Prototypes, MVPs, proof-of-concepts
+      3. **Communicating.** Demos, presentations, async updates
+    </ScrollReveal>
+  </div>
+</section>
+
+{/* ── Hardware ────────────────────────────────────── */}
+
+<section class="bg-[var(--color-surface-alt)]">
+  <div class="story-section-narrow">
+    <ScrollReveal>
+      ## The Machine
+
+      <div class="my-8 rounded-2xl border border-[var(--color-border)]/50 bg-[var(--color-surface)] p-8">
+        <p class="text-xs font-semibold uppercase tracking-wider text-[var(--color-text-tertiary)]">Hardware</p>
+        <p class="mt-3 text-2xl font-bold text-[var(--color-text-primary)]">MacBook Pro 14″ / M4 Pro</p>
+        <div class="mt-4 grid gap-3 text-sm text-[var(--color-text-secondary)] sm:grid-cols-2">
+          <div>12-Core CPU, 20-Core GPU</div>
+          <div>16-Core Neural Engine</div>
+          <div>24GB LPDDR5 RAM</div>
+          <div>512GB SSD</div>
+        </div>
+        <p class="mt-4 text-xs text-[var(--color-text-tertiary)]">macOS Sequoia 15.4.1</p>
+      </div>
+
+      Why does a PM need an M4 Pro? Because on any given Tuesday I'm running Docker containers, Figma with a 200-screen file, 40 browser tabs of customer research, a Zoom call, and a local AI model. All at once, without the fans spinning up.
+    </ScrollReveal>
+  </div>
+</section>
+
+{/* ── System Preferences ────────────────────────────── */}
+
+<section>
+  <div class="story-section-narrow">
+    <ScrollReveal>
+      ## First Things First: System Preferences
+
+      Before installing a single app, I spend 20 minutes dialing in macOS itself. These tweaks are small individually, but compound into a noticeably smoother experience.
+    </ScrollReveal>
+
+    <ScrollReveal delay={100}>
+      ### Look & Feel
+
+      Dark mode, always. Auto-hide the Dock. Remove every app I won't use daily. Show battery percentage. Turn on Night Shift for late writing sessions.
+
+      <Callout type="tip">
+        Go to System Settings → Keyboard → Text Input → Input Sources → Edit, then disable auto-capitalization, double-space period, and smart quotes. Smart quotes silently break code blocks and config files. A silent killer in technical documentation.
+      </Callout>
+    </ScrollReveal>
+
+    <ScrollReveal delay={150}>
+      ### Notifications: The Great Silencing
+
+      I keep exactly three apps allowed to interrupt me: **Calendar** (meetings), **Slack** (team comms), and **Linear** (project updates). Everything else gets turned off. Context switching is the PM's worst enemy.
+    </ScrollReveal>
+
+    <ScrollReveal delay={200}>
+      ### Trackpad
+
+      System Settings → Trackpad. Max tracking speed. Enable Tap to Click. These two changes alone make the MacBook feel twice as responsive.
+
+      ### Mouse
+
+      If you're using an Apple Mouse with your Apple Studio Display (or standalone), head to System Settings → Mouse. Enable **Secondary Click** and set it to **Click Right Side**. Right-click is essential for context menus everywhere, from Figma to the terminal.
+
+      ### Keyboard Shortcuts
+
+      System Settings → Keyboard → Keyboard Shortcuts → Spotlight: **disable Spotlight's Cmd+Space shortcut**. We're replacing it with something much better.
+    </ScrollReveal>
+
+    <ScrollReveal delay={250}>
+      ### Finder
+
+      Open Finder, then go to Finder → Settings (Cmd+,). A few tweaks that save daily friction:
+
+      - **General tab.** Set "New Finder windows show" to **Downloads**
+      - **Advanced tab.** Check "Show all filename extensions" and set "Remove items from the Bin after 30 days"
+      - **Desktop.** Keep it completely empty. No files, no folders. If something's on the desktop, it doesn't have a home yet.
+    </ScrollReveal>
+
+    <ScrollReveal delay={300}>
+      ### Security
+
+      Non-negotiable: **FileVault ON** (full disk encryption), **Touch ID** for everything. If you're handling customer data, competitive intel, or roadmap docs (and you are), encryption isn't optional.
+
+      Get a password manager. **1Password** is my pick. It handles passwords, SSH keys, API tokens, and secure notes in one place. Bitwarden is a solid free alternative. Either way, stop reusing passwords and storing secrets in plain text files.
+    </ScrollReveal>
+
+    <ScrollReveal delay={350}>
+      ### Terminal Tweaks
+
+      A handful of `defaults write` commands that macOS should ship with out of the box:
+
+      <TerminalWindow title="Finder Tweaks">
+      ```bash
+      # Screenshots as JPG (smaller, good enough)
+      defaults write com.apple.screencapture type jpg
+
+      # Show hidden files, path bar, status bar in Finder
+      defaults write com.apple.finder AppleShowAllFiles YES
+      defaults write com.apple.finder ShowPathbar -bool true
+      defaults write com.apple.finder ShowStatusBar -bool true
+
+      # Unhide the Library folder
+      chflags nohidden ~/Library
+
+      killall Finder
+      ```
+      </TerminalWindow>
+    </ScrollReveal>
+  </div>
+</section>
+
+{/* ── Homebrew ────────────────────────────────────── */}
+
+<section class="bg-[var(--color-surface-alt)]">
+  <div class="story-section-narrow">
+    <ScrollReveal>
+      ## The Foundation: Homebrew
+
+      Everything starts here. One command to install the macOS package manager that makes everything else possible:
+
+      <TerminalWindow title="Install Homebrew">
+      ```bash
+      /bin/bash -c "$(curl -fsSL \
+        https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+      ```
+      </TerminalWindow>
+
+      From this point on, installing software is just `brew install` or `brew install --cask`. No more dragging `.dmg` files around.
+    </ScrollReveal>
+  </div>
+</section>
+
+{/* ── Apps ────────────────────────────────────── */}
+
+<section>
+  <div class="story-section-narrow">
+    <ScrollReveal>
+      ## The App Stack
+
+      Here's where things get opinionated. I split my apps into two categories: **GUI apps** I interact with visually, and **terminal tools** that power my command-line workflows.
+    </ScrollReveal>
+
+    <ScrollReveal delay={100}>
+      ### GUI Apps: One Command
+
+      As of this writing, these are my current preferences. They change over time, so check the last updated date at the top.
+
+      <TerminalWindow title="GUI Apps">
+      ```bash
+      brew install --cask \
+        raycast google-chrome arc firefox \
+        ghostty visual-studio-code cursor \
+        figma notion linear-linear \
+        slack discord zoom loom \
+        cleanshot rectangle obsidian \
+        tableplus postman docker \
+        1password vlc maccy imageoptim
+      ```
+      </TerminalWindow>
+
+      That's 24 apps installed in under a minute. Let me walk through the ones that matter most.
+    </ScrollReveal>
+
+    <ScrollReveal delay={150}>
+      ### Terminal Tools
+
+      <TerminalWindow title="CLI Tools">
+      ```bash
+      brew install \
+        git gh wget nvm pnpm yarn \
+        jq tree htop tlrc bat \
+        fzf ripgrep eza claude-code
+      ```
+      </TerminalWindow>
+
+      These are the quiet workhorses. `bat` is a better `cat`. `eza` is a better `ls`. `fzf` is fuzzy finding for everything. `tlrc` gives you practical examples instead of man pages. `ripgrep` searches code faster than you can think of what to search for.
+    </ScrollReveal>
+  </div>
+</section>
+
+{/* ── Deep Dives ────────────────────────────────────── */}
+
+<section class="bg-[var(--color-surface-alt)]">
+  <div class="story-section-narrow">
+    <ScrollReveal>
+      ## Deep Dives: The Tools That Changed My Workflow
+    </ScrollReveal>
+  </div>
+</section>
+
+<section>
+  <div class="story-section-narrow">
+    <ScrollReveal>
+      ### Raycast: The Command Center
+
+      This is the single most impactful app on this list. Raycast replaces Spotlight with something that actually understands how you work.
+
+      **Cmd+Space** opens it. From there I can:
+
+      - Search files, apps, and bookmarks instantly
+      - View my calendar without opening Calendar
+      - Search Linear issues or Notion docs
+      - Manage windows without reaching for a mouse
+      - Access clipboard history (every URL, quote, and snippet I've copied today)
+
+      <Callout type="tip">
+        Create Raycast snippets for PRD sections you write repeatedly: problem statements, success metrics templates, user story formats. I save hours every week this way.
+      </Callout>
+    </ScrollReveal>
+  </div>
+</section>
+
+<section class="bg-[var(--color-surface-alt)]">
+  <div class="story-section-narrow">
+    <ScrollReveal>
+      ### The Browser Trinity
+
+      I use three browsers, each with a distinct job:
+
+      **Chrome** is my primary. The dev tools are unmatched. Extensions: 1Password, uBlock Origin, React DevTools, JSON Viewer, Loom, Notion Web Clipper, Grammarly, and a design QA trio: ColorZilla, WhatFont, Page Ruler.
+
+      **Arc** is for research. Its Spaces feature lets me keep separate contexts (competitive research, customer interviews, documentation) without drowning in tabs.
+
+      **Firefox Developer Edition** is for cross-browser testing. Because "it works on Chrome" isn't a shipping standard.
+    </ScrollReveal>
+  </div>
+</section>
+
+{/* ── Terminal ────────────────────────────────────── */}
+
+<section>
+  <div class="story-section-narrow">
+    <ScrollReveal>
+      ### The Terminal: Ghostty + Oh My Zsh + Starship
+
+      The default Terminal app is fine. Ghostty is better. It's fast, memory-efficient, and GPU-accelerated. Split panes, native macOS feel, and none of the bloat.
+
+
+    </ScrollReveal>
+
+    <ScrollReveal delay={150}>
+      Layer on **Oh My Zsh** for plugin management and **Starship** for a beautiful, informative prompt:
+
+      <TerminalWindow title="Shell Setup">
+      ```bash
+      # Oh My Zsh
+      sh -c "$(curl -fsSL \
+        https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+
+      # Starship prompt
+      brew install starship
+      echo 'eval "$(starship init zsh)"' >> ~/.zshrc
+
+      # Hack Nerd Font (for icons in the prompt)
+      brew install --cask font-hack-nerd-font
+      ```
+      </TerminalWindow>
+    </ScrollReveal>
+
+    <ScrollReveal delay={200}>
+      #### Essential Plugins
+
+      Three plugins that make the terminal feel like it can read your mind:
+
+      - **zsh-autosuggestions** suggests commands as you type based on history
+      - **zsh-syntax-highlighting** colors valid commands green, invalid ones red
+      - **zsh-completions** smarter tab completion
+
+      These are custom plugins, so you need to clone them first:
+
+      <TerminalWindow title="Install Zsh Plugins">
+      ```bash
+      git clone https://github.com/zsh-users/zsh-autosuggestions \
+        ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+
+      git clone https://github.com/zsh-users/zsh-syntax-highlighting \
+        ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+
+      git clone https://github.com/zsh-users/zsh-completions \
+        ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-completions
+      ```
+      </TerminalWindow>
+
+      Then add them to your plugin list in `~/.zshrc`:
+
+      <TerminalWindow title="~/.zshrc — Plugins">
+      ```bash
+      plugins=(
+        git
+        zsh-completions
+        zsh-autosuggestions
+        zsh-syntax-highlighting
+        docker
+        npm
+      )
+      ```
+      </TerminalWindow>
+    </ScrollReveal>
+
+    <ScrollReveal delay={250}>
+      #### My Aliases
+
+      These save me hundreds of keystrokes a day:
+
+      <TerminalWindow title="~/.zshrc — Aliases">
+      ```bash
+      # Git (the ones I actually use)
+      alias gs="git status"
+      alias ga="git add ."
+      alias gc="git commit -m"
+      alias gp="git push"
+      alias gl="git lg"
+
+      # Navigation
+      alias projects="cd ~/Projects"
+      alias work="cd ~/Projects/work"
+
+      # Utilities
+      alias week="date +%V"
+      alias serve="python3 -m http.server 8000"
+      ```
+      </TerminalWindow>
+    </ScrollReveal>
+  </div>
+</section>
+
+{/* ── Editors ────────────────────────────────────── */}
+
+<section class="bg-[var(--color-surface-alt)]">
+  <div class="story-section-narrow">
+    <ScrollReveal>
+      ### VS Code: The Writing & Coding Workhorse
+
+      Although a traditional IDE is needed less and less with AI-powered tools like Cursor and Claude Code handling most of the heavy lifting, I'm still using VS Code to manually review and update code. Honestly, I expect this section to be removed in the next six months.
+
+      For now, VS Code is where I spend a good chunk of my day. Not just for code. I use it for Markdown, JSON, YAML, meeting notes, and PRDs.
+
+
+    </ScrollReveal>
+
+    <ScrollReveal delay={100}>
+      #### Extensions That Matter for PMs
+
+      <div class="grid gap-4 sm:grid-cols-2 my-6">
+        <div class="rounded-xl border border-[var(--color-border)]/50 bg-[var(--color-surface)] p-4">
+          <p class="text-xs font-semibold uppercase tracking-wider text-[var(--color-accent)]">Writing</p>
+          <ul class="mt-2 space-y-1 text-sm text-[var(--color-text-secondary)]">
+            <li>Markdown All in One</li>
+            <li>Code Spell Checker</li>
+            <li>Prettier</li>
+            <li>Better Comments</li>
+          </ul>
+        </div>
+        <div class="rounded-xl border border-[var(--color-border)]/50 bg-[var(--color-surface)] p-4">
+          <p class="text-xs font-semibold uppercase tracking-wider text-[var(--color-accent)]">Product Work</p>
+          <ul class="mt-2 space-y-1 text-sm text-[var(--color-text-secondary)]">
+            <li>GitLens</li>
+            <li>TODO Highlight</li>
+            <li>Project Manager</li>
+            <li>Bookmarks</li>
+          </ul>
+        </div>
+        <div class="rounded-xl border border-[var(--color-border)]/50 bg-[var(--color-surface)] p-4">
+          <p class="text-xs font-semibold uppercase tracking-wider text-[var(--color-accent)]">Development</p>
+          <ul class="mt-2 space-y-1 text-sm text-[var(--color-text-secondary)]">
+            <li>GitHub Copilot</li>
+            <li>ESLint</li>
+            <li>Error Lens</li>
+            <li>Auto Close/Rename Tag</li>
+          </ul>
+        </div>
+        <div class="rounded-xl border border-[var(--color-border)]/50 bg-[var(--color-surface)] p-4">
+          <p class="text-xs font-semibold uppercase tracking-wider text-[var(--color-accent)]">Productivity</p>
+          <ul class="mt-2 space-y-1 text-sm text-[var(--color-text-secondary)]">
+            <li>Auto Hide Sidebar</li>
+            <li>FontSize Shortcuts</li>
+            <li>Formatting Toggle</li>
+            <li>Path Intellisense</li>
+          </ul>
+        </div>
+      </div>
+    </ScrollReveal>
+
+    <ScrollReveal delay={150}>
+      #### Key Settings
+
+      A few settings that make VS Code feel like a focused writing environment, not an IDE:
+
+      <TerminalWindow title="settings.json — VS Code">
+      ```json
+      {
+        "editor.fontSize": 14,
+        "editor.fontFamily": "Hack Nerd Font Mono",
+        "editor.minimap.enabled": false,
+        "editor.padding.top": 36,
+        "workbench.colorTheme": "GitHub Dark Default",
+        "workbench.sideBar.location": "right",
+        "workbench.activityBar.location": "hidden",
+        "files.autoSave": "afterDelay",
+        "files.autoSaveDelay": 1000,
+        "[markdown]": {
+          "editor.formatOnSave": false,
+          "editor.wordWrap": "on"
+        }
+      }
+      ```
+      </TerminalWindow>
+
+      Sidebar on the right. Activity bar hidden. Minimap off. Auto-save on. It's a writing tool that happens to also run code.
+    </ScrollReveal>
+  </div>
+</section>
+
+{/* ── AI Tools ────────────────────────────────────── */}
+
+<section>
+  <div class="story-section-narrow">
+    <ScrollReveal>
+      ### The AI Layer: Cursor + Claude Code
+
+      This is the 2025 part. Two tools that didn't exist in my setup a year ago, and now I can't imagine working without them.
+    </ScrollReveal>
+
+    <ScrollReveal delay={100}>
+      #### Cursor: AI-First Editor
+
+      For rapid prototyping and MVP development. When I need to go from "idea on a whiteboard" to "working prototype" in an afternoon, Cursor is where it happens.
+
+      - Generate boilerplate for proof-of-concepts
+      - Explain unfamiliar codebases I'm reviewing
+      - Draft API schemas and data models
+      - Turn a sketch into a functional component
+    </ScrollReveal>
+
+    <ScrollReveal delay={200}>
+      #### Claude Code: The Terminal Agent
+
+      This is the tool that changed how I work. Claude Code lives in my terminal and handles complex, multi-step coding tasks autonomously. Currently running with Opus 4.6, it's the best I've found for handling PRDs and building quick MVPs.
+
+      <TerminalWindow title="Install Claude Code">
+      ```bash
+      npm install -g @anthropic-ai/claude-code
+      ```
+      </TerminalWindow>
+
+      **What I actually use it for:**
+
+      <TerminalWindow title="Claude Code in Action">
+      ```bash
+      # Generate a PRD from rough notes
+      claude "Create a comprehensive PRD for 'user-authentication'
+        with problem statement, user stories, success metrics,
+        and technical considerations"
+
+      # Analyze customer feedback
+      claude "Analyze this feedback file. Extract themes,
+        pain points, feature requests, and sentiment"
+        customer-feedback.txt
+
+      # Scaffold a prototype
+      claude "Build a landing page with hero, features,
+        and CTA using Tailwind CSS"
+      ```
+      </TerminalWindow>
+    </ScrollReveal>
+
+    <ScrollReveal delay={250}>
+      <Callout type="info">
+        I keep reusable automation scripts in `~/scripts/`: `new-prd.sh`, `analyze-feedback.sh`, `new-feature.sh`. Each one wraps a Claude Code prompt into a one-liner I can run from anywhere. Morning setup is just `pmsetup` in the terminal.
+      </Callout>
+    </ScrollReveal>
+  </div>
+</section>
+
+{/* ── The Rest of the Stack ────────────────────────── */}
+
+<section class="bg-[var(--color-surface-alt)]">
+  <div class="story-section-narrow">
+    <ScrollReveal>
+      ## The Supporting Cast
+
+      These tools don't get the headlines, but they keep everything running smoothly.
+    </ScrollReveal>
+
+    <ScrollReveal delay={100}>
+      <div class="space-y-6 my-6">
+        <div class="rounded-xl border border-[var(--color-border)]/50 bg-[var(--color-surface)] p-5">
+          <div class="flex items-start justify-between">
+            <div>
+              <p class="font-semibold text-[var(--color-text-primary)]">Notion</p>
+              <p class="mt-1 text-sm text-[var(--color-text-secondary)]">Documentation hub. PRD templates, meeting notes, customer interview databases, competitive analysis. The single source of truth for everything written.</p>
+            </div>
+          </div>
+        </div>
+        <div class="rounded-xl border border-[var(--color-border)]/50 bg-[var(--color-surface)] p-5">
+          <div class="flex items-start justify-between">
+            <div>
+              <p class="font-semibold text-[var(--color-text-primary)]">Obsidian</p>
+              <p class="mt-1 text-sm text-[var(--color-text-secondary)]">Personal knowledge management. Local-first, Markdown-based. Where I build my "second brain": daily notes, product insights, reading notes, patterns I notice across customer calls.</p>
+            </div>
+          </div>
+        </div>
+        <div class="rounded-xl border border-[var(--color-border)]/50 bg-[var(--color-surface)] p-5">
+          <div class="flex items-start justify-between">
+            <div>
+              <p class="font-semibold text-[var(--color-text-primary)]">Figma</p>
+              <p class="mt-1 text-sm text-[var(--color-text-secondary)]">Design collaboration. Review designs, create quick wireframes, annotate with feedback, prototype simple flows. Learn the shortcuts: C for comments, V for move.</p>
+            </div>
+          </div>
+        </div>
+        <div class="rounded-xl border border-[var(--color-border)]/50 bg-[var(--color-surface)] p-5">
+          <div class="flex items-start justify-between">
+            <div>
+              <p class="font-semibold text-[var(--color-text-primary)]">Linear</p>
+              <p class="mt-1 text-sm text-[var(--color-text-secondary)]">Issue tracking that doesn't feel like punishment. Keyboard-driven, fast, beautiful. C to create, / to search. Custom views per project.</p>
+            </div>
+          </div>
+        </div>
+        <div class="rounded-xl border border-[var(--color-border)]/50 bg-[var(--color-surface)] p-5">
+          <div class="flex items-start justify-between">
+            <div>
+              <p class="font-semibold text-[var(--color-text-primary)]">CleanShot X</p>
+              <p class="mt-1 text-sm text-[var(--color-text-secondary)]">Screenshots and screen recording that's better than macOS built-in in every way. Annotate instantly, record GIFs for bug reports, scrolling capture for long pages.</p>
+            </div>
+          </div>
+        </div>
+        <div class="rounded-xl border border-[var(--color-border)]/50 bg-[var(--color-surface)] p-5">
+          <div class="flex items-start justify-between">
+            <div>
+              <p class="font-semibold text-[var(--color-text-primary)]">Loom</p>
+              <p class="mt-1 text-sm text-[var(--color-text-secondary)]">Async video for remote PMs. Share product demos, give design feedback, explain complex concepts, all without scheduling a meeting.</p>
+            </div>
+          </div>
+        </div>
+        <div class="rounded-xl border border-[var(--color-border)]/50 bg-[var(--color-surface)] p-5">
+          <div class="flex items-start justify-between">
+            <div>
+              <p class="font-semibold text-[var(--color-text-primary)]">Rectangle + Maccy</p>
+              <p class="mt-1 text-sm text-[var(--color-text-secondary)]">Window management via keyboard (Ctrl+Opt+arrows) and clipboard history (Cmd+Shift+V). Small tools, massive time savings.</p>
+            </div>
+          </div>
+        </div>
+        <div class="rounded-xl border border-[var(--color-border)]/50 bg-[var(--color-surface)] p-5">
+          <div class="flex items-start justify-between">
+            <div>
+              <p class="font-semibold text-[var(--color-text-primary)]">Docker Desktop</p>
+              <p class="mt-1 text-sm text-[var(--color-text-secondary)]">Containers for local development. Run databases, APIs, and full-stack apps without polluting your system. It's the quickest way to get a reproducible dev environment. Worth noting: if your team runs Kubernetes in production, Rancher Desktop (free, ships with k3s) might be a better fit. Podman is another solid alternative if you want something lighter and daemonless.</p>
+            </div>
+          </div>
+        </div>
+        <div class="rounded-xl border border-[var(--color-border)]/50 bg-[var(--color-surface)] p-5">
+          <div class="flex items-start justify-between">
+            <div>
+              <p class="font-semibold text-[var(--color-text-primary)]">TablePlus + Postman</p>
+              <p class="mt-1 text-sm text-[var(--color-text-secondary)]">Database GUI and API testing. For when you need to verify metrics, understand data models, or test endpoints yourself. Read-only production access is your friend.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ScrollReveal>
+  </div>
+</section>
+
+{/* ── Git & SSH ────────────────────────────────────── */}
+
+<section>
+  <div class="story-section-narrow">
+    <ScrollReveal>
+      ## Developer Essentials: Git, SSH & Node
+
+      Even as a PM, these are non-negotiable. You need to clone repos, review PRs, and run prototypes locally.
+    </ScrollReveal>
+
+    <ScrollReveal delay={100}>
+      ### Git Configuration
+
+      <TerminalWindow title="Git Setup">
+      ```bash
+      git config --global user.name "Murat Karslioglu"
+      git config --global user.email "your-email@company.com"
+      git config --global init.defaultBranch main
+
+      # A beautiful git log
+      git config --global alias.lg "log --color --graph \
+        --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset \
+        %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' \
+        --abbrev-commit"
+      ```
+      </TerminalWindow>
+    </ScrollReveal>
+
+    <ScrollReveal delay={150}>
+      ### SSH for GitHub
+
+      <TerminalWindow title="SSH Keys">
+      ```bash
+      ssh-keygen -t ed25519 -C "github"
+      ssh-add --apple-use-keychain ~/.ssh/github
+
+      # Add to GitHub with the CLI
+      gh auth login
+      gh ssh-key add ~/.ssh/github.pub -t github
+      ```
+      </TerminalWindow>
+    </ScrollReveal>
+
+    <ScrollReveal delay={200}>
+      ### Node.js for Prototyping
+
+      <TerminalWindow title="Node.js Setup">
+      ```bash
+      # Install via NVM (version manager)
+      nvm install --lts
+      node -v && npm -v
+
+      # Global tools for quick prototyping
+      npm install -g serve http-server \
+        json-server netlify-cli vercel
+      ```
+      </TerminalWindow>
+
+      <Callout type="tip">
+        `json-server` is a PM superpower. Point it at a JSON file and you instantly have a REST API for prototyping. No backend needed.
+      </Callout>
+    </ScrollReveal>
+  </div>
+</section>
+
+{/* ── Workflows ────────────────────────────────────── */}
+
+<section class="bg-[var(--color-surface-alt)]">
+  <div class="story-section-narrow">
+    <ScrollReveal>
+      ## The Workflows That Tie It All Together
+
+      Tools are nothing without workflows. Here are the three I run on repeat.
+    </ScrollReveal>
+
+    <ScrollReveal delay={100}>
+      ### The Morning Routine
+
+      1. `pmsetup` in the terminal: starts Docker, opens Notion, Linear, Slack
+      2. **Cmd+Space** → "cal" to review today's meetings in Raycast
+      3. Check Linear for overnight updates
+      4. Open Daily Note in Obsidian
+      5. Start working on the highest-impact item
+    </ScrollReveal>
+
+    <ScrollReveal delay={150}>
+      ### The Documentation Flow
+
+      Customer call → **Loom** recording → transcribe with **Otter.ai** → extract insights into **Notion** → synthesize patterns in **Obsidian** → update the **PRD**
+
+      Every insight has a clear path from conversation to product decision.
+    </ScrollReveal>
+
+    <ScrollReveal delay={200}>
+      ### The Prototype Flow
+
+      Sketch in **FigJam** → mockup in **Figma** → build in **Cursor** or with **Claude Code** → deploy to **Vercel** → share a **Loom** walkthrough
+
+      From idea to deployed prototype, tested with real users, in a single day.
+    </ScrollReveal>
+  </div>
+</section>
+
+{/* ── Folder Structure ────────────────────────────── */}
+
+<section>
+  <div class="story-section-narrow">
+    <ScrollReveal>
+      ## The Folder Structure
+
+      Simple, predictable, and hard to mess up:
+
+      <TerminalWindow title="Project Structure">
+      ```
+      ~/Projects/
+      ├── work/            # Company projects
+      │   ├── docs/        # Internal documentation
+      │   ├── prototypes/  # Quick MVPs
+      │   └── research/    # Customer interviews, analysis
+      ├── blog/            # Personal blog
+      ├── learning/        # Courses, tutorials
+      └── personal/        # Side projects
+      ```
+      </TerminalWindow>
+
+      Everything has a home. Nothing lives on the Desktop.
+    </ScrollReveal>
+  </div>
+</section>
+
+{/* ── Maintenance ────────────────────────────────── */}
+
+<section class="bg-[var(--color-surface-alt)]">
+  <div class="story-section-narrow">
+    <ScrollReveal>
+      ## Keeping It Running: Maintenance
+
+      A setup is only as good as its maintenance. I follow a simple cadence:
+
+      **Weekly:** `brew update && brew upgrade`, clear Downloads, archive old Notion pages, push Obsidian vault to GitHub.
+
+      **Monthly:** Update VS Code extensions, remove unused apps, clear browser caches, `npm update -g`.
+
+      **Quarterly:** macOS system update, audit installed apps, review security settings, clean up SSH keys.
+
+      **Backup strategy:** Code lives on GitHub. Documents in Notion + Google Drive. Personal notes in Obsidian (synced to GitHub). Passwords in 1Password. Config files in a dotfiles repo. Time Machine to an external SSD for everything else.
+    </ScrollReveal>
+  </div>
+</section>
+
+{/* ── First Week ────────────────────────────────────── */}
+
+<section>
+  <div class="story-section-narrow">
+    <ScrollReveal>
+      ## Your First Week Checklist
+
+      If you're starting a new PM role, here's what to get done in week one:
+
+      - [ ] All system access: Slack, Linear/Jira, Figma, Notion, repos
+      - [ ] SSH keys configured, VPN set up
+      - [ ] Dev environment tested. Can you clone and run the product locally?
+      - [ ] First PRD template created in Notion
+      - [ ] Met with your engineering lead
+      - [ ] Reviewed the product roadmap
+      - [ ] Set up your customer feedback pipeline
+    </ScrollReveal>
+  </div>
+</section>
+
+{/* ── Closing ────────────────────────────────────── */}
+
+<section class="bg-[var(--color-surface-alt)]">
+  <div class="story-section-narrow">
+    <ScrollReveal>
+      ## The Bottom Line
+
+      This setup takes about an hour from a blank MacBook to a fully operational PM workstation. It balances three things:
+    </ScrollReveal>
+
+    <ScrollReveal delay={100}>
+      <div class="grid gap-6 sm:grid-cols-3 my-8 text-center">
+        <div>
+          <p class="text-3xl font-bold text-[var(--color-text-primary)]">Technical</p>
+          <p class="mt-2 text-sm text-[var(--color-text-secondary)]">Build MVPs, understand the stack, speak the team's language</p>
+        </div>
+        <div>
+          <p class="text-3xl font-bold text-[var(--color-text-primary)]">Clear</p>
+          <p class="mt-2 text-sm text-[var(--color-text-secondary)]">Write PRDs, present effectively, document thoroughly</p>
+        </div>
+        <div>
+          <p class="text-3xl font-bold text-[var(--color-text-primary)]">Fast</p>
+          <p class="mt-2 text-sm text-[var(--color-text-secondary)]">Minimal friction, zero context switching, great tools</p>
+        </div>
+      </div>
+    </ScrollReveal>
+
+    <ScrollReveal delay={200}>
+      <blockquote class="my-8 border-l-4 border-[var(--color-accent)] pl-6 text-xl italic text-[var(--color-text-secondary)]">
+        Tools don't make you a great PM. Solving customer problems does. But great tools let you move faster and think clearer.
+      </blockquote>
+
+      Now close this tab and go set up your machine.
+    </ScrollReveal>
+  </div>
+</section>

@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" fill="none">
+  <rect width="800" height="450" rx="12" fill="#1e1e1e"/>
+  <rect x="0" y="0" width="800" height="32" rx="12" fill="#323233"/>
+  <circle cx="20" cy="16" r="6" fill="#ff5f57"/>
+  <circle cx="40" cy="16" r="6" fill="#febc2e"/>
+  <circle cx="60" cy="16" r="6" fill="#28c840"/>
+  <text x="400" y="20" fill="#8a8a8a" font-family="sans-serif" font-size="12" text-anchor="middle">feature-prd.md — VS Code</text>
+  <rect x="0" y="32" width="200" height="418" fill="#252526"/>
+  <text x="16" y="60" fill="#cccccc" font-family="sans-serif" font-size="11">EXPLORER</text>
+  <text x="24" y="85" fill="#8a8a8a" font-family="monospace" font-size="11">📄 feature-prd.md</text>
+  <text x="24" y="105" fill="#8a8a8a" font-family="monospace" font-size="11">📄 user-stories.md</text>
+  <text x="24" y="125" fill="#8a8a8a" font-family="monospace" font-size="11">📁 research/</text>
+  <text x="24" y="145" fill="#8a8a8a" font-family="monospace" font-size="11">📄 metrics.md</text>
+  <text x="240" y="70" fill="#569cd6" font-family="monospace" font-size="14"># User Authentication PRD</text>
+  <text x="240" y="100" fill="#6a9955" font-family="monospace" font-size="12">## Problem Statement</text>
+  <text x="240" y="125" fill="#d4d4d4" font-family="monospace" font-size="12">Users cannot securely access</text>
+  <text x="240" y="145" fill="#d4d4d4" font-family="monospace" font-size="12">their accounts across devices...</text>
+  <text x="240" y="180" fill="#6a9955" font-family="monospace" font-size="12">## Success Metrics</text>
+  <text x="240" y="205" fill="#d4d4d4" font-family="monospace" font-size="12">- Login success rate > 99.5%</text>
+  <text x="240" y="225" fill="#d4d4d4" font-family="monospace" font-size="12">- Auth latency &lt; 200ms p95</text>
+  <text x="240" y="245" fill="#d4d4d4" font-family="monospace" font-size="12">- MFA adoption > 60%</text>
+  <text x="400" y="400" fill="#4d4d4d" font-family="sans-serif" font-size="14" text-anchor="middle">Replace with actual VS Code screenshot</text>
+</svg>

@@ -1,0 +1,85 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+
+interface Props {
+  title: string;
+  date: Date;
+  description: string;
+  readTime?: string;
+  tags?: string[];
+  image?: string;
+  lastUpdated?: Date;
+}
+
+const { title, date, description, readTime, tags = [], image, lastUpdated } = Astro.props;
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  image={image}
+  type="article"
+  publishedTime={date.toISOString()}
+>
+  <article class="mx-auto max-w-3xl px-6 py-20 md:py-28">
+    <header class="mb-12">
+      <div class="flex items-center gap-3 text-sm text-[var(--color-text-tertiary)]">
+        <time datetime={date.toISOString()}>
+          {date.toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          })}
+        </time>
+        {readTime && <span>&middot; {readTime}</span>}
+      </div>
+      {lastUpdated && (
+        <p class="mt-2 text-xs text-[var(--color-text-tertiary)]">
+          Last updated: <time datetime={lastUpdated.toISOString()}>
+            {lastUpdated.toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}
+          </time>
+        </p>
+      )}
+      <h1
+        class="mt-4 text-3xl font-bold tracking-tight text-[var(--color-text-primary)] sm:text-4xl md:text-5xl"
+      >
+        {title}
+      </h1>
+      {
+        tags.length > 0 && (
+          <div class="mt-4 flex gap-2">
+            {tags.map((tag) => (
+              <span class="rounded-full bg-[var(--color-surface-alt)] px-3 py-1 text-xs text-[var(--color-text-tertiary)]">
+                {tag}
+              </span>
+            ))}
+          </div>
+        )
+      }
+    </header>
+
+    <div class="prose">
+      <slot />
+    </div>
+  </article>
+
+  <script
+    type="application/ld+json"
+    set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      headline: title,
+      description: description,
+      datePublished: date.toISOString(),
+      author: {
+        "@type": "Person",
+        name: "Murat Karslioglu",
+        url: "https://muratkarslioglu.com",
+      },
+    })}
+  />
+</BaseLayout>

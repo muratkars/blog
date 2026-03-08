@@ -1,0 +1,14 @@
+---
+import SocialLinks from "./SocialLinks.astro";
+---
+
+<footer class="border-t border-[var(--color-border)]/50 bg-[var(--color-surface)]">
+  <div
+    class="mx-auto flex max-w-5xl flex-col items-center gap-4 px-6 py-10 sm:flex-row sm:justify-between"
+  >
+    <p class="text-sm text-[var(--color-text-tertiary)]">
+      &copy; {new Date().getFullYear()} Murat Karslioglu
+    </p>
+    <SocialLinks />
+  </div>
+</footer>

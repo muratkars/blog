@@ -1,0 +1,17 @@
+---
+interface Props {
+  type?: "info" | "tip" | "warning";
+}
+
+const { type = "info" } = Astro.props;
+
+const styles = {
+  info: "border-[var(--color-accent)]/30 bg-[var(--color-accent)]/5",
+  tip: "border-emerald-500/30 bg-emerald-500/5",
+  warning: "border-amber-500/30 bg-amber-500/5",
+};
+---
+
+<aside class:list={["my-6 rounded-xl border-l-4 p-5", styles[type]]}>
+  <slot />
+</aside>

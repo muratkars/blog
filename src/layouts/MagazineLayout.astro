@@ -1,0 +1,92 @@
+---
+import SEO from "../components/SEO.astro";
+import "../styles/global.css";
+
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <SEO title={title} description={description} />
+  </head>
+  <body class="magazine-body">
+    <div class="magazine-chrome">
+      <a href="/blog" class="magazine-back" aria-label="Back to blog">
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M19 12H5M12 19l-7-7 7-7" />
+        </svg>
+        <span>Back to Blog</span>
+      </a>
+      <div class="magazine-page-indicator" id="page-indicator"></div>
+    </div>
+    <slot />
+  </body>
+</html>
+
+<style>
+  .magazine-body {
+    margin: 0;
+    padding: 0;
+    background: #1a1a1e;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: hidden;
+  }
+
+  .magazine-chrome {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1.5rem;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.6), transparent);
+    pointer-events: none;
+  }
+
+  .magazine-back {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-family: var(--font-sans);
+    pointer-events: auto;
+    transition: color 0.2s;
+  }
+
+  .magazine-back:hover {
+    color: white;
+  }
+
+  .magazine-page-indicator {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.8125rem;
+    font-family: var(--font-sans);
+    pointer-events: none;
+  }
+</style>

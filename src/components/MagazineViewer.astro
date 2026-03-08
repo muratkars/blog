@@ -1,0 +1,829 @@
+---
+// MagazineViewer: page-flip wrapper with CHIP-style content pagination engine
+---
+
+<div class="magazine-container">
+  <div class="magazine-loading" id="magazine-loading">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">Preparing magazine...</div>
+  </div>
+
+  <div class="magazine-wrapper" id="magazine-wrapper" style="opacity: 0;">
+    <button class="nav-btn nav-prev" id="nav-prev" aria-label="Previous page">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M15 18l-6-6 6-6" />
+      </svg>
+    </button>
+
+    <div class="flipbook" id="flipbook">
+      <slot />
+    </div>
+
+    <button class="nav-btn nav-next" id="nav-next" aria-label="Next page">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 18l6-6-6-6" />
+      </svg>
+    </button>
+  </div>
+</div>
+
+<script>
+  import { PageFlip } from "page-flip";
+
+  // ---------------------------------------------------------------------------
+  // Layout constants (reference size; page-flip stretches to fit)
+  // ---------------------------------------------------------------------------
+  const PW = 600;
+  const PH = 848;
+  const PAD = 28;
+  const CONTENT_W = PW - PAD * 2;
+  const FOOTER_H = 28;
+  const BODY_HEADER_H = 26; // breadcrumb + accent line + margin
+  const BODY_CONTENT_H = PH - PAD * 2 - BODY_HEADER_H - FOOTER_H;
+
+  // ---------------------------------------------------------------------------
+  // Shared content styles for measurement and rendering (3-column CHIP style)
+  // ---------------------------------------------------------------------------
+  const CONTENT_CSS = `
+    column-count:3;column-gap:14px;column-rule:1px solid #e0e0dc;
+    font-family:Georgia,"Times New Roman",serif;
+    font-size:10.5px;line-height:1.6;color:#1a1a1a;
+    word-break:break-word;
+  `;
+
+  // Styles for child elements inside magazine content columns
+  const CHILD_STYLES = `
+    <style>
+      .mc h1,.mc h2,.mc h3,.mc h4{font-family:var(--font-sans);font-weight:700;break-after:avoid;margin-top:10px;margin-bottom:4px;}
+      .mc h2{font-size:13px;line-height:1.25;color:#c0392b;text-transform:uppercase;letter-spacing:0.04em;}
+      .mc h3{font-size:11.5px;line-height:1.3;color:#c0392b;}
+      .mc h4{font-size:10.5px;line-height:1.35;color:#1a1a1a;}
+      .mc h1{font-size:14px;line-height:1.2;color:#1a1a1a;}
+      .mc p{margin:0 0 7px;break-inside:avoid;}
+      .mc ul,.mc ol{margin:0 0 7px;padding-left:14px;break-inside:avoid;}
+      .mc li{margin-bottom:2px;}
+      .mc a{color:#0071e3;text-decoration:none;}
+      .mc blockquote{
+        break-inside:avoid;column-span:all;
+        margin:12px 0;padding:10px 16px;
+        border-left:3px solid #c0392b;border-right:3px solid #c0392b;
+        background:rgba(192,57,43,0.04);
+        font-family:var(--font-sans);font-size:13px;font-weight:600;
+        line-height:1.45;color:#1a1a1a;font-style:normal;
+      }
+      .mc blockquote p{margin:0;font-size:inherit;line-height:inherit;}
+      .mc blockquote::before{content:"\\201C";font-size:24px;font-weight:700;color:#c0392b;line-height:0;vertical-align:-6px;margin-right:2px;}
+      .mc pre{font-family:var(--font-mono);font-size:8.5px;line-height:1.5;background:#f0f0ec;padding:5px 7px;border-radius:3px;overflow:hidden;margin:5px 0;break-inside:avoid;white-space:pre-wrap;word-break:break-all;}
+      .mc code{font-family:var(--font-mono);font-size:0.88em;background:#f0f0ec;padding:1px 3px;border-radius:2px;}
+      .mc pre code{background:none;padding:0;}
+      .mc img{max-width:100%;border-radius:2px;display:block;break-inside:avoid;}
+      .mc figure.mag-figure{margin:6px 0;break-inside:avoid;}
+      .mc figure.mag-figure img{margin:0;}
+      .mc figcaption.mag-caption{font-family:var(--font-sans);font-size:8px;font-style:italic;color:#86868b;margin-top:3px;line-height:1.4;}
+      .mc hr{border:none;border-top:1px solid #e0e0dc;margin:8px 0;}
+      .mc table{width:100%;border-collapse:collapse;font-size:9px;margin:5px 0;break-inside:avoid;}
+      .mc th,.mc td{border:1px solid #e0e0dc;padding:3px 5px;text-align:left;}
+      .mc th{background:#f5f5f2;font-weight:600;}
+      .mc strong{font-weight:700;}
+    </style>
+  `;
+
+  // ---------------------------------------------------------------------------
+  // Helpers
+  // ---------------------------------------------------------------------------
+
+  /** Odd page numbers are right (recto), even are left (verso) */
+  function isRightPage(pgNum: number): boolean {
+    return pgNum % 2 === 1;
+  }
+
+  function fmtDate(iso: string): string {
+    return new Date(iso).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  }
+
+  // ---------------------------------------------------------------------------
+  // Content cleaning
+  // ---------------------------------------------------------------------------
+
+  function cleanContent(html: string): string {
+    const t = document.createElement("div");
+    t.innerHTML = html;
+
+    // Strip scripts, styles, progress bars
+    t.querySelectorAll("script, style, .progress-bar").forEach((el) =>
+      el.remove()
+    );
+
+    // Unwrap scroll-reveal containers
+    t.querySelectorAll(".scroll-reveal").forEach((el) => {
+      const p = el.parentNode!;
+      while (el.firstChild) p.insertBefore(el.firstChild, el);
+      p.removeChild(el);
+    });
+
+    // Unwrap story sections
+    t.querySelectorAll("section").forEach((sec) => {
+      const inner = sec.querySelector(
+        ".story-section-narrow, .story-section-wide"
+      );
+      const src = inner || sec;
+      const p = sec.parentNode!;
+      while (src.firstChild) p.insertBefore(src.firstChild, sec);
+      p.removeChild(sec);
+    });
+
+    // Simplify terminal windows to just code blocks
+    t.querySelectorAll(".terminal-window").forEach((el) => {
+      const pre = el.querySelector("pre");
+      if (pre) el.replaceWith(pre);
+      else el.remove();
+    });
+
+    // Remove stat counters and complex widgets
+    t.querySelectorAll(".stat-counter").forEach((el) => el.remove());
+
+    // Wrap images with alt text in figure/figcaption (before div unwrapping)
+    t.querySelectorAll("img[alt]").forEach((img) => {
+      const alt = (img as HTMLImageElement).getAttribute("alt");
+      if (alt && alt.trim() && !img.closest("figure")) {
+        const figure = document.createElement("figure");
+        figure.className = "mag-figure";
+        const figcaption = document.createElement("figcaption");
+        figcaption.className = "mag-caption";
+        figcaption.textContent = alt;
+        img.parentNode!.insertBefore(figure, img);
+        figure.appendChild(img);
+        figure.appendChild(figcaption);
+      }
+    });
+
+    // Unwrap remaining non-semantic divs
+    t.querySelectorAll("div").forEach((el) => {
+      if (!el.className && !el.id) {
+        const p = el.parentNode!;
+        while (el.firstChild) p.insertBefore(el.firstChild, el);
+        p.removeChild(el);
+      }
+    });
+
+    // Convert asides to blockquotes (pull-quote style)
+    t.querySelectorAll("aside").forEach((el) => {
+      const bq = document.createElement("blockquote");
+      bq.innerHTML = el.innerHTML;
+      el.replaceWith(bq);
+    });
+
+    return t.innerHTML;
+  }
+
+  // ---------------------------------------------------------------------------
+  // Measurement
+  // ---------------------------------------------------------------------------
+
+  function measureHeight(html: string, width: number): number {
+    const m = document.createElement("div");
+    m.style.cssText = `position:absolute;left:-9999px;top:0;width:${width}px;visibility:hidden;${CONTENT_CSS}`;
+    m.className = "mc";
+    m.innerHTML = CHILD_STYLES + html;
+    document.body.appendChild(m);
+    const h = m.scrollHeight;
+    document.body.removeChild(m);
+    return h;
+  }
+
+  function measureElementHeight(html: string, width: number): number {
+    const m = document.createElement("div");
+    m.style.cssText = `position:absolute;left:-9999px;top:0;width:${width}px;visibility:hidden;`;
+    m.innerHTML = html;
+    document.body.appendChild(m);
+    const h = m.scrollHeight;
+    document.body.removeChild(m);
+    return h;
+  }
+
+  // ---------------------------------------------------------------------------
+  // Article metadata interface
+  // ---------------------------------------------------------------------------
+
+  interface ArticleMeta {
+    title: string;
+    subtitle: string;
+    description: string;
+    category: string;
+    date: string;
+    slug: string;
+    image: string;
+    issueDate: string;
+  }
+
+  // ---------------------------------------------------------------------------
+  // CHIP-style breadcrumb (direction flips per page side)
+  // ---------------------------------------------------------------------------
+
+  function breadcrumbHTML(category: string, right: boolean): string {
+    if (right) {
+      return `<div class="mag-bc mag-bc-right">
+        <span class="mag-bc-child">${category}</span>
+        <span class="mag-bc-sep">&lsaquo;</span>
+        <span class="mag-bc-parent">THE MK REVIEW</span>
+      </div>`;
+    }
+    return `<div class="mag-bc mag-bc-left">
+      <span class="mag-bc-parent">THE MK REVIEW</span>
+      <span class="mag-bc-sep">&rsaquo;</span>
+      <span class="mag-bc-child">${category}</span>
+    </div>`;
+  }
+
+  // ---------------------------------------------------------------------------
+  // CHIP-style footer (page number on outer edge)
+  // ---------------------------------------------------------------------------
+
+  function footerHTML(pgNum: number, issueDate: string): string {
+    const right = isRightPage(pgNum);
+    if (right) {
+      return `<div class="mag-ft mag-ft-right">
+        <span class="mag-ft-info">${issueDate} &rsaquo; THE MK REVIEW</span>
+        <span class="mag-ft-pgnum">&lsaquo; ${pgNum}</span>
+      </div>`;
+    }
+    return `<div class="mag-ft mag-ft-left">
+      <span class="mag-ft-pgnum">${pgNum} &rsaquo;</span>
+      <span class="mag-ft-info">THE MK REVIEW &rsaquo; ${issueDate}</span>
+    </div>`;
+  }
+
+  // ---------------------------------------------------------------------------
+  // Opener page header (measured dynamically per article)
+  // ---------------------------------------------------------------------------
+
+  function openerHeaderHTML(meta: ArticleMeta, pgNum: number): string {
+    const right = isRightPage(pgNum);
+    const bc = breadcrumbHTML(meta.category, right);
+    const hero = meta.image
+      ? `<div class="mo-hero"><img src="${meta.image}" alt=""></div>`
+      : "";
+    return `
+      ${bc}
+      <div class="mag-accent-line"></div>
+      ${hero}
+      <h1 class="mo-title">${meta.title}</h1>
+      <p class="mo-deck">${meta.subtitle}</p>
+      <div class="mo-byline">MURAT KARSLIOGLU</div>
+      <div class="mo-rule"></div>
+    `;
+  }
+
+  // ---------------------------------------------------------------------------
+  // Full page HTML generators
+  // ---------------------------------------------------------------------------
+
+  function createOpenerHTML(
+    meta: ArticleMeta,
+    html: string,
+    contentH: number,
+    offset: number,
+    pgNum: number,
+    headerHTML: string
+  ): string {
+    const ft = footerHTML(pgNum, meta.issueDate);
+    return `
+      <div class="mo-page">
+        <div class="mo-header">${headerHTML}</div>
+        <div class="mo-viewport" style="height:${contentH}px;overflow:hidden;">
+          <div class="mc mo-content" style="width:${CONTENT_W}px;${CONTENT_CSS}transform:translateY(-${offset}px);">
+            ${CHILD_STYLES}${html}
+          </div>
+        </div>
+        ${ft}
+      </div>`;
+  }
+
+  function createBodyHTML(
+    meta: ArticleMeta,
+    html: string,
+    contentH: number,
+    offset: number,
+    pgNum: number,
+    isLast: boolean
+  ): string {
+    const right = isRightPage(pgNum);
+    const bc = breadcrumbHTML(meta.category, right);
+    const ft = footerHTML(pgNum, meta.issueDate);
+    const readMore = isLast
+      ? `<div class="mb-readmore"><a href="/blog/${meta.slug}">Read the full article online &rarr;</a></div>`
+      : "";
+    return `
+      <div class="mb-page">
+        ${bc}
+        <div class="mag-accent-line"></div>
+        <div class="mb-viewport" style="height:${contentH}px;overflow:hidden;">
+          <div class="mc mb-content" style="width:${CONTENT_W}px;${CONTENT_CSS}transform:translateY(-${offset}px);">
+            ${CHILD_STYLES}${html}
+          </div>
+        </div>
+        ${readMore}
+        ${ft}
+      </div>`;
+  }
+
+  // ---------------------------------------------------------------------------
+  // Pagination engine
+  // ---------------------------------------------------------------------------
+
+  function paginateArticle(
+    source: HTMLElement,
+    startPage: number
+  ): HTMLElement[] {
+    const meta: ArticleMeta = {
+      title: source.dataset.title || "",
+      subtitle: source.dataset.subtitle || source.dataset.description || "",
+      description: source.dataset.description || "",
+      category: source.dataset.category || "ARTICLE",
+      date: source.dataset.date || "",
+      slug: source.dataset.slug || "",
+      image: source.dataset.image || "",
+      issueDate: source.dataset.issuedate || "",
+    };
+
+    const cleanedHTML = cleanContent(source.innerHTML);
+    const totalH = measureHeight(cleanedHTML, CONTENT_W);
+
+    // Build and measure the opener header dynamically
+    const hdrHTML = openerHeaderHTML(meta, startPage);
+    const hdrH = measureElementHeight(hdrHTML, CONTENT_W);
+    const openerContentH = PH - PAD * 2 - hdrH - FOOTER_H;
+
+    const pages: HTMLElement[] = [];
+    let offset = 0;
+    let pgNum = startPage;
+
+    while (offset < totalH) {
+      const isOpener = pages.length === 0;
+      const contentH = isOpener ? openerContentH : BODY_CONTENT_H;
+      const isLast = offset + contentH >= totalH;
+
+      const pageEl = document.createElement("div");
+      pageEl.className = "magazine-page";
+
+      if (isOpener) {
+        pageEl.innerHTML = createOpenerHTML(
+          meta,
+          cleanedHTML,
+          contentH,
+          offset,
+          pgNum,
+          hdrHTML
+        );
+      } else {
+        pageEl.innerHTML = createBodyHTML(
+          meta,
+          cleanedHTML,
+          contentH,
+          offset,
+          pgNum,
+          isLast
+        );
+      }
+
+      pages.push(pageEl);
+      offset += contentH;
+      pgNum++;
+    }
+
+    return pages;
+  }
+
+  // ---------------------------------------------------------------------------
+  // Initialization
+  // ---------------------------------------------------------------------------
+
+  function initMagazine() {
+    const flipbook = document.getElementById("flipbook");
+    const wrapper = document.getElementById("magazine-wrapper");
+    const loading = document.getElementById("magazine-loading");
+
+    if (!flipbook || !wrapper || !loading) return;
+
+    // Find back cover (marked with data attribute)
+    const backCover = flipbook.querySelector('[data-page-role="back-cover"]');
+
+    // Paginate articles from hidden sources
+    const sources = document.querySelectorAll<HTMLElement>(".article-source");
+    let currentPage = 5; // after cover(1), inside-cover(2), TOC(3), editorial(4)
+
+    // Track article start pages for TOC update
+    const articleStartPages: number[] = [];
+
+    sources.forEach((source) => {
+      articleStartPages.push(currentPage);
+      const articlePages = paginateArticle(source, currentPage);
+      articlePages.forEach((page) => {
+        if (backCover) flipbook.insertBefore(page, backCover);
+        else flipbook.appendChild(page);
+      });
+      currentPage += articlePages.length;
+    });
+
+    // Update TOC page numbers
+    document
+      .querySelectorAll<HTMLElement>(".toc-entry-page")
+      .forEach((el, i) => {
+        if (articleStartPages[i] !== undefined) {
+          el.textContent = String(articleStartPages[i]);
+        }
+      });
+
+    // Ensure even page count for showCover
+    const allPages = flipbook.querySelectorAll<HTMLElement>(".magazine-page");
+    if (allPages.length % 2 !== 0) {
+      const filler = document.createElement("div");
+      filler.className = "magazine-page";
+      filler.innerHTML =
+        '<div class="mf-page"><div class="mf-logo">THE MK REVIEW</div></div>';
+      if (backCover) flipbook.insertBefore(filler, backCover);
+      else flipbook.appendChild(filler);
+    }
+
+    // Remove hidden article sources
+    document.getElementById("article-sources")?.remove();
+
+    // Initialize page-flip
+    const isMobile = window.innerWidth < 768;
+    const finalPages =
+      flipbook.querySelectorAll<HTMLElement>(".magazine-page");
+
+    const pageFlip = new PageFlip(flipbook, {
+      width: PW,
+      height: PH,
+      size: "stretch",
+      maxWidth: 900,
+      maxHeight: 1273,
+      minWidth: 300,
+      minHeight: 424,
+      drawShadow: true,
+      maxShadowOpacity: 0.5,
+      flippingTime: 1000,
+      usePortrait: isMobile,
+      startPage: 0,
+      showCover: true,
+      mobileScrollSupport: false,
+      swipeDistance: 30,
+      showPageCorners: true,
+      disableFlipByClick: false,
+    });
+
+    pageFlip.loadFromHTML(finalPages);
+
+    // Page indicator
+    const indicator = document.getElementById("page-indicator");
+    function updateIndicator() {
+      if (!indicator) return;
+      const c = pageFlip.getCurrentPageIndex();
+      const t = pageFlip.getPageCount();
+      indicator.textContent = `${c + 1} / ${t}`;
+    }
+    pageFlip.on("flip", updateIndicator);
+    updateIndicator();
+
+    // Navigation
+    document
+      .getElementById("nav-prev")
+      ?.addEventListener("click", () => pageFlip.flipPrev());
+    document
+      .getElementById("nav-next")
+      ?.addEventListener("click", () => pageFlip.flipNext());
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowLeft") pageFlip.flipPrev();
+      else if (e.key === "ArrowRight") pageFlip.flipNext();
+    });
+
+    // Show magazine
+    loading.style.display = "none";
+    wrapper.style.opacity = "1";
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initMagazine);
+  } else {
+    initMagazine();
+  }
+</script>
+
+<style>
+  .magazine-container {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 0.5rem 0.5rem;
+    box-sizing: border-box;
+  }
+
+  .magazine-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .loading-spinner {
+    width: 2rem;
+    height: 2rem;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-top-color: rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  .loading-text {
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  .magazine-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+    height: calc(100vh - 4rem);
+    transition: opacity 0.4s ease;
+  }
+
+  .flipbook {
+    width: 100%;
+    height: 100%;
+  }
+
+  .nav-btn {
+    flex-shrink: 0;
+    width: 3rem;
+    height: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 50%;
+    color: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  .nav-btn:hover {
+    background: rgba(255, 255, 255, 0.12);
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  @media (max-width: 768px) {
+    .nav-btn { display: none; }
+    .magazine-container { padding: 2.5rem 0 0; }
+  }
+</style>
+
+{/* Global styles for dynamically created magazine pages */}
+<style is:global>
+  /* ---- Base page ---- */
+  .magazine-page {
+    background: #fafaf8;
+    overflow: hidden;
+  }
+
+  /* ==================================================================
+     CHIP-style breadcrumb navigation
+     Left pages:  THE MK REVIEW › CATEGORY  (left-aligned)
+     Right pages: CATEGORY ‹ THE MK REVIEW  (right-aligned)
+     ================================================================== */
+  .mag-bc {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-family: var(--font-sans);
+    font-size: 7.5px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding-bottom: 4px;
+  }
+
+  .mag-bc-left {
+    justify-content: flex-start;
+  }
+
+  .mag-bc-right {
+    justify-content: flex-end;
+  }
+
+  .mag-bc-parent {
+    color: #86868b;
+  }
+
+  .mag-bc-sep {
+    color: #c0392b;
+    font-size: 10px;
+    font-weight: 400;
+  }
+
+  .mag-bc-child {
+    color: #c0392b;
+  }
+
+  /* Accent line below breadcrumb */
+  .mag-accent-line {
+    height: 2px;
+    background: #c0392b;
+    margin-bottom: 8px;
+  }
+
+  /* ==================================================================
+     CHIP-style footer
+     Page number on outer edge, magazine info centered
+     ================================================================== */
+  .mag-ft {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 6px;
+    border-top: 1px solid #e0e0dc;
+    margin-top: auto;
+    flex-shrink: 0;
+    font-family: var(--font-sans);
+    font-size: 7.5px;
+    color: #86868b;
+    letter-spacing: 0.03em;
+  }
+
+  .mag-ft-pgnum {
+    font-weight: 700;
+    font-size: 9px;
+    color: #1a1a1a;
+  }
+
+  .mag-ft-info {
+    font-size: 7px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #b0b0b0;
+  }
+
+  /* ==================================================================
+     Article opener page (CHIP style)
+     ================================================================== */
+  .mo-page {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 28px;
+    box-sizing: border-box;
+    overflow: hidden;
+    background: #fafaf8;
+  }
+
+  .mo-header {
+    flex-shrink: 0;
+  }
+
+  .mo-hero {
+    width: 100%;
+    max-height: 170px;
+    overflow: hidden;
+    border-radius: 2px;
+    margin-bottom: 10px;
+  }
+
+  .mo-hero img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* Large CHIP-style title (spans ~2 columns visually) */
+  .mo-title {
+    font-family: var(--font-sans);
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    line-height: 1.08;
+    color: #1a1a1a;
+    margin: 0 0 6px;
+  }
+
+  /* Subtitle / deck: 2-3 lines, larger than body text */
+  .mo-deck {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 12px;
+    line-height: 1.5;
+    color: #555;
+    margin: 0 0 6px;
+  }
+
+  /* Highlighted words within the deck */
+  .mo-deck strong,
+  .mo-deck mark {
+    color: #c0392b;
+    background: none;
+    font-weight: 600;
+  }
+
+  /* Author byline in small caps */
+  .mo-byline {
+    font-family: var(--font-sans);
+    font-size: 8.5px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #86868b;
+    margin-bottom: 6px;
+  }
+
+  .mo-rule {
+    height: 2px;
+    background: #c0392b;
+    margin-bottom: 6px;
+  }
+
+  .mo-viewport {
+    flex: 1;
+    overflow: hidden;
+  }
+
+  /* CHIP-style drop cap on first paragraph */
+  .mo-content > p:first-of-type::first-letter {
+    float: left;
+    font-size: 4em;
+    line-height: 0.75;
+    font-weight: 700;
+    color: #c0392b;
+    padding-right: 5px;
+    padding-top: 3px;
+    font-family: Georgia, "Times New Roman", serif;
+  }
+
+  /* ==================================================================
+     Article body / continuation page (CHIP style)
+     ================================================================== */
+  .mb-page {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 28px;
+    box-sizing: border-box;
+    overflow: hidden;
+    background: #fafaf8;
+  }
+
+  .mb-viewport {
+    flex: 1;
+    overflow: hidden;
+  }
+
+  .mb-readmore {
+    flex-shrink: 0;
+    padding-top: 6px;
+    text-align: right;
+  }
+
+  .mb-readmore a {
+    font-family: var(--font-sans);
+    font-size: 9px;
+    font-weight: 600;
+    color: #c0392b;
+    text-decoration: none;
+  }
+
+  .mb-readmore a:hover {
+    opacity: 0.7;
+  }
+
+  /* ==================================================================
+     Filler page
+     ================================================================== */
+  .mf-page {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fafaf8;
+  }
+
+  .mf-logo {
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #e0e0dc;
+  }
+</style>

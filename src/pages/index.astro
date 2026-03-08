@@ -1,0 +1,93 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import BlogCard from "../components/BlogCard.astro";
+import SocialLinks from "../components/SocialLinks.astro";
+import { getCollection } from "astro:content";
+
+const posts = (await getCollection("blog", ({ data }) => !data.draft))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 3);
+---
+
+<BaseLayout
+  title="Murat Karslioglu"
+  description="Personal website of Murat Karslioglu. Product leader, writer, and builder."
+>
+  {/* Hero */}
+  <section class="mx-auto max-w-5xl px-6 pb-20 pt-24 md:pt-32">
+    <h1
+      class="text-4xl font-bold tracking-tight text-[var(--color-text-primary)] sm:text-5xl md:text-6xl"
+    >
+      Hi, I'm <span class="name-pronunciation">Murat<span class="pronunciation-tip">moo-RAHT kar-slee-OH-loo</span></span>.
+    </h1>
+    <p
+      class="mt-6 max-w-2xl text-lg leading-relaxed text-[var(--color-text-secondary)] sm:text-xl"
+    >
+      Product leader, writer, and builder. I work at the intersection of
+      technology and strategy, helping teams ship products that matter.
+    </p>
+    <SocialLinks class="mt-8" />
+  </section>
+
+  {/* Featured Posts */}
+  {
+    posts.length > 0 && (
+      <section class="border-t border-[var(--color-border)]/50 bg-[var(--color-surface-alt)]">
+        <div class="mx-auto max-w-5xl px-6 py-20">
+          <h2 class="text-2xl font-semibold tracking-tight text-[var(--color-text-primary)]">
+            Latest Posts
+          </h2>
+          <div class="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            {posts.map((post) => (
+              <BlogCard post={post} />
+            ))}
+          </div>
+          <div class="mt-10">
+            <a
+              href="/blog"
+              class="text-sm font-medium text-[var(--color-accent)] hover:underline"
+            >
+              View all posts &rarr;
+            </a>
+          </div>
+        </div>
+      </section>
+    )
+  }
+</BaseLayout>
+
+<style>
+  .name-pronunciation {
+    position: relative;
+    cursor: default;
+    text-decoration-line: underline;
+    text-decoration-style: dotted;
+    text-decoration-color: var(--color-text-tertiary);
+    text-underline-offset: 4px;
+    text-decoration-thickness: 2px;
+  }
+
+  .pronunciation-tip {
+    position: absolute;
+    left: 0;
+    top: 100%;
+    margin-top: 8px;
+    white-space: nowrap;
+    font-size: 0.875rem;
+    font-weight: 400;
+    font-style: italic;
+    letter-spacing: 0;
+    color: var(--color-text-tertiary);
+    opacity: 0;
+    transform: translateY(-4px);
+    transition:
+      opacity 0.25s ease,
+      transform 0.25s ease;
+    pointer-events: none;
+  }
+
+  .name-pronunciation:hover .pronunciation-tip {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>

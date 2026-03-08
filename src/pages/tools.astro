@@ -1,0 +1,126 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const categories = [
+  {
+    name: "Productivity",
+    tools: [
+      {
+        name: "Linear",
+        description: "Project management and issue tracking for product teams.",
+        url: "https://linear.app",
+      },
+      {
+        name: "Notion",
+        description: "All-in-one workspace for docs, wikis, and planning.",
+        url: "https://notion.so",
+      },
+      {
+        name: "Raycast",
+        description: "Blazingly fast launcher and productivity tool for macOS.",
+        url: "https://raycast.com",
+      },
+    ],
+  },
+  {
+    name: "Development",
+    tools: [
+      {
+        name: "VS Code",
+        description: "Lightweight but powerful code editor.",
+        url: "https://code.visualstudio.com",
+      },
+      {
+        name: "Warp",
+        description: "Modern terminal reimagined with AI and collaboration.",
+        url: "https://warp.dev",
+      },
+      {
+        name: "GitHub",
+        description: "Code hosting, CI/CD, and collaboration platform.",
+        url: "https://github.com",
+      },
+    ],
+  },
+  {
+    name: "Design & Writing",
+    tools: [
+      {
+        name: "Figma",
+        description: "Collaborative interface design tool.",
+        url: "https://figma.com",
+      },
+      {
+        name: "iA Writer",
+        description: "Focused, distraction-free writing environment.",
+        url: "https://ia.net/writer",
+      },
+    ],
+  },
+  {
+    name: "Hardware",
+    tools: [
+      {
+        name: "MacBook Pro",
+        description: "Primary development machine (Apple Silicon).",
+      },
+      {
+        name: "Sony WH-1000XM5",
+        description: "Noise-cancelling headphones for deep focus.",
+      },
+    ],
+  },
+];
+---
+
+<BaseLayout
+  title="Tools"
+  description="The tools, software, and hardware I use daily for product management and development."
+>
+  <section class="mx-auto max-w-3xl px-6 py-20 md:py-28">
+    <h1
+      class="text-4xl font-bold tracking-tight text-[var(--color-text-primary)] sm:text-5xl"
+    >
+      Tools
+    </h1>
+    <p class="mt-4 text-lg text-[var(--color-text-secondary)]">
+      Software and hardware I rely on daily.
+    </p>
+
+    {
+      categories.map((category) => (
+        <div class="mt-14">
+          <h2 class="text-xl font-semibold text-[var(--color-text-primary)]">
+            {category.name}
+          </h2>
+          <div class="mt-6 space-y-4">
+            {category.tools.map((tool) => (
+              <div class="rounded-xl border border-[var(--color-border)]/50 p-5 transition-colors duration-200 hover:border-[var(--color-border)]">
+                <div class="flex items-start justify-between gap-4">
+                  <div>
+                    <p class="font-medium text-[var(--color-text-primary)]">
+                      {tool.name}
+                    </p>
+                    <p class="mt-1 text-sm text-[var(--color-text-secondary)]">
+                      {tool.description}
+                    </p>
+                  </div>
+                  {tool.url && (
+                    <a
+                      href={tool.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="shrink-0 text-xs font-medium text-[var(--color-accent)] hover:underline"
+                    >
+                      Visit &rarr;
+                    </a>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      ))
+    }
+  </section>
+</BaseLayout>

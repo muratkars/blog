@@ -1,0 +1,61 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import BlogCard from "../../components/BlogCard.astro";
+import { getCollection } from "astro:content";
+
+const posts = (await getCollection("blog", ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+);
+---
+
+<BaseLayout
+  title="Blog"
+  description="Articles on product management, technology, and building great products."
+>
+  <section class="mx-auto max-w-3xl px-6 py-20 md:py-28">
+    <h1
+      class="text-4xl font-bold tracking-tight text-[var(--color-text-primary)] sm:text-5xl"
+    >
+      Blog
+    </h1>
+    <p class="mt-4 text-lg text-[var(--color-text-secondary)]">
+      Thoughts on product, technology, and building things.
+    </p>
+
+    <a
+      href="/magazine"
+      class="mt-4 inline-flex items-center gap-2 rounded-lg border border-[var(--color-border)] px-4 py-2 text-sm font-medium text-[var(--color-text-secondary)] transition-colors duration-200 hover:border-[var(--color-text-tertiary)] hover:text-[var(--color-text-primary)]"
+    >
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+        <path
+          d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"
+        />
+      </svg>
+      Read as Magazine
+    </a>
+
+    {
+      posts.length > 0 ? (
+        <div class="mt-12 space-y-6">
+          {posts.map((post) => (
+            <BlogCard post={post} />
+          ))}
+        </div>
+      ) : (
+        <p class="mt-12 text-[var(--color-text-tertiary)]">
+          No posts yet. Check back soon.
+        </p>
+      )
+    }
+  </section>
+</BaseLayout>

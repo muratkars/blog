@@ -1,0 +1,28 @@
+---
+
+---
+
+<div
+  id="progress-bar"
+  class="fixed left-0 top-0 z-[100] h-0.5 bg-[var(--color-accent)] transition-[width] duration-75 ease-out"
+  style="width: 0%"
+>
+</div>
+
+<script>
+  function initProgress() {
+    const bar = document.getElementById("progress-bar")!;
+
+    function update() {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+      bar.style.width = `${Math.min(100, progress)}%`;
+    }
+
+    window.addEventListener("scroll", update, { passive: true });
+    update();
+  }
+
+  initProgress();
+</script>

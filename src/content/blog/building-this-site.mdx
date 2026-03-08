@@ -1,0 +1,91 @@
+---
+title: "Building This Site"
+date: 2025-01-20
+description: "A behind-the-scenes look at how this website was built, from technology choices to design principles."
+tags: ["dev", "design"]
+type: "story"
+readTime: "5 min read"
+featured: true
+magazineSubtitle: "Astro, Tailwind, and the pursuit of a fast personal site"
+magazineCategory: "Behind the Scenes"
+magazineExcerpt: "The technology choices, design principles, and build process behind this website. Why Astro 5, how the scroll storytelling works, and what it takes to make a site feel like a book."
+magazineOrder: 2
+---
+
+import ScrollReveal from "../../components/ScrollReveal.astro";
+import StatCounter from "../../components/StatCounter.astro";
+import Callout from "../../components/Callout.astro";
+
+<section>
+  <div class="story-section-narrow">
+    <ScrollReveal>
+      ## The Beginning
+
+      Every personal site starts with a question: _what do I actually want this to be?_
+
+      I didn't want a bloated portfolio template. I wanted something fast, clean, and focused on writing. Something that felt like opening a well-designed book.
+    </ScrollReveal>
+  </div>
+</section>
+
+<section class="bg-[var(--color-surface-alt)]">
+  <div class="story-section-narrow">
+    <ScrollReveal>
+      ## Choosing the Stack
+
+      After evaluating several options, the choice was clear:
+
+      - **Astro** for its content-first approach and zero JS by default
+      - **Tailwind CSS** for rapid, consistent styling
+      - **MDX** for rich, interactive blog posts like this one
+      - **GitHub Pages** for simple, free hosting
+    </ScrollReveal>
+  </div>
+</section>
+
+<section>
+  <div class="story-section-wide">
+    <ScrollReveal>
+      <div class="grid gap-8 sm:grid-cols-3 text-center py-8">
+        <StatCounter value={100} label="Lighthouse Score" />
+        <StatCounter value={0} label="KB of JavaScript" suffix=" KB" />
+        <StatCounter value={9} label="Pages Built" />
+      </div>
+    </ScrollReveal>
+  </div>
+</section>
+
+<section>
+  <div class="story-section-narrow">
+    <ScrollReveal>
+      ## Design Principles
+
+      The design follows a few simple principles:
+
+      1. **Content first.** Typography and readability above all else
+      2. **Minimal chrome.** The interface should disappear
+      3. **Fast by default.** No layout shifts, instant navigation
+      4. **Responsive everywhere.** Works on any screen size
+    </ScrollReveal>
+
+    <ScrollReveal delay={200}>
+      <Callout type="tip">
+        The scroll animations you're seeing are built with vanilla JavaScript and the Intersection Observer API. No frameworks, no libraries. Just the platform.
+      </Callout>
+    </ScrollReveal>
+  </div>
+</section>
+
+<section class="bg-[var(--color-surface-alt)]">
+  <div class="story-section-narrow">
+    <ScrollReveal>
+      ## What's Next
+
+      This site is a living project. I plan to keep iterating: adding new content, refining the design, and experimenting with new ways to tell stories on the web.
+
+      If you're curious about the source code, it's all on [GitHub](https://github.com/muratkars).
+
+      Thanks for scrolling along.
+    </ScrollReveal>
+  </div>
+</section>

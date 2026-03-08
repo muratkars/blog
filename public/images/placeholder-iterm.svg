@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" fill="none">
+  <rect width="800" height="450" rx="12" fill="#1e1e1e"/>
+  <rect x="0" y="0" width="800" height="32" rx="12" fill="#2d2d2d"/>
+  <circle cx="20" cy="16" r="6" fill="#ff5f57"/>
+  <circle cx="40" cy="16" r="6" fill="#febc2e"/>
+  <circle cx="60" cy="16" r="6" fill="#28c840"/>
+  <rect x="400" y="32" width="1" height="418" fill="#3d3d3d"/>
+  <text x="30" y="70" fill="#6a9955" font-family="monospace" font-size="13">~/Projects/work</text>
+  <text x="30" y="95" fill="#d4d4d4" font-family="monospace" font-size="13">❯ git lg</text>
+  <text x="30" y="120" fill="#f14c4c" font-family="monospace" font-size="13">* a3f2b1c</text>
+  <text x="120" y="120" fill="#d4d4d4" font-family="monospace" font-size="13">feat: add user auth</text>
+  <text x="30" y="145" fill="#f14c4c" font-family="monospace" font-size="13">* 7d1e8a2</text>
+  <text x="120" y="145" fill="#d4d4d4" font-family="monospace" font-size="13">fix: resolve API timeout</text>
+  <text x="30" y="170" fill="#f14c4c" font-family="monospace" font-size="13">* e5c9f3b</text>
+  <text x="120" y="170" fill="#d4d4d4" font-family="monospace" font-size="13">chore: update deps</text>
+  <text x="430" y="70" fill="#6a9955" font-family="monospace" font-size="13">~/Projects/work</text>
+  <text x="430" y="95" fill="#d4d4d4" font-family="monospace" font-size="13">❯ pnpm dev</text>
+  <text x="430" y="120" fill="#569cd6" font-family="monospace" font-size="13">  VITE v5.4.0 ready in 240ms</text>
+  <text x="430" y="145" fill="#d4d4d4" font-family="monospace" font-size="13">  → Local: http://localhost:3000</text>
+  <text x="430" y="170" fill="#d4d4d4" font-family="monospace" font-size="13">  → Network: http://192.168.1.42:3000</text>
+  <text x="300" y="400" fill="#4d4d4d" font-family="sans-serif" font-size="14" text-anchor="middle">Replace with actual iTerm2 screenshot</text>
+</svg>

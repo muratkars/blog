@@ -1,0 +1,129 @@
+---
+interface TOCEntry {
+  title: string;
+  description: string;
+  category: string;
+  pageNumber: number;
+}
+
+interface Props {
+  entries: TOCEntry[];
+  issueDate: string;
+}
+
+const { entries, issueDate } = Astro.props;
+---
+
+<div class="magazine-page">
+  <div class="toc-page">
+    <div class="mag-bc mag-bc-right">
+      <span class="mag-bc-child">CONTENTS</span>
+      <span class="mag-bc-sep">&lsaquo;</span>
+      <span class="mag-bc-parent">THE MK REVIEW</span>
+    </div>
+    <div class="mag-accent-line" />
+    <h2 class="toc-title">Contents</h2>
+    <div class="toc-entries">
+      {
+        entries.map((entry) => (
+          <div class="toc-entry">
+            <div class="toc-entry-category">{entry.category}</div>
+            <div class="toc-entry-row">
+              <span class="toc-entry-title">{entry.title}</span>
+              <span class="toc-entry-dots" />
+              <span class="toc-entry-page">{entry.pageNumber || "..."}</span>
+            </div>
+            <div class="toc-entry-desc">{entry.description}</div>
+          </div>
+        ))
+      }
+    </div>
+    <div class="mag-ft mag-ft-right">
+      <span class="mag-ft-info">{issueDate} &rsaquo; THE MK REVIEW</span>
+      <span class="mag-ft-pgnum">&lsaquo; 3</span>
+    </div>
+  </div>
+</div>
+
+<style>
+  .magazine-page {
+    background: #fafaf8;
+    overflow: hidden;
+  }
+
+  .toc-page {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 28px;
+    box-sizing: border-box;
+  }
+
+  .toc-title {
+    font-family: var(--font-sans);
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: #1a1a1a;
+    margin: 0 0 1rem;
+  }
+
+  .toc-entries {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .toc-entry {
+    /* Individual entry */
+  }
+
+  .toc-entry-category {
+    font-family: var(--font-sans);
+    font-size: 0.5625rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #c0392b;
+    margin-bottom: 0.125rem;
+  }
+
+  .toc-entry-row {
+    display: flex;
+    align-items: baseline;
+    gap: 0.375rem;
+  }
+
+  .toc-entry-title {
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #1a1a1a;
+    flex-shrink: 0;
+  }
+
+  .toc-entry-dots {
+    flex: 1;
+    border-bottom: 1px dotted #ccc;
+    min-width: 1rem;
+    margin-bottom: 0.2em;
+  }
+
+  .toc-entry-page {
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    flex-shrink: 0;
+  }
+
+  .toc-entry-desc {
+    font-family: Georgia, serif;
+    font-size: 0.6875rem;
+    color: #6e6e73;
+    line-height: 1.5;
+    margin-top: 0.125rem;
+  }
+
+</style>

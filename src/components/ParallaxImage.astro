@@ -1,0 +1,54 @@
+---
+interface Props {
+  src: string;
+  alt: string;
+  caption?: string;
+  class?: string;
+}
+
+const { src, alt, caption, class: className = "" } = Astro.props;
+---
+
+<figure class:list={["parallax-image-wrapper overflow-hidden rounded-2xl", className]}>
+  <div class="parallax-image-container">
+    <img
+      src={src}
+      alt={alt}
+      loading="lazy"
+      class="parallax-image w-full scale-110 object-cover transition-transform duration-100 ease-out"
+    />
+  </div>
+  {caption && (
+    <figcaption class="mt-3 text-center text-sm text-[var(--color-text-tertiary)]">
+      {caption}
+    </figcaption>
+  )}
+</figure>
+
+<script>
+  function initParallax() {
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+    if (prefersReducedMotion) return;
+
+    const images = document.querySelectorAll<HTMLImageElement>(".parallax-image");
+
+    function updateParallax() {
+      images.forEach((img) => {
+        const rect = img.getBoundingClientRect();
+        const windowHeight = window.innerHeight;
+        if (rect.bottom < 0 || rect.top > windowHeight) return;
+
+        const progress = (rect.top + rect.height / 2) / windowHeight;
+        const offset = (progress - 0.5) * 30;
+        img.style.transform = `scale(1.1) translateY(${offset}px)`;
+      });
+      requestAnimationFrame(updateParallax);
+    }
+
+    requestAnimationFrame(updateParallax);
+  }
+
+  initParallax();
+</script>
