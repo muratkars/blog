@@ -2,7 +2,7 @@
 ---
 
 <aside class="protocol-evolution hidden lg:block">
-  <div class="sticky top-24">
+  <div class="sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto">
     <p class="mb-3 text-[10px] font-semibold uppercase tracking-widest text-[var(--color-text-tertiary)]">
       Protocol Evolution
     </p>
@@ -330,6 +330,16 @@
       <div class="proto-dot" data-stage="9"></div>
       <div class="proto-dot" data-stage="10"></div>
     </div>
+
+    <!-- ELI10 -->
+    <div class="mt-5 rounded-lg border border-[var(--color-border)]/30 bg-[var(--color-surface-alt)]/50 px-3.5 py-3">
+      <p class="text-[9px] font-semibold uppercase tracking-widest text-[var(--color-text-tertiary)]">
+        Explain Like I'm 10
+      </p>
+      <p id="eli10-text" class="mt-2 text-xs leading-relaxed text-[var(--color-text-secondary)] eli10-fade">
+        Your computer needs a place to keep its files. A storage protocol is the language it uses to ask for them. Like how you ask your mom where your backpack is, but for data.
+      </p>
+    </div>
   </div>
 </aside>
 
@@ -399,10 +409,20 @@
     50% { opacity: 0.5; }
   }
 
+  .eli10-fade {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+
+  .eli10-fade.changing {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .proto-stage { transition: none; }
     .proto-dot { transition: none; }
     .data-flow-up, .spin-hint, .cmx-pulse { animation: none; }
+    .eli10-fade { transition: none; }
   }
 </style>
 
@@ -478,6 +498,20 @@
       { label: "Inference Boost", value: "5x", unit: "", sub: "tokens/sec with CMX" },
     ];
 
+    const eli10El = document.getElementById("eli10-text");
+    const eli10Data = [
+      "Your computer needs a place to keep its files. A storage protocol is the language it uses to ask for them. Like how you ask your mom where your backpack is, but for data.",
+      "Hard drives have a spinning metal disc and a tiny arm that reads it. Like a record player, but for your homework. They're slow because the arm has to physically move to find stuff.",
+      "SSDs are like a really organized notebook where you can flip to any page instantly. No spinning, no waiting. But the old connector (SATA) is like a narrow doorway that makes everyone wait in line.",
+      "NVMe is what happens when you give the SSD its own private highway instead of sharing the old road. Same notebook, way wider doorway. A single NVMe drive is faster than a whole room of hard drives.",
+      "DAS is an extension cord for your drives. They're in a separate box but plugged directly into your computer. Simple, fast, no sharing. Like having your own cubby instead of a shared locker.",
+      "NAS is like a shared Google Drive but on your home network. Everyone can access the same files. The problem? When 1,000 people ask \"where's my file?\" at the same time, the librarian melts down.",
+      "A SAN is a private road built just for storage traffic. Super fast, super expensive. Like building your own highway because the regular roads are too crowded. The cloud killed most of them.",
+      "NVMe-oF makes faraway drives feel close. It's like having really long arms that can reach drives on the other side of the room almost as fast as the ones right next to you.",
+      "Object storage is the simplest idea ever: give your file a name, throw it in a giant bucket, ask for it by name later. No folders, no organizing. Like tossing toys in a huge bin with labels. It scales to infinity.",
+      "A data lakehouse puts labels and rules on your giant bucket. And NVIDIA built a special shelf (CMX) between the GPU's brain and the bucket so it doesn't have to keep walking back and forth to get things.",
+    ];
+
     function setStage(stage: number) {
       if (stage === currentStage) return;
       currentStage = stage;
@@ -502,6 +536,14 @@
         metricValue.textContent = data.value;
         metricUnit.textContent = data.unit;
         metricSub.textContent = data.sub;
+      }
+
+      if (eli10El && eli10Data[stage - 1]) {
+        eli10El.classList.add("changing");
+        setTimeout(() => {
+          eli10El.textContent = eli10Data[stage - 1];
+          eli10El.classList.remove("changing");
+        }, 200);
       }
     }
 

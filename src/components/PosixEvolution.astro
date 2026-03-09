@@ -2,7 +2,7 @@
 ---
 
 <aside class="posix-evolution hidden lg:block">
-  <div class="sticky top-24">
+  <div class="sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto">
     <p class="mb-3 text-[10px] font-semibold uppercase tracking-widest text-[var(--color-text-tertiary)]">
       POSIX vs Object Storage
     </p>
@@ -327,6 +327,16 @@
       <div class="posix-dot" data-stage="7"></div>
       <div class="posix-dot" data-stage="8"></div>
     </div>
+
+    <!-- ELI10 -->
+    <div class="mt-5 rounded-lg border border-[var(--color-border)]/30 bg-[var(--color-surface-alt)]/50 px-3.5 py-3">
+      <p class="text-[9px] font-semibold uppercase tracking-widest text-[var(--color-text-tertiary)]">
+        Explain Like I'm 10
+      </p>
+      <p id="posix-eli10-text" class="mt-2 text-xs leading-relaxed text-[var(--color-text-secondary)] posix-eli10-fade">
+        In 1988, some really smart people wrote rules for how computers should save and find files. Those rules worked great when you had one computer. Now we have millions, and the rules are causing traffic jams.
+      </p>
+    </div>
   </div>
 </aside>
 
@@ -396,10 +406,20 @@
     50% { opacity: 0.8; r: 3; }
   }
 
+  .posix-eli10-fade {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+
+  .posix-eli10-fade.changing {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .posix-stage { transition: none; }
     .posix-dot { transition: none; }
     .stress-pulse, .qubit-orbit, .qubit-dot { animation: none; }
+    .posix-eli10-fade { transition: none; }
   }
 </style>
 
@@ -463,6 +483,18 @@
       { label: "API Calls", value: "1", unit: "", sub: "HTTP request per operation" },
     ];
 
+    const posixEli10El = document.getElementById("posix-eli10-text");
+    const posixEli10Data = [
+      "In 1988, some really smart people wrote rules for how computers should save and find files. Those rules worked great when you had one computer. Now we have millions, and the rules are causing traffic jams.",
+      "Imagine a library where you have to ask one librarian for every single book. Now imagine a million people asking that same librarian at the same time. That's the metadata problem. The librarian is crying.",
+      "POSIX makes every computer remember where you stopped reading in every file. When thousands of computers all keep track of each other's bookmarks, things get messy fast. If one kid goes home, nobody knows which bookmarks were his.",
+      "File locking in POSIX is like putting a \"do not touch\" sign on your toy. It works at home. On a shared network? Some kids can see the sign, some can't, and some see a completely different sign. Nobody agrees on anything.",
+      "POSIX forces computers to organize files like folders inside folders inside folders. But what if you want the same photo in three different folders? Also, the permission system is like giving everyone either a gold key or nothing. No in-between.",
+      "Every time your computer reads a file, it has to ask the operating system for permission, wait, get an answer, then ask again for the next piece. It's like raising your hand for every single bite of food at dinner. Just let me eat!",
+      "Translation layers are like hiring a translator between two people who could just learn each other's language. Every sentence takes twice as long and sometimes the translator gets it wrong. Just speak the same language.",
+      "Quantum computers won't replace storage, but they'll be able to crack the locks we put on data. So we need new, stronger locks. And object storage (the new way) can adopt those locks way easier than the old POSIX way.",
+    ];
+
     function setStage(stage: number) {
       if (stage === currentStage) return;
       currentStage = stage;
@@ -487,6 +519,14 @@
         metricValue.textContent = data.value;
         metricUnit.textContent = data.unit;
         metricSub.textContent = data.sub;
+      }
+
+      if (posixEli10El && posixEli10Data[stage - 1]) {
+        posixEli10El.classList.add("changing");
+        setTimeout(() => {
+          posixEli10El.textContent = posixEli10Data[stage - 1];
+          posixEli10El.classList.remove("changing");
+        }, 200);
       }
     }
 

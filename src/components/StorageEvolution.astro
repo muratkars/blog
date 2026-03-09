@@ -2,7 +2,7 @@
 ---
 
 <aside class="storage-evolution hidden lg:block">
-  <div class="sticky top-24">
+  <div class="sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto">
     <p class="mb-3 text-[10px] font-semibold uppercase tracking-widest text-[var(--color-text-tertiary)]">
       Storage Evolution
     </p>
@@ -235,6 +235,16 @@
       <div class="evo-dot" data-stage="7"></div>
       <div class="evo-dot" data-stage="8"></div>
     </div>
+
+    <!-- ELI10 -->
+    <div class="mt-5 rounded-lg border border-[var(--color-border)]/30 bg-[var(--color-surface-alt)]/50 px-3.5 py-3">
+      <p class="text-[9px] font-semibold uppercase tracking-widest text-[var(--color-text-tertiary)]">
+        Explain Like I'm 10
+      </p>
+      <p id="storage-eli10-text" class="mt-2 text-xs leading-relaxed text-[var(--color-text-secondary)] storage-eli10-fade">
+        For 40 years, storage was like a warehouse. You put boxes in, you take boxes out. The warehouse never looked inside the boxes. That's about to change.
+      </p>
+    </div>
   </div>
 </aside>
 
@@ -285,6 +295,15 @@
     50% { opacity: 0.5; }
   }
 
+  .storage-eli10-fade {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+
+  .storage-eli10-fade.changing {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .evo-stage {
       transition: none;
@@ -294,6 +313,9 @@
     }
     .icms-pulse {
       animation: none;
+    }
+    .storage-eli10-fade {
+      transition: none;
     }
   }
 </style>
@@ -360,6 +382,18 @@
       { value: "181", unit: "ZB", year: "2025" },
     ];
 
+    const storageEli10El = document.getElementById("storage-eli10-text");
+    const storageEli10Data = [
+      "For 40 years, storage was like a warehouse. You put boxes in, you take boxes out. The warehouse never looked inside the boxes. That's about to change.",
+      "RAID is like making photocopies of your homework and giving them to friends. If you lose yours, a friend still has a copy. Except with hard drives.",
+      "NAS is like a shared folder everyone in your house can open. NFS is the rule that says how you share it. It works great until 50 people try to open the same folder at once.",
+      "A SAN is a private tunnel between your computer and the drives. Nobody else can use it. Banks love them. They cost as much as a nice car.",
+      "S3 is like a magical locker room with infinite lockers. Give your stuff a name tag, toss it in, and it's safe forever. You never run out of lockers and it costs almost nothing.",
+      "A data lakehouse is what happens when you put labels and rules on all those lockers. Now you can ask questions like \"show me every red toy from last Tuesday\" and get answers fast.",
+      "Vector embeddings are how computers understand that a picture of a dog and the word \"puppy\" mean similar things. They turn everything into lists of numbers and find things that are close together.",
+      "NVIDIA built a special memory shelf between the GPU's brain and the big storage room. Instead of walking back and forth to get things, the shelf keeps the stuff the GPU needs most right nearby.",
+    ];
+
     function setStage(stage: number) {
       if (stage === currentStage) return;
       currentStage = stage;
@@ -383,6 +417,14 @@
         scaleValue.textContent = data.value;
         scaleUnit.textContent = ` ${data.unit}`;
         scaleYear.textContent = data.year;
+      }
+
+      if (storageEli10El && storageEli10Data[stage - 1]) {
+        storageEli10El.classList.add("changing");
+        setTimeout(() => {
+          storageEli10El.textContent = storageEli10Data[stage - 1];
+          storageEli10El.classList.remove("changing");
+        }, 200);
       }
     }
 
