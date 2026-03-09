@@ -71,7 +71,9 @@ const posts = (await getCollection("blog", ({ data }) => !data.draft))
     left: 0;
     top: 100%;
     margin-top: 8px;
-    white-space: nowrap;
+    white-space: normal;
+    width: max-content;
+    max-width: 80vw;
     font-size: 0.875rem;
     font-weight: 400;
     font-style: italic;

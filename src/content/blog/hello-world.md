@@ -13,6 +13,8 @@ magazineOrder: 3
 
 Welcome to my new website. I've been meaning to build this for a while, and here we are.
 
+If the name rings a bell, you might remember me from **containerized.me**, where I used to write about the cloud-native world, Kubernetes, and container orchestration. I lost that domain when Google Domains went out of business. Honestly, I wasn't updating it frequently anyway, so instead of chasing the old domain I'm starting fresh here. Hoping this time I'll actually keep a regular cadence. We'll see.
+
 ## Why a Personal Site?
 
 In the age of social media, having your own space on the internet feels more important than ever. It's a place to think out loud, share what I'm learning, and connect with people who are curious about similar things.

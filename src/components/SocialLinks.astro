@@ -24,7 +24,7 @@ const links = [
 ];
 ---
 
-<div class:list={["flex items-center gap-4", className]}>
+<div class:list={["flex items-center gap-2", className]}>
   {
     links.map((link) => (
       <a
@@ -32,7 +32,7 @@ const links = [
         target="_blank"
         rel="noopener noreferrer"
         aria-label={link.name}
-        class="text-[var(--color-text-tertiary)] hover:text-[var(--color-text-primary)] transition-colors duration-200"
+        class="flex h-10 w-10 items-center justify-center rounded-lg text-[var(--color-text-tertiary)] hover:text-[var(--color-text-primary)] transition-colors duration-200"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"

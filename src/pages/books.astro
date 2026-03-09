@@ -93,12 +93,12 @@ const books: Record<string, { title: string; author: string; note?: string }[]> 
     </div>
 
     {/* Tabs */}
-    <div class="mt-12 flex gap-1 border-b border-[var(--color-border)]/50">
+    <div class="mt-12 flex flex-wrap gap-1 border-b border-[var(--color-border)]/50">
       {tabs.map((tab, i) => (
         <button
           data-tab={tab}
           class:list={[
-            "book-tab relative px-4 py-2.5 text-sm font-medium transition-colors duration-200",
+            "book-tab relative px-4 py-3 text-sm font-medium transition-colors duration-200 active:opacity-70",
             i === 0
               ? "text-[var(--color-accent)]"
               : "text-[var(--color-text-tertiary)] hover:text-[var(--color-text-secondary)]",

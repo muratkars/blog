@@ -25,7 +25,7 @@ const { title, date, description, readTime, tags = [], image, lastUpdated } = As
   <ProgressBar />
 
   {/* Hero */}
-  <header class="flex min-h-[70vh] flex-col items-center justify-center px-6 text-center">
+  <header class="flex min-h-[50vh] md:min-h-[70vh] flex-col items-center justify-center px-6 text-center">
     <div class="flex items-center gap-3 text-sm text-[var(--color-text-tertiary)]">
       <time datetime={date.toISOString()}>
         {date.toLocaleDateString("en-US", {

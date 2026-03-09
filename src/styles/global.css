@@ -161,6 +161,16 @@ body {
   border-collapse: collapse;
   font-size: 0.875rem;
   color: var(--color-text-secondary);
+  display: block;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (min-width: 640px) {
+  .prose table {
+    display: table;
+    overflow-x: visible;
+  }
 }
 
 .prose thead {
