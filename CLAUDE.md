@@ -19,6 +19,7 @@ Personal website and blog built with Astro 5, Tailwind CSS 4, and MDX. Deployed 
 - Blog posts support two types: `standard` (plain Markdown) and `story` (MDX with scroll components)
 - Content config lives in `src/content.config.ts`
 - Scroll storytelling uses vanilla JS Intersection Observer, no framework islands
+- Blog posts have right-sidebar scroll-driven animations + ELI10 panels (see below)
 
 ## Writing Style Rules
 
@@ -45,3 +46,41 @@ When generating blog content or any user-facing copy for this site, follow these
 - Don't repeat the same rhetorical device (e.g., "Every X. Every Y. Every Z.") more than once per article. Readers notice patterns.
 - When structuring numbered lists of arguments (e.g., "The 7 problems with X"), don't make every item perfectly parallel. Real writers get messier: combine related points, make some longer than others, break the pattern.
 - Avoid the setup-setup-punch tricolon rhythm ("It's not X. It's not Y. It's Z.") more than once per article. Vary how you land your points.
+
+## Scroll-Driven Sidebar Animations
+
+Each blog post can have a right-sidebar component that combines an SVG animation with an ELI10 (Explain Like I'm 10) panel. Both update as the reader scrolls through article sections.
+
+### How it works
+- Components live in `src/components/` (e.g., `StorageEvolution.astro`, `ProtocolEvolution.astro`, `PosixEvolution.astro`)
+- Injected via named Astro slot `<Component slot="right-sidebar" />` in `src/pages/blog/[...slug].astro`
+- BlogPost layout has a 3-column grid: TOC (left) | Content (center) | Sidebar (right)
+- Sidebar is `hidden lg:block` (desktop only), sticky with `max-h-[calc(100vh-8rem)] overflow-y-auto`
+- Uses IntersectionObserver (`rootMargin: "-15% 0px -75% 0px"`) to detect which H2/H3 heading is in view
+- Each heading's text content is matched to a stage number via string matching
+- `setStage()` updates the SVG (`.active`/`.past` classes), metrics panel, stage dots, and ELI10 text
+
+### Component structure (inside the sticky div)
+1. **Title label** - e.g., "Protocol Evolution"
+2. **SVG animation** - viewBox `200x230`, stages shown/hidden via opacity/transform transitions
+3. **Metrics panel** - contextual numbers (throughput, latency, etc.) that change per stage
+4. **Stage dots** - progress indicator showing which stage is active
+5. **ELI10 panel** - kid-friendly explanation that fades and updates per stage
+
+### When creating a new sidebar animation
+- Create a single `.astro` component with all HTML, `<style>`, and `<script>` self-contained
+- Define stages as SVG groups with class `[prefix]-stage` (e.g., `proto-stage`, `evo-stage`)
+- Map H2/H3 heading text to stage numbers in the script's `stageMap`
+- Include metrics data array and ELI10 data array (one entry per stage)
+- Use unique ID prefixes per component to avoid collisions (e.g., `proto-metric-value`, `posix-eli10-text`)
+- Add `.changing` class for ELI10 fade-out, remove after 200ms `setTimeout` with new text
+- Respect `prefers-reduced-motion: reduce` by disabling transitions and animations
+- Register the component in `[...slug].astro` with a conditional based on `post.id`
+
+### ELI10 writing rules
+- Write as if explaining to a 10-year-old. Use analogies from everyday life (toys, school, food, libraries).
+- Keep each entry to 2-3 sentences max. Short and punchy.
+- Be genuinely funny when possible. Dad jokes welcome.
+- Each entry should actually explain the concept the reader is currently scrolling through, not just be cute.
+- Avoid technical jargon. If you must use a technical term, immediately explain it in kid terms.
+- Vary the analogies. Don't reuse the same metaphor domain (e.g., "library") across multiple stages in the same post.
