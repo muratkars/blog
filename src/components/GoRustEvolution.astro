@@ -1,0 +1,455 @@
+---
+---
+
+<aside class="gorust-evolution hidden lg:block">
+  <div class="sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto">
+    <p class="mb-3 text-[10px] font-semibold uppercase tracking-widest text-[var(--color-text-tertiary)]">
+      Go vs Rust for Storage
+    </p>
+
+    <div class="svg-container">
+      <svg viewBox="0 0 200 230" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full">
+
+        <!-- Stage 1: GC Latency Problem -->
+        <g id="gorust-stage-1" class="gorust-stage active">
+          <!-- Latency chart frame -->
+          <rect x="20" y="15" width="160" height="90" rx="4" stroke="var(--color-text-tertiary)" stroke-width="1" fill="var(--color-surface-alt)" />
+          <text x="100" y="28" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="7" font-family="var(--font-mono)" font-weight="bold">p99.9 LATENCY</text>
+          <!-- Go line (spiky) -->
+          <polyline points="30,75 45,73 55,72 62,45 68,74 80,72 92,70 98,42 105,73 118,71 128,40 138,72 150,71 165,70" stroke="#e74c3c" stroke-width="1.5" fill="none" />
+          <text x="170" y="68" fill="#e74c3c" font-size="6" font-family="var(--font-mono)">Go</text>
+          <!-- Rust line (flat) -->
+          <polyline points="30,82 45,82 55,81 62,82 68,81 80,82 92,81 98,82 105,81 118,82 128,81 138,82 150,81 165,82" stroke="var(--color-accent)" stroke-width="1.5" fill="none" />
+          <text x="170" y="84" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)">Rust</text>
+          <!-- GC pause markers -->
+          <text x="62" y="40" text-anchor="middle" fill="#e74c3c" font-size="5" font-family="var(--font-mono)">GC</text>
+          <text x="98" y="37" text-anchor="middle" fill="#e74c3c" font-size="5" font-family="var(--font-mono)">GC</text>
+          <text x="128" y="35" text-anchor="middle" fill="#e74c3c" font-size="5" font-family="var(--font-mono)">GC</text>
+          <!-- Y axis label -->
+          <text x="25" y="98" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">0ms</text>
+          <text x="25" y="48" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">2ms</text>
+
+          <!-- Allocations rain -->
+          <text x="100" y="125" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="7" font-family="var(--font-mono)">10K concurrent GETs</text>
+          <text x="100" y="137" text-anchor="middle" fill="#e74c3c" font-size="6" font-family="var(--font-mono)">millions of allocs/sec</text>
+          <text x="100" y="150" text-anchor="middle" fill="#e74c3c" font-size="6" font-family="var(--font-mono)">GC must trace them ALL</text>
+
+          <text x="100" y="180" text-anchor="middle" fill="#e74c3c" font-size="10" font-family="var(--font-sans)">The GC Tax</text>
+          <text x="100" y="195" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">No GC = no spikes</text>
+        </g>
+
+        <!-- Stage 2: goroutine Scheduling -->
+        <g id="gorust-stage-2" class="gorust-stage">
+          <!-- CPU cores -->
+          <rect x="20" y="20" width="35" height="25" rx="3" stroke="var(--color-text-tertiary)" stroke-width="1" fill="var(--color-surface-alt)" />
+          <text x="37" y="36" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="6" font-family="var(--font-mono)">Core 0</text>
+          <rect x="62" y="20" width="35" height="25" rx="3" stroke="var(--color-text-tertiary)" stroke-width="1" fill="var(--color-surface-alt)" />
+          <text x="79" y="36" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="6" font-family="var(--font-mono)">Core 1</text>
+          <rect x="104" y="20" width="35" height="25" rx="3" stroke="#e74c3c" stroke-width="1.5" fill="var(--color-surface-alt)" />
+          <text x="121" y="36" text-anchor="middle" fill="#e74c3c" font-size="6" font-family="var(--font-mono)">Core 2</text>
+          <rect x="146" y="20" width="35" height="25" rx="3" stroke="var(--color-text-tertiary)" stroke-width="1" fill="var(--color-surface-alt)" />
+          <text x="163" y="36" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="6" font-family="var(--font-mono)">Core 3</text>
+
+          <!-- goroutine bouncing between cores -->
+          <circle cx="37" cy="58" r="6" fill="#e74c3c" opacity="0.15" />
+          <circle cx="121" cy="58" r="6" fill="#e74c3c" opacity="0.5" />
+          <circle cx="163" cy="58" r="6" fill="#e74c3c" opacity="0.15" />
+          <path d="M37,58 C60,50 95,66 121,58" stroke="#e74c3c" stroke-width="0.75" fill="none" stroke-dasharray="2 2" />
+          <path d="M121,58 C140,50 155,66 163,58" stroke="#e74c3c" stroke-width="0.75" fill="none" stroke-dasharray="2 2" />
+          <text x="100" y="75" text-anchor="middle" fill="#e74c3c" font-size="6" font-family="var(--font-mono)">goroutine migrates freely</text>
+
+          <!-- NUMA boundary -->
+          <line x1="100" y1="15" x2="100" y2="48" stroke="#e74c3c" stroke-width="1" stroke-dasharray="3 2" />
+          <text x="50" y="14" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">NUMA 0</text>
+          <text x="150" y="14" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">NUMA 1</text>
+
+          <!-- Problems list -->
+          <text x="100" y="95" text-anchor="middle" fill="#e74c3c" font-size="6" font-family="var(--font-mono)">No CPU pinning</text>
+          <text x="100" y="107" text-anchor="middle" fill="#e74c3c" font-size="6" font-family="var(--font-mono)">Cache locality destroyed</text>
+          <text x="100" y="119" text-anchor="middle" fill="#e74c3c" font-size="6" font-family="var(--font-mono)">RS encode hogs thread</text>
+
+          <!-- Rust answer -->
+          <line x1="30" y1="130" x2="170" y2="130" stroke="var(--color-border)" stroke-width="0.5" />
+          <text x="100" y="147" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)">tokio: you control affinity</text>
+
+          <text x="100" y="180" text-anchor="middle" fill="#e74c3c" font-size="10" font-family="var(--font-sans)">Scheduler Chaos</text>
+          <text x="100" y="195" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">NUMA-unaware = 10x slower</text>
+        </g>
+
+        <!-- Stage 3: Safety Illusion -->
+        <g id="gorust-stage-3" class="gorust-stage">
+          <!-- Go: compiles fine badge -->
+          <rect x="25" y="20" width="150" height="28" rx="4" stroke="#28c840" stroke-width="1.5" fill="var(--color-surface-alt)" />
+          <text x="100" y="38" text-anchor="middle" fill="#28c840" font-size="8" font-family="var(--font-mono)" font-weight="bold">go build: SUCCESS</text>
+
+          <!-- But at runtime... -->
+          <line x1="100" y1="55" x2="100" y2="65" stroke="#e74c3c" stroke-width="1" />
+          <text x="100" y="62" text-anchor="middle" fill="#e74c3c" font-size="6" font-family="var(--font-mono)">in production...</text>
+
+          <!-- Runtime bombs -->
+          <rect x="15" y="70" width="50" height="35" rx="3" stroke="#e74c3c" stroke-width="1" fill="var(--color-surface-alt)" />
+          <text x="40" y="83" text-anchor="middle" fill="#e74c3c" font-size="6" font-family="var(--font-mono)">DATA</text>
+          <text x="40" y="93" text-anchor="middle" fill="#e74c3c" font-size="6" font-family="var(--font-mono)">RACE</text>
+
+          <rect x="75" y="70" width="50" height="35" rx="3" stroke="#e74c3c" stroke-width="1" fill="var(--color-surface-alt)" />
+          <text x="100" y="83" text-anchor="middle" fill="#e74c3c" font-size="6" font-family="var(--font-mono)">PANIC</text>
+          <text x="100" y="93" text-anchor="middle" fill="#e74c3c" font-size="5.5" font-family="var(--font-mono)">type assert</text>
+
+          <rect x="135" y="70" width="50" height="35" rx="3" stroke="#e74c3c" stroke-width="1" fill="var(--color-surface-alt)" />
+          <text x="160" y="83" text-anchor="middle" fill="#e74c3c" font-size="6" font-family="var(--font-mono)">FORGOT</text>
+          <text x="160" y="93" text-anchor="middle" fill="#e74c3c" font-size="6" font-family="var(--font-mono)">MUTEX</text>
+
+          <!-- Rust: compile error -->
+          <line x1="30" y1="115" x2="170" y2="115" stroke="var(--color-border)" stroke-width="0.5" />
+          <rect x="25" y="122" width="150" height="28" rx="4" stroke="var(--color-accent)" stroke-width="1.5" fill="var(--color-surface-alt)" />
+          <text x="100" y="134" text-anchor="middle" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)">error[E0277]: Send not satisfied</text>
+          <text x="100" y="145" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)" font-weight="bold">Caught at compile time</text>
+
+          <text x="100" y="180" text-anchor="middle" fill="#e74c3c" font-size="10" font-family="var(--font-sans)">The Safety Illusion</text>
+          <text x="100" y="195" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">Runtime bombs vs compile errors</text>
+        </g>
+
+        <!-- Stage 4: cgo Overhead -->
+        <g id="gorust-stage-4" class="gorust-stage">
+          <!-- Go runtime box -->
+          <rect x="20" y="18" width="70" height="40" rx="4" stroke="var(--color-text-tertiary)" stroke-width="1" fill="var(--color-surface-alt)" />
+          <text x="55" y="35" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="7" font-family="var(--font-mono)">Go Runtime</text>
+          <text x="55" y="48" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="6" font-family="var(--font-mono)">goroutine stack</text>
+
+          <!-- C library box -->
+          <rect x="110" y="18" width="70" height="40" rx="4" stroke="var(--color-text-tertiary)" stroke-width="1" fill="var(--color-surface-alt)" />
+          <text x="145" y="35" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="7" font-family="var(--font-mono)">C Library</text>
+          <text x="145" y="48" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="6" font-family="var(--font-mono)">ISA-L / liburing</text>
+
+          <!-- cgo bridge (expensive) -->
+          <line x1="90" y1="38" x2="110" y2="38" stroke="#e74c3c" stroke-width="2" />
+          <text x="100" y="32" text-anchor="middle" fill="#e74c3c" font-size="6" font-family="var(--font-mono)">cgo</text>
+          <text x="100" y="55" text-anchor="middle" fill="#e74c3c" font-size="7" font-family="var(--font-mono)" font-weight="bold">~200ns/call</text>
+
+          <!-- Cost multiplication -->
+          <text x="100" y="75" text-anchor="middle" fill="#e74c3c" font-size="6" font-family="var(--font-mono)">x 1M calls/sec</text>
+          <text x="100" y="87" text-anchor="middle" fill="#e74c3c" font-size="6" font-family="var(--font-mono)">= 200ms overhead/sec</text>
+          <text x="100" y="99" text-anchor="middle" fill="#e74c3c" font-size="6" font-family="var(--font-mono)">+ forced heap escapes</text>
+          <text x="100" y="111" text-anchor="middle" fill="#e74c3c" font-size="6" font-family="var(--font-mono)">+ no cross-compile</text>
+
+          <!-- Rust: zero-cost FFI -->
+          <line x1="30" y1="122" x2="170" y2="122" stroke="var(--color-border)" stroke-width="0.5" />
+          <rect x="30" y="130" width="140" height="22" rx="4" fill="var(--color-accent)" opacity="0.08" stroke="var(--color-accent)" stroke-width="1" />
+          <text x="100" y="144" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)">Rust FFI: 0ns overhead</text>
+
+          <text x="100" y="175" text-anchor="middle" fill="#e74c3c" font-size="10" font-family="var(--font-sans)">The cgo Cliff</text>
+          <text x="100" y="190" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">Every C call costs you</text>
+        </g>
+
+        <!-- Stage 5: AI-Assisted Migration -->
+        <g id="gorust-stage-5" class="gorust-stage">
+          <!-- Go code block -->
+          <rect x="15" y="15" width="75" height="70" rx="4" stroke="var(--color-text-tertiary)" stroke-width="1" fill="var(--color-surface-alt)" />
+          <text x="52" y="28" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="6.5" font-family="var(--font-mono)" font-weight="bold">Go</text>
+          <text x="22" y="40" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">interface{}</text>
+          <text x="22" y="50" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">goroutine</text>
+          <text x="22" y="60" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">sync.RWMutex</text>
+          <text x="22" y="70" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">error</text>
+          <text x="22" y="80" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">defer</text>
+
+          <!-- AI translation arrow -->
+          <rect x="93" y="30" width="14" height="40" rx="3" fill="var(--color-accent)" opacity="0.1" stroke="var(--color-accent)" stroke-width="1" />
+          <text x="100" y="45" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)">AI</text>
+          <text x="100" y="58" text-anchor="middle" fill="var(--color-accent)" font-size="10" font-family="var(--font-sans)">→</text>
+
+          <!-- Rust code block -->
+          <rect x="110" y="15" width="75" height="70" rx="4" stroke="var(--color-accent)" stroke-width="1" fill="var(--color-surface-alt)" />
+          <text x="147" y="28" text-anchor="middle" fill="var(--color-accent)" font-size="6.5" font-family="var(--font-mono)" font-weight="bold">Rust</text>
+          <text x="117" y="40" fill="var(--color-accent)" font-size="5" font-family="var(--font-mono)">trait</text>
+          <text x="117" y="50" fill="var(--color-accent)" font-size="5" font-family="var(--font-mono)">tokio::spawn</text>
+          <text x="117" y="60" fill="var(--color-accent)" font-size="5" font-family="var(--font-mono)">Arc&lt;RwLock&gt;</text>
+          <text x="117" y="70" fill="var(--color-accent)" font-size="5" font-family="var(--font-mono)">Result&lt;T, E&gt;</text>
+          <text x="117" y="80" fill="var(--color-accent)" font-size="5" font-family="var(--font-mono)">Drop</text>
+
+          <!-- Timeline -->
+          <text x="100" y="105" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="7" font-family="var(--font-mono)">Before: 6 months rewrite</text>
+          <text x="100" y="120" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)" font-weight="bold">Now: 6 weeks + audit</text>
+
+          <!-- Ecosystem badges -->
+          <text x="100" y="145" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="6" font-family="var(--font-mono)">axum | tokio | serde | ring</text>
+          <text x="100" y="157" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="6" font-family="var(--font-mono)">Every Go lib has a Rust match</text>
+
+          <text x="100" y="185" text-anchor="middle" fill="var(--color-accent)" font-size="10" font-family="var(--font-sans)">The Great Migration</text>
+          <text x="100" y="200" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">AI makes it feasible</text>
+        </g>
+
+        <!-- Stage 6: Binary Generation Debunked -->
+        <g id="gorust-stage-6" class="gorust-stage">
+          <!-- Binary blob (opaque) -->
+          <rect x="30" y="20" width="140" height="45" rx="4" stroke="#e74c3c" stroke-width="1" fill="var(--color-surface-alt)" />
+          <text x="100" y="35" text-anchor="middle" fill="#e74c3c" font-size="7" font-family="var(--font-mono)" font-weight="bold">"AI → Binary"</text>
+          <text x="100" y="48" text-anchor="middle" fill="#e74c3c" font-size="5.5" font-family="var(--font-mono)">01001 10110 01101 11010 00101</text>
+          <text x="100" y="58" text-anchor="middle" fill="#e74c3c" font-size="5.5" font-family="var(--font-mono)">10110 01001 ????? 01101 10010</text>
+
+          <!-- X marks: what you can't do -->
+          <text x="30" y="82" fill="#e74c3c" font-size="6" font-family="var(--font-mono)">✗ Can't diff</text>
+          <text x="30" y="94" fill="#e74c3c" font-size="6" font-family="var(--font-mono)">✗ Can't debug</text>
+          <text x="30" y="106" fill="#e74c3c" font-size="6" font-family="var(--font-mono)">✗ Can't audit</text>
+          <text x="110" y="82" fill="#e74c3c" font-size="6" font-family="var(--font-mono)">✗ Can't review</text>
+          <text x="110" y="94" fill="#e74c3c" font-size="6" font-family="var(--font-mono)">✗ Can't port</text>
+          <text x="110" y="106" fill="#e74c3c" font-size="6" font-family="var(--font-mono)">✗ Not deterministic</text>
+
+          <!-- What AI actually does well -->
+          <line x1="30" y1="118" x2="170" y2="118" stroke="var(--color-border)" stroke-width="0.5" />
+          <text x="100" y="132" text-anchor="middle" fill="var(--color-accent)" font-size="6.5" font-family="var(--font-mono)">AI + Source Code + Compiler</text>
+          <text x="100" y="145" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)" font-weight="bold">= actual productivity</text>
+
+          <text x="100" y="175" text-anchor="middle" fill="#e74c3c" font-size="10" font-family="var(--font-sans)">The Binary Myth</text>
+          <text x="100" y="190" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">Stochastic can't replace deterministic</text>
+        </g>
+
+        <!-- Stage 7: The Answer - Rust + AI -->
+        <g id="gorust-stage-7" class="gorust-stage">
+          <!-- Rust crab icon (simplified) -->
+          <circle cx="100" cy="45" r="30" stroke="var(--color-accent)" stroke-width="1.5" fill="var(--color-accent)" fill-opacity="0.05" />
+          <text x="100" y="40" text-anchor="middle" fill="var(--color-accent)" font-size="14" font-family="var(--font-mono)" font-weight="bold">Rust</text>
+          <text x="100" y="55" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)">+ AI tooling</text>
+
+          <!-- Benefits radiating -->
+          <line x1="100" y1="15" x2="100" y2="5" stroke="var(--color-accent)" stroke-width="0.75" />
+          <text x="100" y="3" text-anchor="middle" fill="var(--color-accent)" font-size="5.5" font-family="var(--font-mono)">No GC</text>
+
+          <line x1="130" y1="22" x2="150" y2="10" stroke="var(--color-accent)" stroke-width="0.75" />
+          <text x="165" y="13" text-anchor="middle" fill="var(--color-accent)" font-size="5.5" font-family="var(--font-mono)">Zero-cost FFI</text>
+
+          <line x1="135" y1="50" x2="155" y2="50" stroke="var(--color-accent)" stroke-width="0.75" />
+          <text x="172" y="53" text-anchor="middle" fill="var(--color-accent)" font-size="5.5" font-family="var(--font-mono)">NUMA-aware</text>
+
+          <line x1="130" y1="70" x2="150" y2="82" stroke="var(--color-accent)" stroke-width="0.75" />
+          <text x="168" y="87" text-anchor="middle" fill="var(--color-accent)" font-size="5.5" font-family="var(--font-mono)">Send+Sync</text>
+
+          <line x1="65" y1="50" x2="45" y2="50" stroke="var(--color-accent)" stroke-width="0.75" />
+          <text x="28" y="53" text-anchor="middle" fill="var(--color-accent)" font-size="5.5" font-family="var(--font-mono)">io_uring</text>
+
+          <line x1="70" y1="22" x2="50" y2="10" stroke="var(--color-accent)" stroke-width="0.75" />
+          <text x="33" y="13" text-anchor="middle" fill="var(--color-accent)" font-size="5.5" font-family="var(--font-mono)">Flat latency</text>
+
+          <line x1="70" y1="70" x2="50" y2="82" stroke="var(--color-accent)" stroke-width="0.75" />
+          <text x="30" y="87" text-anchor="middle" fill="var(--color-accent)" font-size="5.5" font-family="var(--font-mono)">Static binary</text>
+
+          <!-- Crossed out -->
+          <text x="100" y="110" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="7" font-family="var(--font-mono)" text-decoration="line-through">GC pauses</text>
+          <text x="100" y="124" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="7" font-family="var(--font-mono)" text-decoration="line-through">cgo overhead</text>
+          <text x="100" y="138" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="7" font-family="var(--font-mono)" text-decoration="line-through">runtime data races</text>
+          <text x="100" y="152" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="7" font-family="var(--font-mono)" text-decoration="line-through">multi-year rewrite</text>
+
+          <text x="100" y="180" text-anchor="middle" fill="var(--color-accent)" font-size="10" font-family="var(--font-sans)" font-weight="600">The Ceiling Is Gone</text>
+          <text x="100" y="195" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">Not whether. When.</text>
+        </g>
+      </svg>
+    </div>
+
+    <!-- Metric panel -->
+    <div class="mt-4 rounded-lg bg-[var(--color-surface-alt)] px-3 py-2.5 text-center">
+      <p class="text-[9px] uppercase tracking-widest text-[var(--color-text-tertiary)]" id="gorust-metric-label">GC Pause (p99.9)</p>
+      <p class="mt-1 font-mono text-lg font-bold text-[var(--color-accent)]">
+        <span id="gorust-metric-value">0.5-2</span>
+        <span id="gorust-metric-unit" class="text-sm font-normal">ms</span>
+      </p>
+      <p id="gorust-metric-sub" class="text-[9px] text-[var(--color-text-tertiary)]">under memory pressure</p>
+    </div>
+
+    <!-- Stage dots -->
+    <div class="mt-3 flex justify-center gap-1.5">
+      <div class="gorust-dot active" data-stage="1"></div>
+      <div class="gorust-dot" data-stage="2"></div>
+      <div class="gorust-dot" data-stage="3"></div>
+      <div class="gorust-dot" data-stage="4"></div>
+      <div class="gorust-dot" data-stage="5"></div>
+      <div class="gorust-dot" data-stage="6"></div>
+      <div class="gorust-dot" data-stage="7"></div>
+    </div>
+
+    <!-- ELI10 -->
+    <div class="mt-5 rounded-lg border border-[var(--color-border)]/30 bg-[var(--color-surface-alt)]/50 px-3.5 py-3">
+      <p class="text-[9px] font-semibold uppercase tracking-widest text-[var(--color-text-tertiary)]">
+        Explain Like I'm 10
+      </p>
+      <p id="gorust-eli10-text" class="gorust-eli10-fade mt-2 text-xs leading-relaxed text-[var(--color-text-secondary)]">
+        Go is like a really fast bicycle with training wheels. Great for riding around the neighborhood! But storage systems are like racing motorcycles. The training wheels slow you down and you can't take them off.
+      </p>
+    </div>
+  </div>
+</aside>
+
+<style>
+  .gorust-stage {
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
+  }
+
+  .gorust-stage.active {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+  }
+
+  .gorust-stage.past {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+
+  .gorust-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-border);
+    transition: background 0.3s, transform 0.3s;
+  }
+
+  .gorust-dot.active {
+    background: var(--color-accent);
+    transform: scale(1.4);
+  }
+
+  .gorust-dot.past {
+    background: var(--color-accent);
+    opacity: 0.4;
+  }
+
+  .gorust-eli10-fade {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+
+  .gorust-eli10-fade.changing {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .gorust-stage { transition: none; }
+    .gorust-dot { transition: none; }
+    .gorust-eli10-fade { transition: none; }
+  }
+</style>
+
+<script>
+  function initGoRustEvolution() {
+    const prose = document.querySelector(".prose");
+    if (!prose) return;
+
+    const allHeadings = prose.querySelectorAll("h2, h3");
+    if (allHeadings.length === 0) return;
+
+    const stageMap: { el: Element; stage: number }[] = [];
+
+    allHeadings.forEach((h) => {
+      const text = (h.textContent || "").toLowerCase();
+      let stage = -1;
+
+      if (text.includes("go was never designed")) stage = 1;
+      else if (text.includes("garbage collector")) stage = 1;
+      else if (text.includes("goroutines")) stage = 2;
+      else if (text.includes("convenient, uncontrollable")) stage = 2;
+      else if (text.includes("safety illusion")) stage = 3;
+      else if (text.includes("no `unsafe`")) stage = 3;
+      else if (text.includes("cgo")) stage = 4;
+      else if (text.includes("performance cliff")) stage = 4;
+      else if (text.includes("great migration")) stage = 5;
+      else if (text.includes("ai-assisted")) stage = 5;
+      else if (text.includes("rust ecosystem")) stage = 5;
+      else if (text.includes("incremental migration")) stage = 5;
+      else if (text.includes("ai will not")) stage = 6;
+      else if (text.includes("generate binary")) stage = 6;
+      else if (text.includes("compilers already")) stage = 6;
+      else if (text.includes("cannot iterate")) stage = 6;
+      else if (text.includes("platform portability")) stage = 6;
+      else if (text.includes("what ai")) stage = 6;
+      else if (text.includes("real disruption")) stage = 7;
+      else if (text.includes("conclusion")) stage = 7;
+
+      if (stage > 0) {
+        stageMap.push({ el: h, stage });
+      }
+    });
+
+    if (stageMap.length === 0) return;
+
+    let currentStage = 1;
+
+    const stages = document.querySelectorAll(".gorust-stage");
+    const dots = document.querySelectorAll(".gorust-dot");
+    const metricLabel = document.getElementById("gorust-metric-label");
+    const metricValue = document.getElementById("gorust-metric-value");
+    const metricUnit = document.getElementById("gorust-metric-unit");
+    const metricSub = document.getElementById("gorust-metric-sub");
+
+    const metricData = [
+      { label: "GC Pause (p99.9)", value: "0.5-2", unit: "ms", sub: "under memory pressure" },
+      { label: "NUMA Penalty", value: "10", unit: "x", sub: "cross-boundary NVMe access" },
+      { label: "Race Detection", value: "0%", unit: "", sub: "compile-time coverage in Go" },
+      { label: "cgo Overhead", value: "~200", unit: "ns", sub: "per call, millions per second" },
+      { label: "Migration Time", value: "6", unit: " weeks", sub: "with AI-assisted translation" },
+      { label: "Binary Auditability", value: "0", unit: "", sub: "can't diff, debug, or review" },
+      { label: "Runtime Overhead", value: "0", unit: "", sub: "no GC, no runtime, no surprises" },
+    ];
+
+    const eli10El = document.getElementById("gorust-eli10-text");
+    const eli10Data = [
+      "Go is like a really fast bicycle with training wheels. Great for riding around the neighborhood! But storage systems are like racing motorcycles. The training wheels slow you down and you can't take them off.",
+      "Imagine your teacher randomly moves you to a different desk every 5 minutes. You keep losing your pencils and books because they're at your old desk. That's what Go does to your computer's memory when it shuffles tasks between CPU cores.",
+      "Go says \"trust me, this code is safe\" but only checks while the program is running. Rust checks BEFORE you run it. It's like spellcheck that catches mistakes as you type vs. one that only finds them after you print the essay and hand it in.",
+      "Every time Go needs to talk to a C library, it's like making a phone call instead of just turning to the person next to you. Rust just turns and talks. When you're making a million calls per second, those phone bills add up fast.",
+      "Rewriting a whole program used to be like translating a 500-page book by hand. Now AI can do the first draft, and you just check it for mistakes. A summer project instead of a years-long saga.",
+      "Saying AI should skip code and make programs directly is like saying a chef should skip recipes and just think food into existence. The recipe (source code) is how you know what's in the food, how to change it, and how to teach someone else to make it.",
+      "Rust is like building with LEGOs that click together perfectly and the instructions won't even let you put a piece in the wrong spot. Go is like building with generic blocks where nothing stops you from making a wobbly tower that falls over at 3am.",
+    ];
+
+    function setStage(stage: number) {
+      if (stage === currentStage) return;
+      currentStage = stage;
+
+      stages.forEach((s, i) => {
+        const stageNum = i + 1;
+        s.classList.remove("active", "past");
+        if (stageNum === stage) s.classList.add("active");
+        else if (stageNum < stage) s.classList.add("past");
+      });
+
+      dots.forEach((d, i) => {
+        const dotStage = i + 1;
+        d.classList.remove("active", "past");
+        if (dotStage === stage) d.classList.add("active");
+        else if (dotStage < stage) d.classList.add("past");
+      });
+
+      const data = metricData[stage - 1];
+      if (data && metricLabel && metricValue && metricUnit && metricSub) {
+        metricLabel.textContent = data.label;
+        metricValue.textContent = data.value;
+        metricUnit.textContent = data.unit;
+        metricSub.textContent = data.sub;
+      }
+
+      if (eli10El && eli10Data[stage - 1]) {
+        eli10El.classList.add("changing");
+        setTimeout(() => {
+          eli10El.textContent = eli10Data[stage - 1];
+          eli10El.classList.remove("changing");
+        }, 200);
+      }
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const match = stageMap.find((s) => s.el === entry.target);
+          if (match) setStage(match.stage);
+        }
+      });
+    }, { rootMargin: "-15% 0px -75% 0px" });
+
+    stageMap.forEach(({ el }) => observer.observe(el));
+    setStage(1);
+  }
+
+  initGoRustEvolution();
+</script>

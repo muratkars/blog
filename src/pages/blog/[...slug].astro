@@ -5,6 +5,8 @@ import StoryPost from "../../layouts/StoryPost.astro";
 import StorageEvolution from "../../components/StorageEvolution.astro";
 import ProtocolEvolution from "../../components/ProtocolEvolution.astro";
 import PosixEvolution from "../../components/PosixEvolution.astro";
+import GoRustEvolution from "../../components/GoRustEvolution.astro";
+import S3Evolution from "../../components/S3Evolution.astro";
 
 export async function getStaticPaths() {
   const posts = await getCollection("blog");
@@ -22,6 +24,8 @@ const Layout = type === "story" ? StoryPost : BlogPost;
 const showStorageEvolution = post.id === "storage-is-dead-long-live-data";
 const showProtocolEvolution = post.id === "storage-protocols-ai-era";
 const showPosixEvolution = post.id === "posix-pull-the-plug";
+const showGoRustEvolution = post.id === "why-not-go-for-storage";
+const showS3Evolution = post.id === "s3-api-holding-storage-back";
 ---
 
 <Layout
@@ -42,5 +46,11 @@ const showPosixEvolution = post.id === "posix-pull-the-plug";
   )}
   {showPosixEvolution && (
     <PosixEvolution slot="right-sidebar" />
+  )}
+  {showGoRustEvolution && (
+    <GoRustEvolution slot="right-sidebar" />
+  )}
+  {showS3Evolution && (
+    <S3Evolution slot="right-sidebar" />
   )}
 </Layout>
