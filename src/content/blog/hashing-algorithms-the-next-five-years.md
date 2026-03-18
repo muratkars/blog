@@ -21,7 +21,7 @@ Every storage system makes a hashing decision early in its life, and that decisi
 
 ZFS chose fletcher4 in 2005, a fast, non-cryptographic checksum that can't detect adversarial corruption. Twenty years later, OpenZFS is backporting BLAKE3 support because the original choice wasn't strong enough. btrfs shipped with CRC32C, giving you 32 bits of collision resistance in a world where a single NVMe drive holds 30 TB. HDFS used CRC32C and never offered anything else. AWS S3 used MD5 for ETags and spent nearly two decades unable to change it. Only in 2024 did they finally default to CRC64-NVME.
 
-MinIO chose HighwayHash in 2017. I was there. It was the right call at the time: blazing fast, keyed integrity, perfect for bitrot detection. The hash field in 2026 looks nothing like 2017.
+MinIO chose HighwayHash in 2017. It was the right call at the time: blazing fast, keyed integrity, perfect for bitrot detection. The hash field in 2026 looks nothing like 2017.
 
 The hash you choose determines your collision resistance, your throughput ceiling, your regulatory compliance story, your post-quantum readiness, and (if you're building something meant to last) whether your integrity guarantees will still hold in 2031.
 
@@ -185,7 +185,7 @@ HighwayHash is a keyed PRF, not a general-purpose cryptographic hash. This means
 3. **It hasn't received deep cryptanalysis.** Compared to the SHA-2/SHA-3/BLAKE families, which have been subjected to decades of international cryptanalytic effort (the SHA-3 competition alone generated thousands of papers), HighwayHash has received relatively modest scrutiny. The design is clever: the permutation uses SIMD instructions directly, avoiding the scalar bottlenecks of traditional ARX constructions. But "clever and fast" is not the same as "deeply analyzed and trusted."
 4. **It's architecturally limiting.** Because the hash depends on a deployment-wide secret key, you can't compare hashes across deployments, you can't publish hashes for third-party verification, and you lose the hash if you lose the key.
 
-**Verdict.** An excellent choice for keyed integrity checking in a closed system, exactly what MinIO uses it for. Not the right foundation for a next-generation storage system that needs content addressing, cross-deployment verification, and post-quantum durability.
+**Verdict.** An excellent choice for keyed integrity checking in a closed system where you control both ends. Not the right foundation for a next-generation storage system that needs content addressing, cross-deployment verification, and post-quantum durability.
 
 ---
 
