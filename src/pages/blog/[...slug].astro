@@ -7,6 +7,8 @@ import ProtocolEvolution from "../../components/ProtocolEvolution.astro";
 import PosixEvolution from "../../components/PosixEvolution.astro";
 import GoRustEvolution from "../../components/GoRustEvolution.astro";
 import S3Evolution from "../../components/S3Evolution.astro";
+import SDCEvolution from "../../components/SDCEvolution.astro";
+import HashEvolution from "../../components/HashEvolution.astro";
 
 export async function getStaticPaths() {
   const posts = await getCollection("blog");
@@ -26,6 +28,8 @@ const showProtocolEvolution = post.id === "storage-protocols-ai-era";
 const showPosixEvolution = post.id === "posix-pull-the-plug";
 const showGoRustEvolution = post.id === "why-not-go-for-storage";
 const showS3Evolution = post.id === "s3-api-holding-storage-back";
+const showSDCEvolution = post.id === "silent-data-corruption-the-invisible-threat";
+const showHashEvolution = post.id === "hashing-algorithms-the-next-five-years";
 ---
 
 <Layout
@@ -52,5 +56,11 @@ const showS3Evolution = post.id === "s3-api-holding-storage-back";
   )}
   {showS3Evolution && (
     <S3Evolution slot="right-sidebar" />
+  )}
+  {showSDCEvolution && (
+    <SDCEvolution slot="right-sidebar" />
+  )}
+  {showHashEvolution && (
+    <HashEvolution slot="right-sidebar" />
   )}
 </Layout>

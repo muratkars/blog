@@ -7,11 +7,14 @@ type: "standard"
 featured: true
 image: "/images/blog/storage-is-dead-hero.jpg"
 readTime: "14 min read"
+lastUpdated: 2026-03-16
 ---
 
 ![A modern data center with rows of illuminated servers](/images/blog/storage-is-dead-hero.jpg)
 
 *Published ahead of [NVIDIA GTC 2026](https://www.nvidia.com/gtc/) (San Jose, March 16-19)*
+
+*Updated March 16, 2026: NVIDIA officially rebranded ICMS to [CMX (Context Memory Extensions)](https://www.nvidia.com/en-us/data-center/ai-storage/cmx/) at GTC 2026. This post has been updated to reflect the new name. The architecture, the BlueField-4 foundation, and the G3.5 tier positioning are unchanged. CMX also introduces DOCA Memos, the SDK for managing KV cache across compute nodes with hardware-accelerated encryption, and confirms Spectrum-X Ethernet as the RDMA fabric.*
 
 ---
 
@@ -83,7 +86,7 @@ No software-defined object store handles this today. The ones that recognize the
 
 ![GPU and AI computing hardware](/images/blog/gpu-cluster.jpg)
 
-At CES 2026, Jensen Huang announced something that most storage coverage buried under GPU hype: the **[Inference Context Memory Storage (ICMS)](https://developer.nvidia.com/blog/introducing-nvidia-bluefield-4-powered-inference-context-memory-storage-platform-for-the-next-frontier-of-ai/)** platform. ICMS is not a storage product. It's a new *tier* in the memory hierarchy, and it rewrites the relationship between GPUs and storage.
+At CES 2026, Jensen Huang announced something that most storage coverage buried under GPU hype: a new *tier* in the memory hierarchy, originally called ICMS and now officially branded **[CMX (Context Memory Extensions)](https://www.nvidia.com/en-us/data-center/ai-storage/cmx/)**. CMX is not a storage product. It rewrites the relationship between GPUs and storage.
 
 ### The Memory Hierarchy for AI Inference
 
@@ -94,25 +97,25 @@ NVIDIA's Rubin platform defines five tiers for inference data:
 | **G1** | GPU HBM | Nanoseconds | Active token generation |
 | **G2** | Host System RAM | Microseconds | KV cache staging, prefill buffers |
 | **G3** | Local NVMe SSDs | ~100 microseconds | Warm KV cache, short-term reuse |
-| **G3.5 (ICMS)** | **Ethernet-attached flash** | **Low microseconds (RDMA)** | **Shared KV cache across pods** |
+| **G3.5 (CMX)** | **Ethernet-attached flash** | **Low microseconds (RDMA)** | **Shared KV cache across pods** |
 | **G4** | Shared Object Storage | Milliseconds | Durable artifacts, checkpoints, datasets |
 
 The breakthrough is G3.5. Traditional inference offloads KV cache from GPU HBM to host RAM (G2) or local SSD (G3). But these are per-node resources. When Agent A builds a 128K-token context on Node 1, and Agent B needs a related context on Node 7, there's no shared tier. The context must be recomputed from scratch.
 
-ICMS solves this with a **pod-level shared flash tier**, powered by [BlueField-4 DPUs](https://nvidianews.nvidia.com/news/nvidia-bluefield-4-powers-new-class-of-ai-native-storage-infrastructure-for-the-next-frontier-of-ai) with 800 Gb/s connectivity, RDMA-accelerated NVMe-oF transport, and purpose-built KV cache management via [NVIDIA Dynamo](https://developer.nvidia.com/dynamo) and NIXL (NVIDIA Inference Transfer Library).
+CMX solves this with a **pod-level shared flash tier**, powered by [BlueField-4 DPUs](https://nvidianews.nvidia.com/news/nvidia-bluefield-4-powers-new-class-of-ai-native-storage-infrastructure-for-the-next-frontier-of-ai) with 800 Gb/s connectivity, RDMA-accelerated NVMe-oF transport via [Spectrum-X Ethernet](https://www.nvidia.com/en-us/networking/spectrumx/), and purpose-built KV cache management via [NVIDIA Dynamo](https://developer.nvidia.com/dynamo), NIXL (NVIDIA Inference Transfer Library), and [DOCA Memos](https://www.nvidia.com/en-us/data-center/ai-storage/cmx/) for hardware-accelerated KV cache APIs.
 
 The performance claims are striking: **5x higher tokens-per-second and 5x better power efficiency** compared to traditional storage approaches for long-context inference. The key insight is that KV cache is *transient, derived, and recomputable*. It doesn't need the durability guarantees of traditional storage, but it needs the bandwidth and shareability that local SSDs can't provide.
 
 ### What This Means for Storage Systems
 
-ICMS doesn't replace object storage. It creates a new tier *above* it in the latency hierarchy and *below* it in the durability hierarchy. The infrastructure looks like:
+CMX doesn't replace object storage. It creates a new tier *above* it in the latency hierarchy and *below* it in the durability hierarchy. The infrastructure looks like:
 
 ```
 ┌──────────────────────────────────────────────────┐
 │              GPU Cluster (Rubin Pods)             │
 │  G1: HBM  ←→  G2: Host RAM  ←→  G3: Local NVMe  │
 │                      ↕                            │
-│         G3.5: ICMS (BlueField-4 + Flash JBOFs)   │
+│         G3.5: CMX (BlueField-4 + Flash JBOFs)     │
 │         Shared KV cache, RDMA, NVMe-oF            │
 │                      ↕                            │
 │        G4: Object Storage (S3-compatible)          │
@@ -121,17 +124,17 @@ ICMS doesn't replace object storage. It creates a new tier *above* it in the lat
 └──────────────────────────────────────────────────┘
 ```
 
-**G4, the object storage layer, is still the foundation.** It holds the durable data: training datasets, model weights, fine-tuning artifacts, Iceberg-managed analytics tables, vector embeddings, and RAG corpora. ICMS doesn't replace any of this. What it does is create a new *consumer* of object storage, one that pre-stages context from G4 into G3.5 for rapid inference access.
+**G4, the object storage layer, is still the foundation.** It holds the durable data: training datasets, model weights, fine-tuning artifacts, Iceberg-managed analytics tables, vector embeddings, and RAG corpora. CMX doesn't replace any of this. What it does is create a new *consumer* of object storage, one that pre-stages context from G4 into G3.5 for rapid inference access.
 
 The downstream effects are significant:
 
-1. **Object storage must be fast enough to feed ICMS.** If the G4 tier can't deliver data to G3.5 at wire speed, the entire memory hierarchy stalls. Slow object storage becomes the bottleneck for inference latency.
+1. **Object storage must be fast enough to feed CMX.** If the G4 tier can't deliver data to G3.5 at wire speed, the entire memory hierarchy stalls. Slow object storage becomes the bottleneck for inference latency.
 
-2. **Object storage must understand data semantics.** ICMS doesn't want raw bytes. It wants KV cache blocks, embedding chunks, and context windows. The storage system that can organize, index, and pre-stage this data based on inference patterns will outperform one that treats everything as opaque objects.
+2. **Object storage must understand data semantics.** CMX doesn't want raw bytes. It wants KV cache blocks, embedding chunks, and context windows. The storage system that can organize, index, and pre-stage this data based on inference patterns will outperform one that treats everything as opaque objects.
 
-3. **The storage vendor ecosystem is mobilizing.** NVIDIA named [12 storage partners](https://nvidianews.nvidia.com/news/nvidia-bluefield-4-powers-new-class-of-ai-native-storage-infrastructure-for-the-next-frontier-of-ai) for ICMS at launch: DDN, Dell, HPE, Hitachi Vantara, IBM, Nutanix, Pure Storage, Supermicro, VAST Data, and WEKA among them. Conspicuously, no software-defined object storage project is on that list. The ICMS ecosystem is being built by proprietary vendors.
+3. **The storage vendor ecosystem is mobilizing.** NVIDIA named [storage partners](https://nvidianews.nvidia.com/news/nvidia-bluefield-4-powers-new-class-of-ai-native-storage-infrastructure-for-the-next-frontier-of-ai) for CMX at launch: DDN, Dell, HPE, Hitachi Vantara, IBM, NetApp, Nutanix, Pure Storage, Supermicro, VAST Data, and WEKA among them. Conspicuously, no software-defined object storage project is on that list. The CMX ecosystem is being built by proprietary vendors.
 
-At GTC 2026, expect NVIDIA to deepen the Dynamo + ICMS integration story, likely with live demos showing agentic AI workloads with shared context across inference pods. The storage systems that integrate with this stack (speaking NVMe-oF, understanding KV cache semantics, delivering RDMA-capable throughput) will be positioned as the G4 foundation for the next generation of AI infrastructure.
+At GTC 2026 (today), NVIDIA confirmed the CMX rebrand and deepened the Dynamo + CMX integration story. The storage systems that integrate with this stack (speaking NVMe-oF, understanding KV cache semantics, delivering RDMA-capable throughput via Spectrum-X) will be positioned as the G4 foundation for the next generation of AI infrastructure.
 
 ---
 
@@ -153,9 +156,9 @@ Vector embeddings must be a first-class storage primitive, not a separate databa
 
 AWS understood this with S3 Vectors. No one else has followed.
 
-### 3. ICMS-Ready Performance
+### 3. CMX-Ready Performance
 
-The G4 tier must deliver sustained, high-bandwidth reads to feed ICMS pre-staging. This means:
+The G4 tier must deliver sustained, high-bandwidth reads to feed CMX pre-staging. This means:
 - RDMA-capable networking (RoCEv2, with Spectrum-X compatibility)
 - NVMe-oF support for direct flash access
 - Erasure-coded reads that can saturate 100+ Gb/s links
@@ -169,7 +172,7 @@ When storage understands tables and vectors, replication becomes semantic: repli
 
 The worst outcome is the current state: one system for objects, another for tables, another for vectors, and a proprietary appliance for KV cache. Each with its own API, its own consistency model, its own failure modes, its own monitoring stack.
 
-The right outcome is a single system that stores objects, manages Iceberg tables over those objects, indexes vectors alongside them, and serves as the durable foundation for ICMS-accelerated inference. All through one endpoint, on one cluster, with one operational model.
+The right outcome is a single system that stores objects, manages Iceberg tables over those objects, indexes vectors alongside them, and serves as the durable foundation for CMX-accelerated inference. All through one endpoint, on one cluster, with one operational model.
 
 ---
 
@@ -181,7 +184,7 @@ Let's be honest about the competitive landscape.
 
 **MinIO gets it.** They're the only software-defined storage company with no hardware lock-in that has shipped native Iceberg V3 support (AIStor Tables, GA February 2026), articulated a coherent lakehouse-on-object-storage strategy, and positioned their product as a data platform rather than just a byte store. AB Periasamy and the MinIO team have consistently been 12-18 months ahead of the rest of the software-defined storage world in recognizing architectural shifts.
 
-**The traditional storage vendors are adapting.** Dell, Pure, NetApp, and VAST Data are all part of NVIDIA's ICMS partner ecosystem. But their advantage is integration agreements, not architecture. They're adding Iceberg support, adding vector capabilities, and adding RDMA endpoints to existing products. Bolted on, not built in.
+**The traditional storage vendors are adapting.** Dell, Pure, NetApp, and VAST Data are all part of NVIDIA's CMX partner ecosystem. But their advantage is integration agreements, not architecture. They're adding Iceberg support, adding vector capabilities, and adding RDMA endpoints to existing products. Bolted on, not built in.
 
 **The rest of the software-defined world doesn't get it.** Ceph is still arguing about RGW performance. SeaweedFS is focused on POSIX compatibility. Garage is optimizing for self-hosting. These are all valid goals, but they're goals from Era 3. The data-aware storage system (the one that speaks Iceberg, indexes vectors, and feeds NVIDIA's inference pipeline) doesn't exist yet in the software-defined world outside of MinIO's commercial offering.
 
@@ -195,9 +198,9 @@ There is a gap in the market that is about to become a chasm.
 
 On one side: AWS, building the definitive data platform but locking it inside their cloud. On the other: MinIO, building the on-premises alternative but as a commercial product with enterprise licensing.
 
-In between: no software-defined, cloud-native, data-aware object storage with no hardware lock-in that natively handles Iceberg tables, vector indexes, and ICMS-ready inference workloads. No system that an organization can deploy on their own hardware, on any cloud, and use as the foundation for both analytics and AI.
+In between: no software-defined, cloud-native, data-aware object storage with no hardware lock-in that natively handles Iceberg tables, vector indexes, and CMX-ready inference workloads. No system that an organization can deploy on their own hardware, on any cloud, and use as the foundation for both analytics and AI.
 
-The infrastructure stack that Jensen Huang will showcase at GTC 2026 (Rubin GPUs, BlueField-4 DPUs, Dynamo inference framework, Spectrum-X networking, and ICMS) needs a G4 layer. NVIDIA doesn't build storage. They build partnerships with storage vendors. The question is whether that G4 layer will be a proprietary appliance from a traditional vendor, a hyperscaler lock-in play, or a software-defined data platform with no hardware lock-in that runs anywhere.
+The infrastructure stack that Jensen Huang will showcase at GTC 2026 (Rubin GPUs, BlueField-4 DPUs, Dynamo inference framework, Spectrum-X networking, and CMX) needs a G4 layer. NVIDIA doesn't build storage. They build partnerships with storage vendors. The question is whether that G4 layer will be a proprietary appliance from a traditional vendor, a hyperscaler lock-in play, or a software-defined data platform with no hardware lock-in that runs anywhere.
 
 **Storage is no longer about storage. It's about data.** The system that understands this, that treats tables, vectors, and inference context as native citizens rather than afterthoughts, will define the next era.
 
@@ -205,4 +208,4 @@ The first three eras were about how to store bytes efficiently. The fourth era i
 
 ---
 
-*NVIDIA GTC 2026 runs [March 16-19 in San Jose](https://www.nvidia.com/gtc/). Jensen Huang's keynote is Monday, March 16, 8-11 AM PDT. ICMS details from the [NVIDIA Technical Blog](https://developer.nvidia.com/blog/introducing-nvidia-bluefield-4-powered-inference-context-memory-storage-platform-for-the-next-frontier-of-ai/) and [NVIDIA Newsroom](https://nvidianews.nvidia.com/news/nvidia-bluefield-4-powers-new-class-of-ai-native-storage-infrastructure-for-the-next-frontier-of-ai). MinIO AIStor Tables coverage from [Blocks and Files](https://www.blocksandfiles.com/ai-ml/2026/02/05/minio-plugs-apache-iceberg-tables-directly-into-aistor/4090411) and [MinIO Blog](https://blog.min.io/aistor-tables-native-iceberg-v3-for-on-premises-object-storage/). Apache Iceberg adoption data from the [2025 State of the Iceberg Ecosystem](https://datalakehousehub.com/blog/2026-02-state-of-the-apache-iceberg-ecosystem/) survey. Amazon S3 Tables [announcement](https://aws.amazon.com/blogs/aws/new-amazon-s3-tables-storage-optimized-for-analytics-workloads/) and S3 Vectors [GA announcement](https://aws.amazon.com/about-aws/whats-new/2025/12/amazon-s3-vectors-generally-available/). NVIDIA Dynamo [documentation](https://developer.nvidia.com/dynamo).*
+*NVIDIA GTC 2026 runs [March 16-19 in San Jose](https://www.nvidia.com/gtc/). Jensen Huang's keynote is Monday, March 16, 8-11 AM PDT. CMX (formerly ICMS) details from the [NVIDIA CMX page](https://www.nvidia.com/en-us/data-center/ai-storage/cmx/), [NVIDIA Technical Blog](https://developer.nvidia.com/blog/introducing-nvidia-bluefield-4-powered-inference-context-memory-storage-platform-for-the-next-frontier-of-ai/), and [NVIDIA Newsroom](https://nvidianews.nvidia.com/news/nvidia-bluefield-4-powers-new-class-of-ai-native-storage-infrastructure-for-the-next-frontier-of-ai). MinIO AIStor Tables coverage from [Blocks and Files](https://www.blocksandfiles.com/ai-ml/2026/02/05/minio-plugs-apache-iceberg-tables-directly-into-aistor/4090411) and [MinIO Blog](https://blog.min.io/aistor-tables-native-iceberg-v3-for-on-premises-object-storage/). Apache Iceberg adoption data from the [2025 State of the Iceberg Ecosystem](https://datalakehousehub.com/blog/2026-02-state-of-the-apache-iceberg-ecosystem/) survey. Amazon S3 Tables [announcement](https://aws.amazon.com/blogs/aws/new-amazon-s3-tables-storage-optimized-for-analytics-workloads/) and S3 Vectors [GA announcement](https://aws.amazon.com/about-aws/whats-new/2025/12/amazon-s3-vectors-generally-available/). NVIDIA Dynamo [documentation](https://developer.nvidia.com/dynamo).*

@@ -1,0 +1,466 @@
+---
+---
+
+<aside class="sdc-evolution hidden lg:block">
+  <div class="sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto">
+    <p class="mb-3 text-[10px] font-semibold uppercase tracking-widest text-[var(--color-text-tertiary)]">
+      Silent Data Corruption
+    </p>
+
+    <div class="svg-container">
+      <svg viewBox="0 0 200 230" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full">
+
+        <!-- Stage 1: The Confession -->
+        <g id="sdc-stage-1" class="sdc-stage active">
+          <!-- Personal NAS icon -->
+          <rect x="55" y="15" width="90" height="55" rx="6" stroke="var(--color-accent)" stroke-width="1.5" fill="var(--color-surface-alt)" />
+          <rect x="65" y="25" width="15" height="8" rx="1" fill="var(--color-accent)" fill-opacity="0.3" />
+          <rect x="65" y="37" width="15" height="8" rx="1" fill="var(--color-accent)" fill-opacity="0.3" />
+          <rect x="65" y="49" width="15" height="8" rx="1" fill="var(--color-accent)" fill-opacity="0.3" />
+          <circle cx="125" cy="30" r="3" fill="var(--color-accent)" fill-opacity="0.5" />
+          <circle cx="125" cy="42" r="3" fill="#e74c3c" fill-opacity="0.8" />
+          <circle cx="125" cy="54" r="3" fill="var(--color-accent)" fill-opacity="0.5" />
+
+          <!-- Corrupted photo icon -->
+          <rect x="60" y="85" width="35" height="28" rx="2" stroke="var(--color-text-tertiary)" stroke-width="1" fill="var(--color-surface-alt)" />
+          <line x1="60" y1="100" x2="95" y2="100" stroke="#e74c3c" stroke-width="0.5" />
+          <line x1="60" y1="104" x2="95" y2="104" stroke="#e74c3c" stroke-width="0.5" />
+          <text x="78" y="96" text-anchor="middle" fill="#e74c3c" font-size="6" font-family="var(--font-mono)">JPEG</text>
+
+          <!-- Arrow from NAS to photo -->
+          <line x1="100" y1="70" x2="78" y2="85" stroke="var(--color-border)" stroke-width="1" stroke-dasharray="3 2" />
+
+          <!-- ZFS + MinIO badges -->
+          <rect x="105" y="85" width="35" height="12" rx="2" stroke="var(--color-accent)" stroke-width="0.8" fill="var(--color-surface-alt)" />
+          <text x="122" y="94" text-anchor="middle" fill="var(--color-accent)" font-size="5.5" font-family="var(--font-mono)">ZFS</text>
+          <rect x="105" y="101" width="35" height="12" rx="2" stroke="var(--color-accent)" stroke-width="0.8" fill="var(--color-surface-alt)" />
+          <text x="122" y="110" text-anchor="middle" fill="var(--color-accent)" font-size="5.5" font-family="var(--font-mono)">MinIO</text>
+
+          <text x="100" y="135" text-anchor="middle" fill="#e74c3c" font-size="7" font-family="var(--font-mono)">Still lost files.</text>
+
+          <text x="100" y="178" text-anchor="middle" fill="var(--color-accent)" font-size="10" font-family="var(--font-sans)">The Confession</text>
+          <text x="100" y="193" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">Years of expertise, files still lost</text>
+        </g>
+
+        <!-- Stage 2: Mercurial Cores -->
+        <g id="sdc-stage-2" class="sdc-stage">
+          <!-- CPU chip with bad core -->
+          <rect x="50" y="15" width="100" height="80" rx="5" stroke="var(--color-text-tertiary)" stroke-width="1.5" fill="var(--color-surface-alt)" />
+          <text x="100" y="28" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="6" font-family="var(--font-mono)">CPU</text>
+
+          <!-- Core grid 4x2 -->
+          <rect x="60" y="33" width="18" height="14" rx="2" fill="var(--color-accent)" fill-opacity="0.15" stroke="var(--color-accent)" stroke-width="0.8" />
+          <rect x="82" y="33" width="18" height="14" rx="2" fill="var(--color-accent)" fill-opacity="0.15" stroke="var(--color-accent)" stroke-width="0.8" />
+          <rect x="104" y="33" width="18" height="14" rx="2" fill="#e74c3c" fill-opacity="0.25" stroke="#e74c3c" stroke-width="1.2" />
+          <rect x="126" y="33" width="18" height="14" rx="2" fill="var(--color-accent)" fill-opacity="0.15" stroke="var(--color-accent)" stroke-width="0.8" />
+          <rect x="60" y="52" width="18" height="14" rx="2" fill="var(--color-accent)" fill-opacity="0.15" stroke="var(--color-accent)" stroke-width="0.8" />
+          <rect x="82" y="52" width="18" height="14" rx="2" fill="var(--color-accent)" fill-opacity="0.15" stroke="var(--color-accent)" stroke-width="0.8" />
+          <rect x="104" y="52" width="18" height="14" rx="2" fill="var(--color-accent)" fill-opacity="0.15" stroke="var(--color-accent)" stroke-width="0.8" />
+          <rect x="126" y="52" width="18" height="14" rx="2" fill="var(--color-accent)" fill-opacity="0.15" stroke="var(--color-accent)" stroke-width="0.8" />
+
+          <!-- Bad core label -->
+          <text x="113" y="77" text-anchor="middle" fill="#e74c3c" font-size="5" font-family="var(--font-mono)">mercurial</text>
+
+          <!-- Math example -->
+          <text x="100" y="108" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="7" font-family="var(--font-mono)">int(1.1^107) =</text>
+          <text x="75" y="123" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)">26,854 ✓</text>
+          <text x="135" y="123" text-anchor="middle" fill="#e74c3c" font-size="7" font-family="var(--font-mono)" font-weight="bold">32,809 ✗</text>
+          <text x="75" y="134" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5.5" font-family="var(--font-mono)">expected</text>
+          <text x="135" y="134" text-anchor="middle" fill="#e74c3c" font-size="5.5" font-family="var(--font-mono)">Core 59</text>
+
+          <text x="100" y="178" text-anchor="middle" fill="#e74c3c" font-size="10" font-family="var(--font-sans)">Mercurial Cores</text>
+          <text x="100" y="193" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">1 in 1,000 servers affected</text>
+        </g>
+
+        <!-- Stage 3: AI at Scale -->
+        <g id="sdc-stage-3" class="sdc-stage">
+          <!-- GPU cluster grid -->
+          <text x="100" y="18" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)" font-weight="bold">10,000 GPU Cluster</text>
+
+          <!-- Grid of small squares representing servers -->
+          <g transform="translate(25, 25)">
+            <!-- 10x5 grid, some red -->
+            <rect x="0" y="0" width="13" height="10" rx="1" fill="var(--color-accent)" fill-opacity="0.12" stroke="var(--color-accent)" stroke-width="0.5" />
+            <rect x="16" y="0" width="13" height="10" rx="1" fill="var(--color-accent)" fill-opacity="0.12" stroke="var(--color-accent)" stroke-width="0.5" />
+            <rect x="32" y="0" width="13" height="10" rx="1" fill="#e74c3c" fill-opacity="0.25" stroke="#e74c3c" stroke-width="0.8" />
+            <rect x="48" y="0" width="13" height="10" rx="1" fill="var(--color-accent)" fill-opacity="0.12" stroke="var(--color-accent)" stroke-width="0.5" />
+            <rect x="64" y="0" width="13" height="10" rx="1" fill="var(--color-accent)" fill-opacity="0.12" stroke="var(--color-accent)" stroke-width="0.5" />
+            <rect x="80" y="0" width="13" height="10" rx="1" fill="var(--color-accent)" fill-opacity="0.12" stroke="var(--color-accent)" stroke-width="0.5" />
+            <rect x="96" y="0" width="13" height="10" rx="1" fill="var(--color-accent)" fill-opacity="0.12" stroke="var(--color-accent)" stroke-width="0.5" />
+            <rect x="112" y="0" width="13" height="10" rx="1" fill="var(--color-accent)" fill-opacity="0.12" stroke="var(--color-accent)" stroke-width="0.5" />
+            <rect x="128" y="0" width="13" height="10" rx="1" fill="var(--color-accent)" fill-opacity="0.12" stroke="var(--color-accent)" stroke-width="0.5" />
+            <rect x="0" y="14" width="13" height="10" rx="1" fill="var(--color-accent)" fill-opacity="0.12" stroke="var(--color-accent)" stroke-width="0.5" />
+            <rect x="16" y="14" width="13" height="10" rx="1" fill="var(--color-accent)" fill-opacity="0.12" stroke="var(--color-accent)" stroke-width="0.5" />
+            <rect x="32" y="14" width="13" height="10" rx="1" fill="var(--color-accent)" fill-opacity="0.12" stroke="var(--color-accent)" stroke-width="0.5" />
+            <rect x="48" y="14" width="13" height="10" rx="1" fill="var(--color-accent)" fill-opacity="0.12" stroke="var(--color-accent)" stroke-width="0.5" />
+            <rect x="64" y="14" width="13" height="10" rx="1" fill="#e74c3c" fill-opacity="0.25" stroke="#e74c3c" stroke-width="0.8" />
+            <rect x="80" y="14" width="13" height="10" rx="1" fill="var(--color-accent)" fill-opacity="0.12" stroke="var(--color-accent)" stroke-width="0.5" />
+            <rect x="96" y="14" width="13" height="10" rx="1" fill="var(--color-accent)" fill-opacity="0.12" stroke="var(--color-accent)" stroke-width="0.5" />
+            <rect x="112" y="14" width="13" height="10" rx="1" fill="var(--color-accent)" fill-opacity="0.12" stroke="var(--color-accent)" stroke-width="0.5" />
+            <rect x="128" y="14" width="13" height="10" rx="1" fill="var(--color-accent)" fill-opacity="0.12" stroke="var(--color-accent)" stroke-width="0.5" />
+            <rect x="0" y="28" width="13" height="10" rx="1" fill="var(--color-accent)" fill-opacity="0.12" stroke="var(--color-accent)" stroke-width="0.5" />
+            <rect x="16" y="28" width="13" height="10" rx="1" fill="var(--color-accent)" fill-opacity="0.12" stroke="var(--color-accent)" stroke-width="0.5" />
+            <rect x="32" y="28" width="13" height="10" rx="1" fill="var(--color-accent)" fill-opacity="0.12" stroke="var(--color-accent)" stroke-width="0.5" />
+            <rect x="48" y="28" width="13" height="10" rx="1" fill="var(--color-accent)" fill-opacity="0.12" stroke="var(--color-accent)" stroke-width="0.5" />
+            <rect x="64" y="28" width="13" height="10" rx="1" fill="var(--color-accent)" fill-opacity="0.12" stroke="var(--color-accent)" stroke-width="0.5" />
+            <rect x="80" y="28" width="13" height="10" rx="1" fill="var(--color-accent)" fill-opacity="0.12" stroke="var(--color-accent)" stroke-width="0.5" />
+            <rect x="96" y="28" width="13" height="10" rx="1" fill="#e74c3c" fill-opacity="0.25" stroke="#e74c3c" stroke-width="0.8" />
+            <rect x="112" y="28" width="13" height="10" rx="1" fill="var(--color-accent)" fill-opacity="0.12" stroke="var(--color-accent)" stroke-width="0.5" />
+            <rect x="128" y="28" width="13" height="10" rx="1" fill="var(--color-accent)" fill-opacity="0.12" stroke="var(--color-accent)" stroke-width="0.5" />
+          </g>
+
+          <!-- Stats -->
+          <text x="100" y="100" text-anchor="middle" fill="#e74c3c" font-size="8" font-family="var(--font-mono)" font-weight="bold">~10 corrupting now</text>
+          <text x="100" y="115" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="6" font-family="var(--font-mono)">No errors. No crashes. Just wrong.</text>
+
+          <!-- Loss curve identical -->
+          <text x="100" y="135" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="6.5" font-family="var(--font-mono)">Loss curves: identical</text>
+          <text x="100" y="148" text-anchor="middle" fill="#e74c3c" font-size="6.5" font-family="var(--font-mono)">Model weights: diverged</text>
+
+          <text x="100" y="178" text-anchor="middle" fill="#e74c3c" font-size="10" font-family="var(--font-sans)">AI at Scale</text>
+          <text x="100" y="193" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">Invisible corruption, visible cost</text>
+        </g>
+
+        <!-- Stage 4: The Checksum Gap -->
+        <g id="sdc-stage-4" class="sdc-stage">
+          <!-- Data path diagram -->
+          <text x="100" y="18" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="7" font-family="var(--font-mono)" font-weight="bold">The Data Path</text>
+
+          <rect x="40" y="25" width="120" height="16" rx="3" stroke="var(--color-accent)" stroke-width="1" fill="var(--color-surface-alt)" />
+          <text x="100" y="36" text-anchor="middle" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)">Application buffer</text>
+
+          <line x1="100" y1="41" x2="100" y2="48" stroke="var(--color-border)" stroke-width="1" />
+
+          <rect x="40" y="48" width="120" height="16" rx="3" stroke="#e74c3c" stroke-width="1.5" fill="#e74c3c" fill-opacity="0.08" />
+          <text x="100" y="59" text-anchor="middle" fill="#e74c3c" font-size="6" font-family="var(--font-mono)">CPU: compress / encrypt / encode</text>
+
+          <text x="170" y="59" fill="#e74c3c" font-size="8" font-family="var(--font-mono)" font-weight="bold">← SDC</text>
+
+          <line x1="100" y1="64" x2="100" y2="71" stroke="var(--color-border)" stroke-width="1" />
+
+          <rect x="40" y="71" width="120" height="16" rx="3" stroke="var(--color-accent)" stroke-width="1" fill="var(--color-surface-alt)" />
+          <text x="100" y="82" text-anchor="middle" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)">NVMe controller</text>
+
+          <line x1="100" y1="87" x2="100" y2="94" stroke="var(--color-border)" stroke-width="1" />
+
+          <rect x="40" y="94" width="120" height="16" rx="3" stroke="var(--color-accent)" stroke-width="1" fill="var(--color-surface-alt)" />
+          <text x="100" y="105" text-anchor="middle" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)">NAND flash (ECC here)</text>
+
+          <!-- Result -->
+          <text x="100" y="128" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="6.5" font-family="var(--font-mono)">Every layer works perfectly.</text>
+          <text x="100" y="142" text-anchor="middle" fill="#e74c3c" font-size="7" font-family="var(--font-mono)" font-weight="bold">The data is still wrong.</text>
+
+          <text x="100" y="178" text-anchor="middle" fill="#e74c3c" font-size="10" font-family="var(--font-sans)">The Checksum Gap</text>
+          <text x="100" y="193" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">ECC protects the wrong layer</text>
+        </g>
+
+        <!-- Stage 5: End-to-End Fix -->
+        <g id="sdc-stage-5" class="sdc-stage">
+          <text x="100" y="18" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)" font-weight="bold">End-to-End Checksums</text>
+
+          <!-- Four checksum boundaries -->
+          <rect x="30" y="28" width="140" height="14" rx="2" fill="var(--color-accent)" fill-opacity="0.08" stroke="var(--color-accent)" stroke-width="1" />
+          <text x="100" y="38" text-anchor="middle" fill="var(--color-accent)" font-size="5.5" font-family="var(--font-mono)">① BLAKE3(raw) = ground truth</text>
+
+          <line x1="100" y1="42" x2="100" y2="48" stroke="var(--color-border)" stroke-width="0.5" />
+
+          <rect x="30" y="48" width="140" height="14" rx="2" fill="var(--color-accent)" fill-opacity="0.08" stroke="var(--color-accent)" stroke-width="1" />
+          <text x="100" y="58" text-anchor="middle" fill="var(--color-accent)" font-size="5.5" font-family="var(--font-mono)">② BLAKE3(compressed)</text>
+
+          <line x1="100" y1="62" x2="100" y2="68" stroke="var(--color-border)" stroke-width="0.5" />
+
+          <rect x="30" y="68" width="140" height="14" rx="2" fill="var(--color-accent)" fill-opacity="0.08" stroke="var(--color-accent)" stroke-width="1" />
+          <text x="100" y="78" text-anchor="middle" fill="var(--color-accent)" font-size="5.5" font-family="var(--font-mono)">③ BLAKE3(encrypted)</text>
+
+          <line x1="100" y1="82" x2="100" y2="88" stroke="var(--color-border)" stroke-width="0.5" />
+
+          <rect x="30" y="88" width="140" height="14" rx="2" fill="var(--color-accent)" fill-opacity="0.08" stroke="var(--color-accent)" stroke-width="1" />
+          <text x="100" y="98" text-anchor="middle" fill="var(--color-accent)" font-size="5.5" font-family="var(--font-mono)">④ BLAKE3(shard) × N</text>
+
+          <!-- Key insight -->
+          <text x="100" y="120" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="6" font-family="var(--font-mono)">Mismatch at any boundary?</text>
+          <text x="100" y="134" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)" font-weight="bold">Retry on different core.</text>
+
+          <!-- BLAKE3 speed -->
+          <text x="100" y="152" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="6" font-family="var(--font-mono)">BLAKE3: 10+ GB/s per core</text>
+
+          <text x="100" y="178" text-anchor="middle" fill="var(--color-accent)" font-size="10" font-family="var(--font-sans)">The Fix</text>
+          <text x="100" y="193" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">Checksum every boundary</text>
+        </g>
+
+        <!-- Stage 6: AI Infrastructure -->
+        <g id="sdc-stage-6" class="sdc-stage">
+          <text x="100" y="18" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)" font-weight="bold">AI Data Integrity</text>
+
+          <!-- Training pipeline -->
+          <rect x="20" y="28" width="75" height="18" rx="3" stroke="var(--color-accent)" stroke-width="1" fill="var(--color-accent)" fill-opacity="0.08" />
+          <text x="57" y="40" text-anchor="middle" fill="var(--color-accent)" font-size="5.5" font-family="var(--font-mono)">Training data</text>
+
+          <rect x="105" y="28" width="75" height="18" rx="3" stroke="var(--color-accent)" stroke-width="1" fill="var(--color-accent)" fill-opacity="0.08" />
+          <text x="142" y="40" text-anchor="middle" fill="var(--color-accent)" font-size="5.5" font-family="var(--font-mono)">Checkpoints</text>
+
+          <rect x="20" y="52" width="75" height="18" rx="3" stroke="var(--color-accent)" stroke-width="1" fill="var(--color-accent)" fill-opacity="0.08" />
+          <text x="57" y="64" text-anchor="middle" fill="var(--color-accent)" font-size="5.5" font-family="var(--font-mono)">Gradients</text>
+
+          <rect x="105" y="52" width="75" height="18" rx="3" stroke="var(--color-accent)" stroke-width="1" fill="var(--color-accent)" fill-opacity="0.08" />
+          <text x="142" y="64" text-anchor="middle" fill="var(--color-accent)" font-size="5.5" font-family="var(--font-mono)">Model weights</text>
+
+          <rect x="45" y="76" width="110" height="18" rx="3" stroke="var(--color-accent)" stroke-width="1" fill="var(--color-accent)" fill-opacity="0.08" />
+          <text x="100" y="88" text-anchor="middle" fill="var(--color-accent)" font-size="5.5" font-family="var(--font-mono)">CMX KV cache</text>
+
+          <!-- All need checksums -->
+          <text x="100" y="112" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="6.5" font-family="var(--font-mono)">Each one needs verification</text>
+          <text x="100" y="126" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="6.5" font-family="var(--font-mono)">at every processing boundary</text>
+
+          <!-- Cost -->
+          <rect x="35" y="136" width="130" height="18" rx="3" fill="#e74c3c" fill-opacity="0.08" stroke="#e74c3c" stroke-width="1" />
+          <text x="100" y="148" text-anchor="middle" fill="#e74c3c" font-size="6.5" font-family="var(--font-mono)">1 SDC event = $100K+ wasted</text>
+
+          <text x="100" y="178" text-anchor="middle" fill="var(--color-accent)" font-size="10" font-family="var(--font-sans)">AI Infrastructure</text>
+          <text x="100" y="193" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">Every layer is a corruption surface</text>
+        </g>
+
+        <!-- Stage 7: Trust Nothing -->
+        <g id="sdc-stage-7" class="sdc-stage">
+          <!-- Shield / paranoid architecture -->
+          <text x="100" y="18" text-anchor="middle" fill="var(--color-accent)" font-size="8" font-family="var(--font-mono)" font-weight="bold">Trust Nothing</text>
+
+          <!-- Evolution: ZFS → MinIO → Next -->
+          <rect x="20" y="32" width="50" height="28" rx="3" stroke="var(--color-accent)" stroke-width="1" fill="var(--color-surface-alt)" />
+          <text x="45" y="44" text-anchor="middle" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)" font-weight="bold">ZFS</text>
+          <text x="45" y="54" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">per block</text>
+
+          <text x="80" y="48" text-anchor="middle" fill="var(--color-border)" font-size="10">→</text>
+
+          <rect x="88" y="32" width="50" height="28" rx="3" stroke="var(--color-accent)" stroke-width="1" fill="var(--color-surface-alt)" />
+          <text x="113" y="44" text-anchor="middle" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)" font-weight="bold">MinIO</text>
+          <text x="113" y="54" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">per shard</text>
+
+          <text x="148" y="48" text-anchor="middle" fill="var(--color-border)" font-size="10">→</text>
+
+          <rect x="155" y="32" width="35" height="28" rx="3" stroke="var(--color-accent)" stroke-width="1.5" fill="var(--color-accent)" fill-opacity="0.08" />
+          <text x="172" y="44" text-anchor="middle" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)" font-weight="bold">Next</text>
+          <text x="172" y="54" text-anchor="middle" fill="var(--color-accent)" font-size="5" font-family="var(--font-mono)">per stage</text>
+
+          <!-- Principles -->
+          <text x="30" y="82" fill="var(--color-accent)" font-size="6.5" font-family="var(--font-mono)">✓ Checksum everything</text>
+          <text x="30" y="96" fill="var(--color-accent)" font-size="6.5" font-family="var(--font-mono)">✓ Verify everything</text>
+          <text x="30" y="110" fill="var(--color-accent)" font-size="6.5" font-family="var(--font-mono)">✓ Trust nothing</text>
+          <text x="30" y="128" fill="var(--color-text-tertiary)" font-size="6" font-family="var(--font-mono)">Every CPU is suspect.</text>
+          <text x="30" y="142" fill="var(--color-text-tertiary)" font-size="6" font-family="var(--font-mono)">The only honest architecture.</text>
+
+          <text x="100" y="178" text-anchor="middle" fill="var(--color-accent)" font-size="10" font-family="var(--font-sans)" font-weight="600">Trust Nothing</text>
+          <text x="100" y="193" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">The only honest architecture</text>
+        </g>
+      </svg>
+    </div>
+
+    <!-- Metric panel -->
+    <div class="mt-4 rounded-lg bg-[var(--color-surface-alt)] px-3 py-2.5 text-center">
+      <p class="text-[9px] uppercase tracking-widest text-[var(--color-text-tertiary)]" id="sdc-metric-label">Years in Storage</p>
+      <p class="mt-1 font-mono text-lg font-bold text-[var(--color-accent)]">
+        <span id="sdc-metric-value">7+</span>
+        <span id="sdc-metric-unit" class="text-sm font-normal"> years</span>
+      </p>
+      <p id="sdc-metric-sub" class="text-[9px] text-[var(--color-text-tertiary)]">Nexenta (ZFS) + MinIO</p>
+    </div>
+
+    <!-- Stage dots -->
+    <div class="mt-3 flex justify-center gap-1.5">
+      <div class="sdc-dot active" data-stage="1"></div>
+      <div class="sdc-dot" data-stage="2"></div>
+      <div class="sdc-dot" data-stage="3"></div>
+      <div class="sdc-dot" data-stage="4"></div>
+      <div class="sdc-dot" data-stage="5"></div>
+      <div class="sdc-dot" data-stage="6"></div>
+      <div class="sdc-dot" data-stage="7"></div>
+    </div>
+
+    <!-- ELI10 -->
+    <div class="mt-5 rounded-lg border border-[var(--color-border)]/30 bg-[var(--color-surface-alt)]/50 px-3.5 py-3">
+      <p class="text-[9px] font-semibold uppercase tracking-widest text-[var(--color-text-tertiary)]">
+        Explain Like I'm 10
+      </p>
+      <p id="sdc-eli10-text" class="sdc-eli10-fade mt-2 text-xs leading-relaxed text-[var(--color-text-secondary)]">
+        Imagine spending years as a lifeguard, then going home and forgetting to lock your own pool gate. That's basically what happened. I worked at two companies that protect data, then lost my own family photos because I got lazy with my home setup.
+      </p>
+    </div>
+  </div>
+</aside>
+
+<style>
+  .sdc-stage {
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
+  }
+
+  .sdc-stage.active {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+  }
+
+  .sdc-stage.past {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+
+  .sdc-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-border);
+    transition: background 0.3s, transform 0.3s;
+  }
+
+  .sdc-dot.active {
+    background: var(--color-accent);
+    transform: scale(1.4);
+  }
+
+  .sdc-dot.past {
+    background: var(--color-accent);
+    opacity: 0.4;
+  }
+
+  .sdc-eli10-fade {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+
+  .sdc-eli10-fade.changing {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sdc-stage { transition: none; }
+    .sdc-dot { transition: none; }
+    .sdc-eli10-fade { transition: none; }
+  }
+</style>
+
+<script>
+  function initSDCEvolution() {
+    const prose = document.querySelector(".prose");
+    if (!prose) return;
+
+    const allHeadings = prose.querySelectorAll("h2, h3");
+    if (allHeadings.length === 0) return;
+
+    const stageMap: { el: Element; stage: number }[] = [];
+
+    allHeadings.forEach((h) => {
+      const text = (h.textContent || "").toLowerCase();
+      let stage = -1;
+
+      if (text.includes("confession")) stage = 1;
+      else if (text.includes("cores that don")) stage = 2;
+      else if (text.includes("research") && text.includes("cpu")) stage = 2;
+      else if (text.includes("silent data corruptions at scale")) stage = 2;
+      else if (text.includes("industry response")) stage = 2;
+      else if (text.includes("math of scale")) stage = 3;
+      else if (text.includes("uniquely vulnerable")) stage = 3;
+      else if (text.includes("sdc during llm")) stage = 3;
+      else if (text.includes("the cost")) stage = 3;
+      else if (text.includes("storage systems don")) stage = 4;
+      else if (text.includes("checksum gap")) stage = 4;
+      else if (text.includes("zfs got right")) stage = 4;
+      else if (text.includes("minio got right")) stage = 4;
+      else if (text.includes("next generation must")) stage = 5;
+      else if (text.includes("what this means")) stage = 6;
+      else if (text.includes("training pipeline")) stage = 6;
+      else if (text.includes("inference pipeline")) stage = 6;
+      else if (text.includes("storage system")) stage = 6;
+      else if (text.includes("hard truth")) stage = 7;
+      else if (text.includes("what i do now")) stage = 7;
+
+      if (stage > 0) {
+        stageMap.push({ el: h, stage });
+      }
+    });
+
+    if (stageMap.length === 0) return;
+
+    let currentStage = 1;
+
+    const stages = document.querySelectorAll(".sdc-stage");
+    const dots = document.querySelectorAll(".sdc-dot");
+    const metricLabel = document.getElementById("sdc-metric-label");
+    const metricValue = document.getElementById("sdc-metric-value");
+    const metricUnit = document.getElementById("sdc-metric-unit");
+    const metricSub = document.getElementById("sdc-metric-sub");
+
+    const metricData = [
+      { label: "Years in Storage", value: "7+", unit: " years", sub: "Nexenta (ZFS) + MinIO" },
+      { label: "Affected Servers", value: "1:1,000", unit: "", sub: "Google + Meta confirmed" },
+      { label: "SDC in Llama 3", value: "6", unit: " events", sub: "in a single 54-day run" },
+      { label: "Detection Gap", value: "30%", unit: "", sub: "evade Meta's best tools" },
+      { label: "BLAKE3 Speed", value: "10+", unit: " GB/s", sub: "per core, no excuses" },
+      { label: "Cost per SDC Event", value: "$100K+", unit: "", sub: "wasted GPU compute" },
+      { label: "Checksum Layers", value: "4", unit: " deep", sub: "ingest → compress → encrypt → shard" },
+    ];
+
+    const eli10El = document.getElementById("sdc-eli10-text");
+    const eli10Data = [
+      "Imagine spending years as a lifeguard, then going home and forgetting to lock your own pool gate. That's basically what happened. I worked at two companies that protect data, then lost my own family photos because I got lazy with my home setup.",
+      "Your computer has a little calculator inside called a CPU. Usually it gets the right answer. But Google found that about 1 in every 1,000 computers has a calculator that sometimes gets math wrong, and it doesn't even know it's wrong. It just confidently says 2+2=5.",
+      "When you teach a robot to recognize cats by showing it millions of pictures, and some of those pictures are secretly scrambled, the robot learns weird things. It won't crash or complain. It'll just be a little bit wrong about cats forever, and nobody will know why.",
+      "Your hard drive has a spell-checker for data. But the problem happens before the data gets to the hard drive. It's like spell-checking a paper after someone already changed the words. The spell-checker says \"looks good!\" because the wrong words are spelled correctly.",
+      "The fix is to check your homework at every step. Write an essay, check it. Translate it to French, check it. Print it, check it. If anything changed between steps, you know exactly where it went wrong and can redo just that part.",
+      "Training a big AI is like a thousand kids working on one giant jigsaw puzzle together. If even one kid is putting pieces in the wrong spots, the final picture looks off. You need each kid to double-check their pieces before passing them along.",
+      "ZFS checks every drawer in the filing cabinet. MinIO checks every copy in every office. The next system needs to check every hand the paper passes through, because it turns out some of the people carrying the paper are accidentally smudging it.",
+    ];
+
+    function setStage(stage: number) {
+      if (stage === currentStage) return;
+      currentStage = stage;
+
+      stages.forEach((s, i) => {
+        const stageNum = i + 1;
+        s.classList.remove("active", "past");
+        if (stageNum === stage) s.classList.add("active");
+        else if (stageNum < stage) s.classList.add("past");
+      });
+
+      dots.forEach((d, i) => {
+        const dotStage = i + 1;
+        d.classList.remove("active", "past");
+        if (dotStage === stage) d.classList.add("active");
+        else if (dotStage < stage) d.classList.add("past");
+      });
+
+      const data = metricData[stage - 1];
+      if (data && metricLabel && metricValue && metricUnit && metricSub) {
+        metricLabel.textContent = data.label;
+        metricValue.textContent = data.value;
+        metricUnit.textContent = data.unit;
+        metricSub.textContent = data.sub;
+      }
+
+      if (eli10El && eli10Data[stage - 1]) {
+        eli10El.classList.add("changing");
+        setTimeout(() => {
+          eli10El.textContent = eli10Data[stage - 1];
+          eli10El.classList.remove("changing");
+        }, 200);
+      }
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const match = stageMap.find((s) => s.el === entry.target);
+          if (match) setStage(match.stage);
+        }
+      });
+    }, { rootMargin: "-15% 0px -75% 0px" });
+
+    stageMap.forEach(({ el }) => observer.observe(el));
+    setStage(1);
+  }
+
+  initSDCEvolution();
+</script>

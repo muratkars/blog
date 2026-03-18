@@ -11,7 +11,19 @@ readTime: "22 min read"
 
 ![Array of hard drives in a storage chassis](/images/blog/hard-drives.jpg)
 
-*The S3 API is the POSIX of cloud storage. Its limitations are now the ceiling for innovation. And every workaround the industry has built on top of it is an admission that the foundation is cracked.*
+*Everything I've learned from talking to AI/ML teams about their storage struggles, and why the S3 API is at the center of all of them.*
+
+---
+
+## What AI/ML Teams Keep Telling Me
+
+Over the past two years, I've talked to dozens of teams building AI infrastructure. Training pipelines, inference platforms, data engineering stacks. Different companies, different scales, different cloud strategies. The complaints are remarkably consistent.
+
+"We spend more on S3 API calls than on the storage itself." "Our data loader is the bottleneck, not the GPUs." "We built a whole caching layer just to avoid LIST calls." "Checkpointing takes so long our GPUs sit idle." "We tried three different data loading libraries before one worked."
+
+Every conversation circles back to the same root cause: the S3 API. Not S3's throughput (that's fine). Not S3's durability (that's excellent). The API itself. The operations it exposes, the operations it doesn't, and the workarounds that every team independently reinvents.
+
+This post is the long version of what I tell those teams. The S3 API is the POSIX of cloud storage. Its limitations are now the ceiling for innovation. And every workaround the industry has built on top of it is an admission that the foundation is cracked.
 
 ---
 
@@ -134,7 +146,7 @@ This is exactly why DeepSeek built [3FS](https://github.com/deepseek-ai/3FS). A 
 
 ### The KV Cache Problem
 
-LLM inference KV cache uses paged attention with 16-64 KB pages. These small, non-contiguous chunks require sub-millisecond latency for offload and reload. S3's 10-100ms latency is three orders of magnitude too slow. The result: a parallel ecosystem of KV cache solutions (LMCache, Mooncake, InfiniStore, NVIDIA ICMS) that exists entirely because the object storage API cannot serve small objects fast enough.
+LLM inference KV cache uses paged attention with 16-64 KB pages. These small, non-contiguous chunks require sub-millisecond latency for offload and reload. S3's 10-100ms latency is three orders of magnitude too slow. The result: a parallel ecosystem of KV cache solutions (LMCache, Mooncake, InfiniStore, NVIDIA's BlueField-4-powered [CMX](https://www.nvidia.com/en-us/data-center/ai-storage/cmx/)) that exists entirely because the object storage API cannot serve small objects fast enough.
 
 S3 was designed for web applications uploading images and serving static files. ML workloads need shuffle-and-stream, high fan-out, atomic checkpoints, and sub-millisecond KV access. The gap is not a tuning problem. It's a fundamental API mismatch.
 
@@ -259,7 +271,7 @@ If AWS is addressing S3's limitations from the cloud side, MinIO is addressing t
 
 The MinIO team has consistently been 12-18 months ahead of legacy storage vendors in recognizing that object storage must evolve beyond the bare S3 API. While Dell, NetApp, and Pure Storage were still selling block and file appliances with S3 gateways bolted on, MinIO was shipping native capabilities that address the limitations outlined in this post:
 
-**AIStor Tables** (GA February 2026): Native Apache Iceberg V3 with the full Iceberg REST Catalog API embedded directly in the object store. No external Hive Metastore. No AWS Glue dependency. No separate catalog service to deploy and manage. Tables and objects coexist in a single system. MinIO shipped this within weeks of AWS S3 Tables, but on-premises, on any hardware, without AWS lock-in.
+**AIStor Tables** (GA February 2026): Native Apache Iceberg V3 with the full Iceberg REST Catalog API embedded directly in the object store. No external Hive Metastore. No AWS Glue dependency. No separate catalog service to deploy and manage. Tables and objects coexist in a single system. MinIO shipped this on-premises, on any hardware, without AWS lock-in.
 
 **S3 Select replacement**: When AWS deprecated S3 Select in July 2024, MinIO [kept their implementation alive](https://blog.min.io/minio-s3-select/) and extended it. They recognized that server-side query pushdown is genuinely useful for reducing data movement, even if AWS's implementation was too limited to sustain.
 
@@ -269,7 +281,7 @@ The MinIO team has consistently been 12-18 months ahead of legacy storage vendor
 
 The contrast with legacy storage vendors is stark. EMC (now Dell) spent a decade trying to make HDFS work on Isilon. NetApp bolted an S3 gateway onto ONTAP. Pure Storage added S3 to FlashBlade as an afterthought. These companies are adding S3 compatibility to products designed for file and block. MinIO built for S3 from day one, and is now extending beyond it.
 
-MinIO is no longer open source. The AGPL v3 license change came in 2021, the web console was removed from the community edition in early 2025, and in December 2025 the community edition entered maintenance mode. No new features, no accepted PRs, only critical security fixes on a case-by-case basis. MinIO is now a software-defined commercial product: source-available, but community contribution and open-source development have ended. AIStor is the product, and it's proprietary.
+MinIO has shifted to a commercial-first model. The AGPL v3 license change came in 2021, the web console was removed from the community edition in early 2025, and in December 2025 the community edition entered maintenance mode. No new features, no accepted PRs, only critical security fixes on a case-by-case basis. The code remains open source under AGPL v3, but the development focus is entirely on AIStor, MinIO's commercial product. New features (Tables, PromptObject, enterprise management) ship exclusively in AIStor.
 
 That said, their architectural instincts have been right at every turn: S3-native, not S3-bolted-on. Tables, not just objects. AI-aware, not byte-agnostic. The rest of the industry is catching up to positions MinIO staked out years ago. The gap MinIO leaves in the open-source world (a truly community-driven, S3-native object store with native Iceberg, ML-aware data access, and beyond-S3 primitives) is real, and it's growing.
 

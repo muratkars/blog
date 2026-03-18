@@ -7,11 +7,14 @@ type: "standard"
 featured: false
 image: "/images/blog/storage-protocols-hero.jpg"
 readTime: "22 min read"
+lastUpdated: 2026-03-16
 ---
 
 ![Network infrastructure and data connections](/images/blog/storage-protocols-hero.jpg)
 
 *Every storage protocol you need to understand, why it exists, and which ones will survive the next decade.*
+
+*Updated March 16, 2026: NVIDIA officially rebranded ICMS to [CMX (Context Memory Extensions)](https://www.nvidia.com/en-us/data-center/ai-storage/cmx/) at GTC 2026. References updated throughout.*
 
 ---
 
@@ -292,11 +295,11 @@ But the tide is turning. NVIDIA's storage ecosystem is evolving in a significant
 
 **NVIDIA is broadening.** The partner ecosystem is expanding beyond file storage. Fast object storage that can deliver sustained high-bandwidth reads to GPU clusters is becoming a validated tier. The writing is on the wall: object storage with performance guarantees will be a first-class citizen in NVIDIA's reference architectures.
 
-### Context Memory: From ICMS to CMX
+### CMX: Context Memory Extensions
 
 This is the part most storage coverage misses entirely.
 
-At CES 2026, NVIDIA announced **ICMS (Inference Context Memory Storage)**. It's not a product you buy. It's a new *tier* in the memory hierarchy, sitting between local NVMe and shared object storage.
+At CES 2026, NVIDIA announced what was originally called ICMS (Inference Context Memory Storage). At GTC 2026, they officially rebranded it as **[CMX (Context Memory Extensions)](https://www.nvidia.com/en-us/data-center/ai-storage/cmx/)**. It's not a product you buy. It's a new *tier* in the memory hierarchy, sitting between local NVMe and shared object storage.
 
 **Why it exists.** Modern AI inference (especially with large language models and AI agents) builds enormous context windows. When a chatbot maintains a 128K-token conversation, that context lives as a KV (key-value) cache in GPU memory. But GPU HBM is precious and limited. When the KV cache overflows HBM, it needs somewhere to spill.
 
@@ -307,12 +310,10 @@ The memory hierarchy for AI inference looks like this:
 | G1 | GPU HBM | Nanoseconds | Active KV cache, model weights |
 | G2 | Host RAM | Microseconds | Overflow KV cache, prefill buffers |
 | G3 | Local NVMe | ~100 us | Warm context, model weight shards |
-| **G3.5 (ICMS)** | **Network flash (RDMA)** | **Low microseconds** | **Shared KV cache across pods** |
+| **G3.5 (CMX)** | **Network flash (RDMA)** | **Low microseconds** | **Shared KV cache across pods** |
 | G4 | Object Storage | Milliseconds | Training data, checkpoints, datasets |
 
-The magic is G3.5. Without ICMS, if Agent A builds a context on Node 1 and Agent B needs related context on Node 7, it has to be recomputed from scratch. ICMS creates a *shared* flash tier across the pod, powered by BlueField-4 DPUs with 800 Gb/s RDMA connectivity.
-
-**The rebrand: CMX.** NVIDIA appears to be rebranding ICMS as **CMX (Context Memory eXtensions)**. The new name has already surfaced in partner announcements (VAST Data's press materials reference "NVIDIA Context Memory Storage (CMX) Platform"), and GTC 2026 (March 16-19, San Jose) is the likely stage for a formal unveiling. Same technology, better name. "ICMS" is a mouthful; "CMX" matches NVIDIA's naming style (think CUDA, NVLink, NIM) and positions context memory as a platform extension rather than a storage product. The technology doesn't change (BlueField-4, NVMe-oF transport, NVIDIA Dynamo orchestration) but the messaging shifts from "storage infrastructure" to "memory architecture for agentic AI."
+The magic is G3.5. Without CMX, if Agent A builds a context on Node 1 and Agent B needs related context on Node 7, it has to be recomputed from scratch. CMX creates a *shared* flash tier across the pod, powered by BlueField-4 DPUs with 800 Gb/s RDMA connectivity and Spectrum-X Ethernet. NVIDIA DOCA Memos provides the SDK for managing KV cache across compute nodes with hardware-accelerated encryption.
 
 Why should you care? Because CMX defines what the G4 object storage layer needs to be:
 
@@ -354,7 +355,7 @@ Checkpoints are large (multi-GB to TB), written periodically, and need durabilit
 Hot model weights on local NVMe (G3). Shared context in CMX (G3.5). Model artifacts and full weight sets in object storage (G4). The tiers work together. CMX pre-stages from object storage, local NVMe caches the hottest data.
 
 ### Inference: KV Cache and Context
-**Winner: CMX (ICMS)**
+**Winner: CMX**
 
 This is CMX's reason for existing. Shared, transient, high-bandwidth context that doesn't need durability but needs to be accessible across pods. Neither NFS nor object storage is designed for this workload.
 
@@ -383,4 +384,4 @@ The bytes still matter. They always will. But the protocol that just moves bytes
 
 ---
 
-*NVIDIA GTC 2026 runs March 16-19 in San Jose. Watch for context memory updates during Jensen Huang's keynote (Monday, March 16, 8-11 AM PDT). For current ICMS details, see the [NVIDIA Technical Blog](https://developer.nvidia.com/blog/introducing-nvidia-bluefield-4-powered-inference-context-memory-storage-platform-for-the-next-frontier-of-ai/) and [BlueField-4 announcement](https://nvidianews.nvidia.com/news/nvidia-bluefield-4-powers-new-class-of-ai-native-storage-infrastructure-for-the-next-frontier-of-ai). NVMe-oF specifications from [NVM Express](https://nvmexpress.org/developers/nvme-of-specification/). Apache Iceberg at [iceberg.apache.org](https://iceberg.apache.org/). S3 API reference at [AWS S3 documentation](https://docs.aws.amazon.com/AmazonS3/latest/API/Welcome.html).*
+*NVIDIA CMX (formerly ICMS) details from the [NVIDIA CMX page](https://www.nvidia.com/en-us/data-center/ai-storage/cmx/), [NVIDIA Technical Blog](https://developer.nvidia.com/blog/introducing-nvidia-bluefield-4-powered-inference-context-memory-storage-platform-for-the-next-frontier-of-ai/), and [BlueField-4 announcement](https://nvidianews.nvidia.com/news/nvidia-bluefield-4-powers-new-class-of-ai-native-storage-infrastructure-for-the-next-frontier-of-ai). NVMe-oF specifications from [NVM Express](https://nvmexpress.org/developers/nvme-of-specification/). Apache Iceberg at [iceberg.apache.org](https://iceberg.apache.org/). S3 API reference at [AWS S3 documentation](https://docs.aws.amazon.com/AmazonS3/latest/API/Welcome.html).*
