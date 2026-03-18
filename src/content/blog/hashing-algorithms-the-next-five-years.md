@@ -1,6 +1,6 @@
 ---
 title: "The Hash That Holds Your Data Together"
-date: 2026-03-21
+date: 2026-03-18
 description: "A practitioner's guide to CRC32, MD5, SHA-256, XXHash, HighwayHash, BLAKE2, and BLAKE3. What each was designed for, where each breaks down, and which one you should bet your architecture on for the next five years."
 tags: ["storage", "data-integrity", "hashing", "performance"]
 type: "standard"
