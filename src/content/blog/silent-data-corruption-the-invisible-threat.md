@@ -5,11 +5,11 @@ description: "One in every thousand servers in your data center is silently corr
 tags: ["storage", "data-integrity", "ai", "infrastructure"]
 type: "standard"
 featured: false
-image: "/images/blog/server-cables.jpg"
+image: "/images/blog/bad-cpu.png"
 readTime: "18 min read"
 ---
 
-![Server cables and connections](/images/blog/server-cables.jpg)
+![Bad CPU! Bad CPU!](/images/blog/bad-cpu.png)
 
 *Silent data corruption, AI, and why I lost files despite spending years at two data integrity companies.*
 
@@ -23,7 +23,7 @@ I spent years at Nexenta, the company that built enterprise storage on ZFS, the 
 
 I lived and breathed this. I worked with the ZFS community. I understood copy-on-write semantics, Merkle tree verification, and the entire philosophy that data must be checksummed, verified, and self-healing. I could explain the difference between `fletcher4` and `sha256` in my sleep. I watched Nexenta grow to nearly 2,000 petabytes under management across 3,000 enterprise customers before DDN acquired us in 2019.
 
-After Nexenta, I went to MinIO, where data integrity was, if anything, even more central to the product identity. MinIO called itself ["the ZFS of cloud storage"](https://min.io/blog/minio-the-zfs-of-cloud-storage) and meant it. Bitrot protection was enabled **by default**. Not an optional feature, not a checkbox in advanced settings, but the baseline behavior of every deployment. MinIO computed HighwayHash checksums on every erasure-coded shard, verified them on every read, and automatically healed corrupted shards by reconstructing from parity. All inline, all transparent, all without operator intervention.
+Most recently, I was at MinIO, where data integrity was, if anything, even more central to the product identity. MinIO called itself ["the ZFS of cloud storage"](https://web.archive.org/web/20260116054851/https://min.io/blog/minio-the-zfs-of-cloud-storage) and meant it. Bitrot protection was enabled **by default**. Not an optional feature, not a checkbox in advanced settings, but the baseline behavior of every deployment. MinIO computed HighwayHash checksums on every erasure-coded shard, verified them on every read, and automatically healed corrupted shards by reconstructing from parity. All inline, all transparent, all without operator intervention.
 
 I watched customers discover corruption that had been silently accumulating on their previous storage systems for months. I watched the background scanner find and heal bitrot on drives that SMART data reported as perfectly healthy. I saw firsthand that data integrity wasn't a theoretical concern. It was a continuous, measurable, operational reality. MinIO's approach (checksum everything, verify on every read, heal automatically) was the right architecture. It caught corruption that no other layer in the stack would have detected.
 
@@ -35,7 +35,7 @@ Not because I didn't know better. Because I got lazy. Because the NAS vendor's d
 
 I discovered the corruption when I opened family photos that had been stored for years. Some had visual artifacts: color bands, missing sections, JPEG headers intact but payloads scrambled. Others opened fine but were subtly wrong in ways I couldn't identify without the originals. The originals were gone. The backups contained the same corruption. The files were lost.
 
-**Years at a ZFS company, then years at MinIO where we literally built bitrot healing into the product, and I still lost files to silent data corruption on my own NAS.**
+**Years spent on ZFS, then years spent on enterprise object storage where we literally built bitrot healing into the product, and I still lost files to silent data corruption on my own NAS.**
 
 The lesson isn't that I'm careless (though I was). The lesson is that silent data corruption is so insidious, so invisible, so contrary to our mental model of how computers work, that even people who *know* about it, who've *built careers* fighting it, can be caught off guard.
 
@@ -168,7 +168,7 @@ This does **not** catch:
 
 ZFS protects the storage layer. It does not protect the compute layer. And SDC is a compute problem, not a storage problem.
 
-### What MinIO Got Right (and Where It Still Falls Short)
+### What MinIO Got Right (and What's Left to Solve)
 
 MinIO took ZFS's philosophy and translated it to object storage, arguably better than anyone else in the industry.
 
@@ -182,11 +182,11 @@ MinIO took ZFS's philosophy and translated it to object storage, arguably better
 
 This architecture catches the same class of problems ZFS catches (media degradation, firmware bugs, phantom writes) and adds something ZFS can't do easily: **healing across independent nodes**. When MinIO reconstructs from parity shards, those shards were written and stored by different servers with different CPUs. Cross-node reconstruction probabilistically survives CPU-level SDC because the corruption is specific to one core on one machine.
 
-Where MinIO falls short is the same place ZFS does: if the CPU corrupts data *before* the checksum is computed (during compression, during the application's own processing, during the initial hash computation itself) the system faithfully stores and verifies the wrong data. The HighwayHash matches because it was computed on the already-corrupted bytes. The erasure coding faithfully distributes the corrupted shards. The self-healing mechanism has nothing to heal because the checksums are consistent.
+Where every storage system hits a wall is the same place ZFS does: if the CPU corrupts data *before* the checksum is computed (during compression, during the application's own processing, during the initial hash computation itself) the system faithfully stores and verifies the wrong data. The HighwayHash matches because it was computed on the already-corrupted bytes. The erasure coding faithfully distributes the corrupted shards. The self-healing mechanism has nothing to heal because the checksums are consistent.
 
-This isn't a MinIO problem specifically. It's a fundamental limitation of any system that checksums data at one layer without verifying across layer boundaries. It's the gap between "storage integrity" and "end-to-end integrity."
+It's a fundamental limitation of any system that checksums data at one layer without verifying across layer boundaries. It's the gap between "storage integrity" and "end-to-end integrity."
 
-That's why I lost files despite years of working with ZFS and MinIO. My NAS wasn't even running either of them (lazy, remember?), but even if it had been, if the CPU corrupted the JPEG data before the storage system saw it, both ZFS and MinIO would have checksummed and replicated the garbage faithfully.
+That's why I lost files despite years of working with ZFS and MinIO. My NAS wasn't even running either of them (lazy, remember?), but even if it had been, if the CPU corrupted the JPEG data before the storage system saw it, any storage system would have checksummed and replicated the garbage faithfully.
 
 ### What the Next Generation Must Do Differently
 
@@ -268,7 +268,7 @@ But CMX is just one layer. The full picture:
 
 6. **Build integrity verification into the I/O path, not as an afterthought.** Checksums aren't a feature you add in v2. They're the foundation. Every byte written must be checksummed before processing. Every byte read must be verified before delivery. The storage system should **refuse to serve data that fails verification**, returning an error rather than silently delivering corrupt bytes.
 
-This is the lesson of ZFS and MinIO: data integrity was the *primary design goal* of both systems, not an optimization bolted on later. ZFS proved that filesystems must checksum every block. MinIO proved that object stores must checksum every shard and self-heal on read. The next generation must take both philosophies and extend them from the storage layer to the entire data path, covering CPU processing boundaries, not just disk storage.
+This is the lesson: data integrity was the *primary design goal* of both systems, not an optimization bolted on later. ZFS proved that filesystems must checksum every block. MinIO proved that object stores must checksum every shard and self-heal on read. The next generation must take both philosophies and extend them from the storage layer to the entire data path, covering CPU processing boundaries, not just disk storage.
 
 ---
 
@@ -296,11 +296,11 @@ I've worked at two companies whose core value proposition was "your data is safe
 
 Because even ZFS's block-level checksums and MinIO's shard-level HighwayHash verification share the same blind spot: they trust the CPU. If the CPU corrupts data before the checksum is computed, the checksum is consistent with the corrupted data. The corruption is invisible to the storage layer.
 
-For my home NAS, the probability of a mercurial core is low enough that ZFS + scrubs + verified backups is adequate. I accept the residual risk. For a 10,000-node AI training cluster, that residual risk is a mathematical certainty. Approximately 10 machines silently corrupting data at any given time.
+For my home NAS, the probability of a mercurial core is low enough that ZFS + scrubs + verified backups is adequate. I accept the residual risk. For a 10,000-node AI training cluster, that residual risk is a mathematical certainty. Approximately 10 machines silently corrupting data at any given time. Major cloud providers run detailed burn-in processes before any server enters production, specifically to catch mercurial cores. Your on-prem data center probably doesn't.
 
 The storage systems we build for AI must be paranoid in a way that no previous generation of storage had to be. Not because disks are less reliable (they're more reliable than ever). Not because networks are lossy (they're better than ever). But because the CPUs, the one component we always trusted, are lying to us at a rate of 1 in 1,000.
 
-ZFS got us checksums per block. MinIO got us checksums per shard with automatic healing. The next generation must get us checksums per *processing stage*, verifying data integrity across every CPU boundary in the I/O path, not just at the storage endpoints.
+ZFS got us checksums per block. Object storage got us checksums per shard with automatic healing. The next generation must get us checksums per *processing stage*, verifying data integrity across every CPU boundary in the I/O path, not just at the storage endpoints.
 
 Build your storage system like every CPU is suspect. Checksum everything. Verify everything. Trust nothing.
 
