@@ -9,6 +9,8 @@ import GoRustEvolution from "../../components/GoRustEvolution.astro";
 import S3Evolution from "../../components/S3Evolution.astro";
 import SDCEvolution from "../../components/SDCEvolution.astro";
 import HashEvolution from "../../components/HashEvolution.astro";
+import SIMDEvolution from "../../components/SIMDEvolution.astro";
+import RebuildEvolution from "../../components/RebuildEvolution.astro";
 
 export async function getStaticPaths() {
   const posts = await getCollection("blog");
@@ -30,6 +32,8 @@ const showGoRustEvolution = post.id === "why-not-go-for-storage";
 const showS3Evolution = post.id === "s3-api-holding-storage-back";
 const showSDCEvolution = post.id === "silent-data-corruption-the-invisible-threat";
 const showHashEvolution = post.id === "hashing-algorithms-the-next-five-years";
+const showSIMDEvolution = post.id === "simd-mandatory-erasure-coding";
+const showRebuildEvolution = post.id === "rebuild-time-crisis";
 ---
 
 <Layout
@@ -62,5 +66,11 @@ const showHashEvolution = post.id === "hashing-algorithms-the-next-five-years";
   )}
   {showHashEvolution && (
     <HashEvolution slot="right-sidebar" />
+  )}
+  {showSIMDEvolution && (
+    <SIMDEvolution slot="right-sidebar" />
+  )}
+  {showRebuildEvolution && (
+    <RebuildEvolution slot="right-sidebar" />
   )}
 </Layout>

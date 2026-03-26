@@ -1,0 +1,467 @@
+---
+---
+
+<aside class="rebuild-evolution hidden lg:block">
+  <div class="sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto">
+    <p class="mb-3 text-[10px] font-semibold uppercase tracking-widest text-[var(--color-text-tertiary)]">
+      Rebuild Time Crisis
+    </p>
+
+    <div class="svg-container">
+      <svg viewBox="0 0 200 230" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full">
+
+        <!-- Stage 1: The Jaw -->
+        <g id="rebuild-stage-1" class="rebuild-stage active">
+          <text x="100" y="18" text-anchor="middle" fill="#e74c3c" font-size="7" font-family="var(--font-mono)" font-weight="bold">The Opening Jaw</text>
+
+          <!-- Capacity line (exponential) -->
+          <text x="18" y="38" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">Cap</text>
+          <polyline points="40,42 65,40 90,36 115,30 140,20 165,8" stroke="var(--color-accent)" stroke-width="1.5" fill="none" />
+          <circle cx="165" cy="8" r="2" fill="var(--color-accent)" />
+          <text x="172" y="12" fill="var(--color-accent)" font-size="4.5" font-family="var(--font-mono)">100TB</text>
+
+          <!-- Throughput line (flat) -->
+          <text x="18" y="68" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">Thr</text>
+          <line x1="40" y1="65" x2="165" y2="63" stroke="#e74c3c" stroke-width="1.5" />
+          <circle cx="165" cy="63" r="2" fill="#e74c3c" />
+          <text x="172" y="67" fill="#e74c3c" font-size="4.5" font-family="var(--font-mono)">250MB/s</text>
+
+          <!-- Year labels -->
+          <text x="40" y="80" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="4.5" font-family="var(--font-mono)">2007</text>
+          <text x="90" y="80" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="4.5" font-family="var(--font-mono)">2015</text>
+          <text x="140" y="80" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="4.5" font-family="var(--font-mono)">2025</text>
+          <text x="165" y="80" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="4.5" font-family="var(--font-mono)">2030</text>
+
+          <!-- Gap arrow -->
+          <line x1="165" y1="15" x2="165" y2="58" stroke="#e74c3c" stroke-width="0.8" stroke-dasharray="2,2" />
+          <text x="100" y="100" text-anchor="middle" fill="#e74c3c" font-size="6.5" font-family="var(--font-mono)">Rebuild time = capacity / throughput</text>
+          <text x="100" y="114" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="6" font-family="var(--font-mono)">Gap grows without bound.</text>
+
+          <text x="100" y="178" text-anchor="middle" fill="#e74c3c" font-size="10" font-family="var(--font-sans)">The Crisis</text>
+          <text x="100" y="193" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">Capacity up, throughput flat</text>
+        </g>
+
+        <!-- Stage 2: Rebuild Times -->
+        <g id="rebuild-stage-2" class="rebuild-stage">
+          <text x="100" y="18" text-anchor="middle" fill="#e74c3c" font-size="7" font-family="var(--font-mono)" font-weight="bold">Rebuild Time Table</text>
+
+          <!-- HDD bars -->
+          <text x="18" y="35" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">HDD</text>
+
+          <rect x="40" y="28" width="30" height="10" rx="2" fill="#e74c3c" fill-opacity="0.3" />
+          <text x="75" y="36" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">20TB: 2-3 days</text>
+
+          <rect x="40" y="42" width="55" height="10" rx="2" fill="#e74c3c" fill-opacity="0.5" />
+          <text x="100" y="50" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">30TB: 3-5 days</text>
+
+          <rect x="40" y="56" width="100" height="10" rx="2" fill="#e74c3c" fill-opacity="0.7" />
+          <text x="145" y="64" fill="#e74c3c" font-size="5" font-family="var(--font-mono)">60TB: 6-9 days</text>
+
+          <rect x="40" y="70" width="145" height="10" rx="2" fill="#e74c3c" fill-opacity="0.9" />
+          <text x="145" y="78" fill="#e74c3c" font-size="5" font-family="var(--font-mono)" font-weight="bold">100TB: 9-15 days</text>
+
+          <!-- NVMe -->
+          <text x="18" y="100" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">NVMe</text>
+
+          <rect x="40" y="93" width="12" height="10" rx="2" fill="var(--color-accent)" fill-opacity="0.4" />
+          <text x="58" y="101" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">30TB: 2-3 hrs</text>
+
+          <rect x="40" y="107" width="35" height="10" rx="2" fill="var(--color-accent)" fill-opacity="0.6" />
+          <text x="80" y="115" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">122TB: 7-14 hrs</text>
+
+          <rect x="40" y="121" width="55" height="10" rx="2" fill="var(--color-accent)" fill-opacity="0.8" />
+          <text x="100" y="129" fill="var(--color-accent)" font-size="5" font-family="var(--font-mono)">245TB: 14-27 hrs</text>
+
+          <text x="100" y="178" text-anchor="middle" fill="#e74c3c" font-size="10" font-family="var(--font-sans)">Days, Not Hours</text>
+          <text x="100" y="193" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">30TB HDD = 3-5 day rebuild</text>
+        </g>
+
+        <!-- Stage 3: MTTDL -->
+        <g id="rebuild-stage-3" class="rebuild-stage">
+          <text x="100" y="18" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)" font-weight="bold">The MTTDL Formula</text>
+
+          <!-- Formula -->
+          <rect x="20" y="28" width="160" height="30" rx="3" fill="var(--color-surface-alt)" stroke="var(--color-accent)" stroke-width="1" />
+          <text x="100" y="42" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)">MTTDL ∝ MTTF^(M+1)</text>
+          <text x="100" y="53" text-anchor="middle" fill="#e74c3c" font-size="7" font-family="var(--font-mono)">         / MTTR^M</text>
+
+          <!-- Key insight -->
+          <text x="100" y="72" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="6" font-family="var(--font-mono)">For M=2 (double parity):</text>
+          <text x="100" y="86" text-anchor="middle" fill="#e74c3c" font-size="7" font-family="var(--font-mono)" font-weight="bold">2x rebuild time = 4x worse MTTDL</text>
+
+          <text x="100" y="104" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="6" font-family="var(--font-mono)">For M=4 (quad parity):</text>
+          <text x="100" y="118" text-anchor="middle" fill="#e74c3c" font-size="7" font-family="var(--font-mono)" font-weight="bold">2x rebuild time = 16x worse MTTDL</text>
+
+          <!-- 60TB example -->
+          <text x="100" y="140" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="6" font-family="var(--font-mono)">20TB → 60TB (same drives):</text>
+          <text x="100" y="154" text-anchor="middle" fill="#e74c3c" font-size="7" font-family="var(--font-mono)" font-weight="bold">114x worse durability</text>
+
+          <text x="100" y="178" text-anchor="middle" fill="#e74c3c" font-size="10" font-family="var(--font-sans)">Exponential Decay</text>
+          <text x="100" y="193" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">Rebuild time dominates durability</text>
+        </g>
+
+        <!-- Stage 4: Double Failure -->
+        <g id="rebuild-stage-4" class="rebuild-stage">
+          <text x="100" y="18" text-anchor="middle" fill="#e74c3c" font-size="7" font-family="var(--font-mono)" font-weight="bold">The Double-Failure Window</text>
+
+          <!-- Fleet table -->
+          <text x="30" y="36" fill="var(--color-text-tertiary)" font-size="5.5" font-family="var(--font-mono)">Fleet</text>
+          <text x="100" y="36" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5.5" font-family="var(--font-mono)">Fails/yr</text>
+          <text x="160" y="36" text-anchor="middle" fill="#e74c3c" font-size="5.5" font-family="var(--font-mono)">P(double)</text>
+
+          <line x1="20" y1="40" x2="180" y2="40" stroke="var(--color-border)" stroke-width="0.5" />
+
+          <text x="30" y="52" fill="var(--color-text-tertiary)" font-size="5.5" font-family="var(--font-mono)">100</text>
+          <text x="100" y="52" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5.5" font-family="var(--font-mono)">1.5</text>
+          <text x="160" y="52" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5.5" font-family="var(--font-mono)">0.16%</text>
+
+          <text x="30" y="66" fill="var(--color-text-tertiary)" font-size="5.5" font-family="var(--font-mono)">1,000</text>
+          <text x="100" y="66" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5.5" font-family="var(--font-mono)">15</text>
+          <text x="160" y="66" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5.5" font-family="var(--font-mono)">1.6%</text>
+
+          <text x="30" y="80" fill="var(--color-text-tertiary)" font-size="5.5" font-family="var(--font-mono)">10,000</text>
+          <text x="100" y="80" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5.5" font-family="var(--font-mono)">150</text>
+          <text x="160" y="80" text-anchor="middle" fill="#e74c3c" font-size="5.5" font-family="var(--font-mono)" font-weight="bold">14.8%</text>
+
+          <text x="30" y="94" fill="var(--color-text-tertiary)" font-size="5.5" font-family="var(--font-mono)">100,000</text>
+          <text x="100" y="94" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5.5" font-family="var(--font-mono)">1,500</text>
+          <text x="160" y="94" text-anchor="middle" fill="#e74c3c" font-size="5.5" font-family="var(--font-mono)" font-weight="bold">80%+</text>
+
+          <text x="100" y="115" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5.5" font-family="var(--font-mono)">(20TB HDDs, 4 parity)</text>
+          <text x="100" y="130" text-anchor="middle" fill="#e74c3c" font-size="6" font-family="var(--font-mono)">At scale, double failures are certain.</text>
+
+          <text x="100" y="178" text-anchor="middle" fill="#e74c3c" font-size="10" font-family="var(--font-sans)">Fleet Math</text>
+          <text x="100" y="193" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">10K drives = 15% annual risk</text>
+        </g>
+
+        <!-- Stage 5: URE -->
+        <g id="rebuild-stage-5" class="rebuild-stage">
+          <text x="100" y="18" text-anchor="middle" fill="#e74c3c" font-size="7" font-family="var(--font-mono)" font-weight="bold">The URE Multiplier</text>
+
+          <!-- URE rates -->
+          <rect x="20" y="28" width="160" height="18" rx="3" fill="var(--color-surface-alt)" stroke="var(--color-border)" stroke-width="1" />
+          <text x="30" y="40" fill="var(--color-text-tertiary)" font-size="5.5" font-family="var(--font-mono)">Consumer HDD</text>
+          <text x="170" y="40" text-anchor="end" fill="#e74c3c" font-size="5.5" font-family="var(--font-mono)">1 per 12.5 TB</text>
+
+          <rect x="20" y="50" width="160" height="18" rx="3" fill="var(--color-surface-alt)" stroke="var(--color-border)" stroke-width="1" />
+          <text x="30" y="62" fill="var(--color-text-tertiary)" font-size="5.5" font-family="var(--font-mono)">Enterprise HDD</text>
+          <text x="170" y="62" text-anchor="end" fill="#e74c3c" font-size="5.5" font-family="var(--font-mono)">1 per 125 TB</text>
+
+          <rect x="20" y="72" width="160" height="18" rx="3" fill="var(--color-surface-alt)" stroke="var(--color-accent)" stroke-width="1" />
+          <text x="30" y="84" fill="var(--color-text-tertiary)" font-size="5.5" font-family="var(--font-mono)">Enterprise SSD</text>
+          <text x="170" y="84" text-anchor="end" fill="var(--color-accent)" font-size="5.5" font-family="var(--font-mono)">1 per 12.5+ PB</text>
+
+          <!-- During rebuild -->
+          <text x="100" y="106" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="6" font-family="var(--font-mono)">450TB rebuild read (12+4, 30TB):</text>
+
+          <text x="100" y="122" text-anchor="middle" fill="#e74c3c" font-size="6.5" font-family="var(--font-mono)" font-weight="bold">Enterprise HDD: 36% P(URE)</text>
+          <text x="100" y="136" text-anchor="middle" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)">Enterprise SSD: 0.36% P(URE)</text>
+
+          <text x="100" y="178" text-anchor="middle" fill="#e74c3c" font-size="10" font-family="var(--font-sans)">RAID-5 Is Dead</text>
+          <text x="100" y="193" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">URE during rebuild = another failure</text>
+        </g>
+
+        <!-- Stage 6: Industry Approaches -->
+        <g id="rebuild-stage-6" class="rebuild-stage">
+          <text x="100" y="18" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)" font-weight="bold">How the Industry Copes</text>
+
+          <!-- NetApp -->
+          <rect x="15" y="28" width="170" height="20" rx="3" fill="var(--color-surface-alt)" stroke="var(--color-border)" stroke-width="1" />
+          <text x="25" y="41" fill="var(--color-accent)" font-size="5.5" font-family="var(--font-mono)" font-weight="bold">NetApp</text>
+          <text x="95" y="41" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">RAID-TEC: triple parity default</text>
+
+          <!-- Ceph -->
+          <rect x="15" y="52" width="170" height="20" rx="3" fill="var(--color-surface-alt)" stroke="var(--color-border)" stroke-width="1" />
+          <text x="25" y="65" fill="var(--color-accent)" font-size="5.5" font-family="var(--font-mono)" font-weight="bold">Ceph</text>
+          <text x="95" y="65" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">Declustered PGs (slow defaults)</text>
+
+          <!-- Object Storage -->
+          <rect x="15" y="76" width="170" height="20" rx="3" fill="var(--color-surface-alt)" stroke="var(--color-border)" stroke-width="1" />
+          <text x="25" y="89" fill="var(--color-accent)" font-size="5.5" font-family="var(--font-mono)" font-weight="bold">Obj Store</text>
+          <text x="105" y="89" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">Per-object heal, sparse rebuild</text>
+
+          <!-- VAST -->
+          <rect x="15" y="100" width="170" height="20" rx="3" fill="var(--color-surface-alt)" stroke="var(--color-accent)" stroke-width="1" />
+          <text x="25" y="113" fill="var(--color-accent)" font-size="5.5" font-family="var(--font-mono)" font-weight="bold">VAST</text>
+          <text x="95" y="113" fill="var(--color-accent)" font-size="5" font-family="var(--font-mono)">LDEC: 150+4, read 1/4th to rebuild</text>
+
+          <text x="100" y="135" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="6" font-family="var(--font-mono)">All valid. None sufficient alone.</text>
+
+          <text x="100" y="178" text-anchor="middle" fill="var(--color-accent)" font-size="10" font-family="var(--font-sans)">Industry Response</text>
+          <text x="100" y="193" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">Defensive measures, not solutions</text>
+        </g>
+
+        <!-- Stage 7: Layered Defense -->
+        <g id="rebuild-stage-7" class="rebuild-stage">
+          <text x="100" y="18" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)" font-weight="bold">Six Layers of Defense</text>
+
+          <rect x="20" y="28" width="160" height="14" rx="2" fill="var(--color-accent)" fill-opacity="0.08" stroke="var(--color-accent)" stroke-width="0.8" />
+          <text x="100" y="38" text-anchor="middle" fill="var(--color-accent)" font-size="5.5" font-family="var(--font-mono)">1. Wide EC (4+ parity)</text>
+
+          <rect x="25" y="46" width="150" height="14" rx="2" fill="var(--color-accent)" fill-opacity="0.12" stroke="var(--color-accent)" stroke-width="0.8" />
+          <text x="100" y="56" text-anchor="middle" fill="var(--color-accent)" font-size="5.5" font-family="var(--font-mono)">2. Declustered placement</text>
+
+          <rect x="30" y="64" width="140" height="14" rx="2" fill="var(--color-accent)" fill-opacity="0.16" stroke="var(--color-accent)" stroke-width="0.8" />
+          <text x="100" y="74" text-anchor="middle" fill="var(--color-accent)" font-size="5.5" font-family="var(--font-mono)">3. Sparse rebuild</text>
+
+          <rect x="35" y="82" width="130" height="14" rx="2" fill="var(--color-accent)" fill-opacity="0.2" stroke="var(--color-accent)" stroke-width="0.8" />
+          <text x="100" y="92" text-anchor="middle" fill="var(--color-accent)" font-size="5.5" font-family="var(--font-mono)">4. Prioritized healing</text>
+
+          <rect x="40" y="100" width="120" height="14" rx="2" fill="var(--color-accent)" fill-opacity="0.24" stroke="var(--color-accent)" stroke-width="0.8" />
+          <text x="100" y="110" text-anchor="middle" fill="var(--color-accent)" font-size="5.5" font-family="var(--font-mono)">5. Background scrubbing</text>
+
+          <rect x="45" y="118" width="110" height="14" rx="2" fill="var(--color-accent)" fill-opacity="0.3" stroke="var(--color-accent)" stroke-width="1" />
+          <text x="100" y="128" text-anchor="middle" fill="var(--color-accent)" font-size="5.5" font-family="var(--font-mono)" font-weight="bold">6. Design for 200TB</text>
+
+          <text x="100" y="178" text-anchor="middle" fill="var(--color-accent)" font-size="10" font-family="var(--font-sans)">Defense in Depth</text>
+          <text x="100" y="193" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">No single technique is enough</text>
+        </g>
+
+        <!-- Stage 8: HDD vs SSD + Verdict -->
+        <g id="rebuild-stage-8" class="rebuild-stage">
+          <text x="100" y="18" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)" font-weight="bold">HDD vs SSD Verdict</text>
+
+          <!-- Comparison -->
+          <text x="30" y="35" fill="var(--color-text-tertiary)" font-size="5.5" font-family="var(--font-mono)">Rebuild speed:</text>
+          <text x="140" y="35" text-anchor="middle" fill="var(--color-accent)" font-size="5.5" font-family="var(--font-mono)" font-weight="bold">20-50x faster</text>
+
+          <text x="30" y="49" fill="var(--color-text-tertiary)" font-size="5.5" font-family="var(--font-mono)">URE rate:</text>
+          <text x="140" y="49" text-anchor="middle" fill="var(--color-accent)" font-size="5.5" font-family="var(--font-mono)" font-weight="bold">100-1,000x better</text>
+
+          <text x="30" y="63" fill="var(--color-text-tertiary)" font-size="5.5" font-family="var(--font-mono)">Failure rate:</text>
+          <text x="140" y="63" text-anchor="middle" fill="var(--color-accent)" font-size="5.5" font-family="var(--font-mono)" font-weight="bold">2x better</text>
+
+          <text x="30" y="77" fill="var(--color-text-tertiary)" font-size="5.5" font-family="var(--font-mono)">Effective MTTDL:</text>
+          <text x="140" y="77" text-anchor="middle" fill="var(--color-accent)" font-size="5.5" font-family="var(--font-mono)" font-weight="bold">1,000x+ better</text>
+
+          <!-- Bottom line -->
+          <rect x="20" y="90" width="160" height="25" rx="3" fill="var(--color-accent)" fill-opacity="0.08" stroke="var(--color-accent)" stroke-width="1" />
+          <text x="100" y="103" text-anchor="middle" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)">All-flash isn't just performance.</text>
+          <text x="100" y="113" text-anchor="middle" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)" font-weight="bold">It's durability.</text>
+
+          <!-- Build for 200TB -->
+          <text x="100" y="140" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)" font-weight="bold">Build for 200TB today.</text>
+          <text x="100" y="154" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="6" font-family="var(--font-mono)">Your drives will catch up.</text>
+
+          <text x="100" y="185" text-anchor="middle" fill="var(--color-accent)" font-size="10" font-family="var(--font-sans)" font-weight="600">The Verdict</text>
+          <text x="100" y="200" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">NVMe + wide EC + smart healing</text>
+        </g>
+      </svg>
+    </div>
+
+    <!-- Metric panel -->
+    <div class="mt-4 rounded-lg bg-[var(--color-surface-alt)] px-3 py-2.5 text-center">
+      <p class="text-[9px] uppercase tracking-widest text-[var(--color-text-tertiary)]" id="rebuild-metric-label">Capacity vs Throughput</p>
+      <p class="mt-1 font-mono text-lg font-bold text-[var(--color-accent)]">
+        <span id="rebuild-metric-value">1000x</span>
+        <span id="rebuild-metric-unit" class="text-sm font-normal"> gap</span>
+      </p>
+      <p id="rebuild-metric-sub" class="text-[9px] text-[var(--color-text-tertiary)]">100TB capacity, 250 MB/s throughput</p>
+    </div>
+
+    <!-- Stage dots -->
+    <div class="mt-3 flex justify-center gap-1.5">
+      <div class="rebuild-dot active" data-stage="1"></div>
+      <div class="rebuild-dot" data-stage="2"></div>
+      <div class="rebuild-dot" data-stage="3"></div>
+      <div class="rebuild-dot" data-stage="4"></div>
+      <div class="rebuild-dot" data-stage="5"></div>
+      <div class="rebuild-dot" data-stage="6"></div>
+      <div class="rebuild-dot" data-stage="7"></div>
+      <div class="rebuild-dot" data-stage="8"></div>
+    </div>
+
+    <!-- ELI10 -->
+    <div class="mt-5 rounded-lg border border-[var(--color-border)]/30 bg-[var(--color-surface-alt)]/50 px-3.5 py-3">
+      <p class="text-[9px] font-semibold uppercase tracking-widest text-[var(--color-text-tertiary)]">
+        Explain Like I'm 10
+      </p>
+      <p id="rebuild-eli10-text" class="rebuild-eli10-fade mt-2 text-xs leading-relaxed text-[var(--color-text-secondary)]">
+        Imagine your toy box keeps getting bigger and bigger, but you can only pick up toys at the same speed. If your box breaks and you need to move everything to a new one, it used to take an afternoon. Now it takes a whole week. And while you're moving, any other accident could lose some toys forever.
+      </p>
+    </div>
+  </div>
+</aside>
+
+<style>
+  .rebuild-stage {
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
+  }
+
+  .rebuild-stage.active {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+  }
+
+  .rebuild-stage.past {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+
+  .rebuild-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-border);
+    transition: background 0.3s, transform 0.3s;
+  }
+
+  .rebuild-dot.active {
+    background: var(--color-accent);
+    transform: scale(1.4);
+  }
+
+  .rebuild-dot.past {
+    background: var(--color-accent);
+    opacity: 0.4;
+  }
+
+  .rebuild-eli10-fade {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+
+  .rebuild-eli10-fade.changing {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .rebuild-stage { transition: none; }
+    .rebuild-dot { transition: none; }
+    .rebuild-eli10-fade { transition: none; }
+  }
+</style>
+
+<script>
+  function initRebuildEvolution() {
+    const prose = document.querySelector(".prose");
+    if (!prose) return;
+
+    const allHeadings = prose.querySelectorAll("h2, h3");
+    if (allHeadings.length === 0) return;
+
+    const stageMap: { el: Element; stage: number }[] = [];
+
+    allHeadings.forEach((h) => {
+      const text = (h.textContent || "").toLowerCase();
+      let stage = -1;
+
+      if (text.includes("math that kills")) stage = 1;
+      else if (text.includes("rebuild time table")) stage = 2;
+      else if (text.includes("hdd")) stage = 2;
+      else if (text.includes("nvme ssd")) stage = 2;
+      else if (text.includes("dominant durability")) stage = 3;
+      else if (text.includes("worked example")) stage = 3;
+      else if (text.includes("double-failure")) stage = 4;
+      else if (text.includes("ure multiplier")) stage = 5;
+      else if (text.includes("industry copes")) stage = 6;
+      else if (text.includes("netapp")) stage = 6;
+      else if (text.includes("ceph")) stage = 6;
+      else if (text.includes("per-object healing")) stage = 6;
+      else if (text.includes("vast data")) stage = 6;
+      else if (text.includes("rebuild-resilient")) stage = 7;
+      else if (text.includes("wide erasure")) stage = 7;
+      else if (text.includes("declustered")) stage = 7;
+      else if (text.includes("sparse rebuild")) stage = 7;
+      else if (text.includes("prioritized")) stage = 7;
+      else if (text.includes("proactive")) stage = 7;
+      else if (text.includes("200tb")) stage = 7;
+      else if (text.includes("read amplification")) stage = 8;
+      else if (text.includes("hdd vs ssd")) stage = 8;
+      else if (text.includes("design principles")) stage = 8;
+      else if (text.includes("conclusion")) stage = 8;
+
+      if (stage > 0) {
+        stageMap.push({ el: h, stage });
+      }
+    });
+
+    if (stageMap.length === 0) return;
+
+    let currentStage = 1;
+
+    const stages = document.querySelectorAll(".rebuild-stage");
+    const dots = document.querySelectorAll(".rebuild-dot");
+    const metricLabel = document.getElementById("rebuild-metric-label");
+    const metricValue = document.getElementById("rebuild-metric-value");
+    const metricUnit = document.getElementById("rebuild-metric-unit");
+    const metricSub = document.getElementById("rebuild-metric-sub");
+
+    const metricData = [
+      { label: "Capacity vs Throughput", value: "1000x", unit: " gap", sub: "100TB capacity, 250 MB/s throughput" },
+      { label: "30TB HDD Rebuild", value: "3-5", unit: " days", sub: "at 75-125 MB/s sustained" },
+      { label: "MTTDL Impact", value: "114x", unit: " worse", sub: "20TB → 60TB, same hardware" },
+      { label: "10K Fleet Risk", value: "15%", unit: "/year", sub: "double failure during rebuild" },
+      { label: "URE During Rebuild", value: "36%", unit: " chance", sub: "enterprise HDD, 450TB read" },
+      { label: "VAST LDEC", value: "150+4", unit: "", sub: "2.7% overhead, read 1/4th to rebuild" },
+      { label: "Defense Layers", value: "6", unit: "", sub: "wide EC → scrubbing → design for 200TB" },
+      { label: "SSD Advantage", value: "1000x+", unit: "", sub: "effective MTTDL improvement" },
+    ];
+
+    const eli10El = document.getElementById("rebuild-eli10-text");
+    const eli10Data = [
+      "Imagine your toy box keeps getting bigger and bigger, but you can only pick up toys at the same speed. If your box breaks and you need to move everything to a new one, it used to take an afternoon. Now it takes a whole week. And while you're moving, any other accident could lose some toys forever.",
+      "A 30-terabyte hard drive takes 3 to 5 days to rebuild. That's like needing a full school week to copy all your homework to a new notebook. The whole time, if your pen runs out too, you're in trouble.",
+      "There's a formula that says how safe your data is. The scary part: if rebuilding takes twice as long, your data is FOUR times more likely to get lost. It's not double the risk. It's worse than that, and it keeps getting worse the bigger the drives get.",
+      "In a building with 10,000 hard drives, there's about a 15% chance that two drives break at the same time during one year. That's like rolling a die and needing to NOT get a 1. You wouldn't bet your homework on those odds.",
+      "Sometimes when you're trying to copy data off a working drive, it hiccups and can't read a tiny piece. With spinning hard drives, there's a 36% chance this happens during a rebuild. SSDs almost never have this problem. That's a huge deal nobody talks about.",
+      "Different companies try different tricks. Some add extra backup copies. Some spread the work across more drives. VAST invented a clever code that only needs to read a quarter of the data to fix a broken piece. All good ideas, none enough by themselves.",
+      "The best defense is like layering winter clothes. First, extra parity (like wearing two coats). Then spread data everywhere (so no single closet breaking is a disaster). Then fix the important stuff first (save your favorite toys before the boring ones). Six layers total.",
+      "SSDs are 1,000 times more durable than hard drives during a rebuild. That's not a typo. They're faster, they make fewer mistakes, and they break less often. The all-flash datacenter isn't just about speed. It's about keeping your data alive.",
+    ];
+
+    function setStage(stage: number) {
+      if (stage === currentStage) return;
+      currentStage = stage;
+
+      stages.forEach((s, i) => {
+        const stageNum = i + 1;
+        s.classList.remove("active", "past");
+        if (stageNum === stage) s.classList.add("active");
+        else if (stageNum < stage) s.classList.add("past");
+      });
+
+      dots.forEach((d, i) => {
+        const dotStage = i + 1;
+        d.classList.remove("active", "past");
+        if (dotStage === stage) d.classList.add("active");
+        else if (dotStage < stage) d.classList.add("past");
+      });
+
+      const data = metricData[stage - 1];
+      if (data && metricLabel && metricValue && metricUnit && metricSub) {
+        metricLabel.textContent = data.label;
+        metricValue.textContent = data.value;
+        metricUnit.textContent = data.unit;
+        metricSub.textContent = data.sub;
+      }
+
+      if (eli10El && eli10Data[stage - 1]) {
+        eli10El.classList.add("changing");
+        setTimeout(() => {
+          eli10El.textContent = eli10Data[stage - 1];
+          eli10El.classList.remove("changing");
+        }, 200);
+      }
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const match = stageMap.find((s) => s.el === entry.target);
+          if (match) setStage(match.stage);
+        }
+      });
+    }, { rootMargin: "-15% 0px -75% 0px" });
+
+    stageMap.forEach(({ el }) => observer.observe(el));
+    setStage(1);
+  }
+
+  initRebuildEvolution();
+</script>

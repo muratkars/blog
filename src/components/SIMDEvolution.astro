@@ -1,0 +1,443 @@
+---
+---
+
+<aside class="simd-evolution hidden lg:block">
+  <div class="sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto">
+    <p class="mb-3 text-[10px] font-semibold uppercase tracking-widest text-[var(--color-text-tertiary)]">
+      SIMD Erasure Coding
+    </p>
+
+    <div class="svg-container">
+      <svg viewBox="0 0 200 230" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full">
+
+        <!-- Stage 1: The Math -->
+        <g id="simd-stage-1" class="simd-stage active">
+          <text x="100" y="18" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)" font-weight="bold">GF(2^8) Arithmetic</text>
+
+          <!-- Field visualization -->
+          <rect x="25" y="28" width="150" height="40" rx="3" fill="var(--color-surface-alt)" stroke="var(--color-border)" stroke-width="1" />
+          <text x="100" y="42" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5.5" font-family="var(--font-mono)">256 elements: 0x00 ... 0xFF</text>
+          <text x="100" y="54" text-anchor="middle" fill="var(--color-accent)" font-size="5.5" font-family="var(--font-mono)">Add = XOR | Multiply = poly mod</text>
+          <text x="100" y="63" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="4.5" font-family="var(--font-mono)">x⁸+x⁴+x³+x²+1 (same as AES)</text>
+
+          <!-- 4+2 example -->
+          <text x="100" y="82" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="6" font-family="var(--font-mono)">4+2 EC: 1 byte position =</text>
+          <text x="100" y="95" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)" font-weight="bold">8 GF multiplies + 6 XORs</text>
+
+          <!-- 1M bytes -->
+          <rect x="35" y="105" width="130" height="18" rx="3" fill="var(--color-accent)" fill-opacity="0.08" stroke="var(--color-accent)" stroke-width="1" />
+          <text x="100" y="117" text-anchor="middle" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)">1 MB shard = 8M GF multiplies</text>
+
+          <text x="100" y="178" text-anchor="middle" fill="var(--color-accent)" font-size="10" font-family="var(--font-sans)">The Math</text>
+          <text x="100" y="193" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">Reed-Solomon over GF(2^8)</text>
+        </g>
+
+        <!-- Stage 2: Scalar Is Slow -->
+        <g id="simd-stage-2" class="simd-stage">
+          <text x="100" y="18" text-anchor="middle" fill="#e74c3c" font-size="7" font-family="var(--font-mono)" font-weight="bold">Why Scalar Is Broken</text>
+
+          <!-- Lookup table -->
+          <rect x="15" y="28" width="80" height="52" rx="3" fill="var(--color-surface-alt)" stroke="#e74c3c" stroke-width="1" />
+          <text x="55" y="40" text-anchor="middle" fill="#e74c3c" font-size="6" font-family="var(--font-mono)" font-weight="bold">Lookup Table</text>
+          <text x="55" y="52" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">256×256 = 64 KB</text>
+          <text x="55" y="62" text-anchor="middle" fill="#e74c3c" font-size="5" font-family="var(--font-mono)">Won't fit L1 cache</text>
+          <text x="55" y="74" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5.5" font-family="var(--font-mono)">150-300 MB/s</text>
+
+          <!-- Log/exp -->
+          <rect x="105" y="28" width="80" height="52" rx="3" fill="var(--color-surface-alt)" stroke="#e74c3c" stroke-width="1" />
+          <text x="145" y="40" text-anchor="middle" fill="#e74c3c" font-size="6" font-family="var(--font-mono)" font-weight="bold">Log/Exp</text>
+          <text x="145" y="52" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">2×256 = 512 B</text>
+          <text x="145" y="62" text-anchor="middle" fill="#e74c3c" font-size="5" font-family="var(--font-mono)">4-5 dependent loads</text>
+          <text x="145" y="74" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5.5" font-family="var(--font-mono)">200-400 MB/s</text>
+
+          <!-- Problem -->
+          <text x="100" y="98" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="6" font-family="var(--font-mono)">Memory-bound, not compute-bound.</text>
+          <text x="100" y="112" text-anchor="middle" fill="#e74c3c" font-size="6.5" font-family="var(--font-mono)">CPU is waiting on table lookups.</text>
+
+          <text x="100" y="178" text-anchor="middle" fill="#e74c3c" font-size="10" font-family="var(--font-sans)">Scalar Bottleneck</text>
+          <text x="100" y="193" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">~300 MB/s per core</text>
+        </g>
+
+        <!-- Stage 3: PSHUFB Magic -->
+        <g id="simd-stage-3" class="simd-stage">
+          <text x="100" y="18" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)" font-weight="bold">The PSHUFB Trick</text>
+
+          <!-- Split table diagram -->
+          <text x="100" y="34" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5.5" font-family="var(--font-mono)">c × x = table_lo[x & 0x0F]</text>
+          <text x="100" y="44" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5.5" font-family="var(--font-mono)">      XOR table_hi[x >> 4]</text>
+
+          <!-- 16 bytes = SSE register -->
+          <rect x="20" y="52" width="160" height="22" rx="2" fill="var(--color-accent)" fill-opacity="0.1" stroke="var(--color-accent)" stroke-width="1" />
+          <text x="100" y="60" text-anchor="middle" fill="var(--color-accent)" font-size="5" font-family="var(--font-mono)">16-byte table = 1 SSE register</text>
+          <text x="100" y="70" text-anchor="middle" fill="var(--color-accent)" font-size="5.5" font-family="var(--font-mono)" font-weight="bold">PSHUFB: 16 lookups in 1 cycle</text>
+
+          <!-- Result -->
+          <rect x="30" y="80" width="140" height="28" rx="3" fill="var(--color-accent)" fill-opacity="0.08" stroke="var(--color-accent)" stroke-width="1" />
+          <text x="100" y="91" text-anchor="middle" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)">2 PSHUFBs + 1 PXOR</text>
+          <text x="100" y="103" text-anchor="middle" fill="var(--color-accent)" font-size="6.5" font-family="var(--font-mono)" font-weight="bold">= 16 GF mults in ~2 cycles</text>
+
+          <!-- AVX2 -->
+          <text x="100" y="122" text-anchor="middle" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)">AVX2: 32 mults per PSHUFB</text>
+          <text x="100" y="134" text-anchor="middle" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)">AVX-512: 64 mults per PSHUFB</text>
+
+          <text x="100" y="178" text-anchor="middle" fill="var(--color-accent)" font-size="10" font-family="var(--font-sans)">SIMD Transform</text>
+          <text x="100" y="193" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">Memory → compute bound</text>
+        </g>
+
+        <!-- Stage 4: Throughput Gap -->
+        <g id="simd-stage-4" class="simd-stage">
+          <text x="100" y="18" text-anchor="middle" fill="#e74c3c" font-size="7" font-family="var(--font-mono)" font-weight="bold">The Throughput Gap</text>
+
+          <!-- Bars -->
+          <text x="18" y="37" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">Scalar</text>
+          <rect x="50" y="29" width="6" height="12" rx="1" fill="#e74c3c" />
+          <text x="62" y="39" fill="#e74c3c" font-size="5" font-family="var(--font-mono)">0.3 GB/s</text>
+
+          <text x="18" y="55" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">SSSE3</text>
+          <rect x="50" y="47" width="45" height="12" rx="1" fill="var(--color-accent)" fill-opacity="0.4" />
+          <text x="100" y="57" fill="var(--color-accent)" font-size="5" font-family="var(--font-mono)">2.5 GB/s</text>
+
+          <text x="18" y="73" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">AVX2</text>
+          <rect x="50" y="65" width="110" height="12" rx="1" fill="var(--color-accent)" fill-opacity="0.6" />
+          <text x="165" y="75" fill="var(--color-accent)" font-size="5" font-family="var(--font-mono)">8 GB/s</text>
+
+          <text x="18" y="91" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">AVX512</text>
+          <rect x="50" y="83" width="140" height="12" rx="1" fill="var(--color-accent)" fill-opacity="0.8" />
+          <text x="165" y="93" fill="var(--color-accent)" font-size="5" font-family="var(--font-mono)" font-weight="bold">15 GB/s</text>
+
+          <!-- NVMe line -->
+          <line x1="50" y1="102" x2="50" y2="118" stroke="#e74c3c" stroke-width="1" stroke-dasharray="2,2" />
+          <text x="55" y="110" fill="#e74c3c" font-size="5.5" font-family="var(--font-mono)">← 1x NVMe Gen4: 7 GB/s</text>
+          <text x="55" y="120" fill="#e74c3c" font-size="5" font-family="var(--font-mono)">Scalar can't keep up with ONE drive</text>
+
+          <text x="100" y="178" text-anchor="middle" fill="#e74c3c" font-size="10" font-family="var(--font-sans)">50-100x Gap</text>
+          <text x="100" y="193" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">Scalar EC is a math impossibility</text>
+        </g>
+
+        <!-- Stage 5: Production Libraries -->
+        <g id="simd-stage-5" class="simd-stage">
+          <text x="100" y="18" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)" font-weight="bold">Production Libraries</text>
+
+          <!-- ISA-L -->
+          <rect x="15" y="28" width="170" height="22" rx="3" fill="var(--color-surface-alt)" stroke="var(--color-accent)" stroke-width="1" />
+          <text x="25" y="42" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)" font-weight="bold">ISA-L</text>
+          <text x="110" y="42" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">C + asm | Ceph, HDFS, DAOS</text>
+
+          <!-- klauspost -->
+          <rect x="15" y="55" width="170" height="22" rx="3" fill="var(--color-surface-alt)" stroke="var(--color-accent)" stroke-width="1" />
+          <text x="25" y="69" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)" font-weight="bold">klauspost</text>
+          <text x="120" y="69" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">Go asm | 8-12 GB/s AVX2</text>
+
+          <!-- reed-solomon-simd -->
+          <rect x="15" y="82" width="170" height="22" rx="3" fill="var(--color-surface-alt)" stroke="var(--color-accent)" stroke-width="1" />
+          <text x="25" y="96" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)" font-weight="bold">rs-simd</text>
+          <text x="115" y="96" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">Rust | 6-10 GB/s AVX2</text>
+
+          <!-- Common thread -->
+          <text x="100" y="120" text-anchor="middle" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)">All use the same technique:</text>
+          <text x="100" y="133" text-anchor="middle" fill="var(--color-accent)" font-size="6.5" font-family="var(--font-mono)" font-weight="bold">Split-table GF multiply via PSHUFB</text>
+
+          <text x="100" y="178" text-anchor="middle" fill="var(--color-accent)" font-size="10" font-family="var(--font-sans)">The Libraries</text>
+          <text x="100" y="193" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">Every production system uses SIMD</text>
+        </g>
+
+        <!-- Stage 6: The Fallback Trap -->
+        <g id="simd-stage-6" class="simd-stage">
+          <text x="100" y="18" text-anchor="middle" fill="#e74c3c" font-size="7" font-family="var(--font-mono)" font-weight="bold">The Fallback Trap</text>
+
+          <!-- Excuses -->
+          <text x="30" y="38" fill="var(--color-text-tertiary)" font-size="5.5" font-family="var(--font-mono)">"CI might not have SIMD"</text>
+          <text x="160" y="38" fill="#e74c3c" font-size="5.5" font-family="var(--font-mono)">Wrong</text>
+
+          <text x="30" y="54" fill="var(--color-text-tertiary)" font-size="5.5" font-family="var(--font-mono)">"Exotic architectures"</text>
+          <text x="160" y="54" fill="#e74c3c" font-size="5.5" font-family="var(--font-mono)">Nope</text>
+
+          <text x="30" y="70" fill="var(--color-text-tertiary)" font-size="5.5" font-family="var(--font-mono)">"Graceful degradation"</text>
+          <text x="160" y="70" fill="#e74c3c" font-size="5.5" font-family="var(--font-mono)">50x cliff</text>
+
+          <text x="30" y="86" fill="var(--color-text-tertiary)" font-size="5.5" font-family="var(--font-mono)">"Compiler will vectorize"</text>
+          <text x="160" y="86" fill="#e74c3c" font-size="5.5" font-family="var(--font-mono)">It won't</text>
+
+          <!-- Right answer -->
+          <rect x="25" y="100" width="150" height="30" rx="3" fill="var(--color-accent)" fill-opacity="0.08" stroke="var(--color-accent)" stroke-width="1" />
+          <text x="100" y="113" text-anchor="middle" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)">Check CPUID at startup.</text>
+          <text x="100" y="125" text-anchor="middle" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)" font-weight="bold">Refuse to start without SIMD.</text>
+
+          <text x="100" y="178" text-anchor="middle" fill="#e74c3c" font-size="10" font-family="var(--font-sans)">Kill the Fallback</text>
+          <text x="100" y="193" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">Silent 50x slowdown is worse</text>
+        </g>
+
+        <!-- Stage 7: ARM Is Real -->
+        <g id="simd-stage-7" class="simd-stage">
+          <text x="100" y="18" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)" font-weight="bold">ARM NEON + SVE</text>
+
+          <!-- NEON -->
+          <rect x="20" y="28" width="75" height="55" rx="3" fill="var(--color-surface-alt)" stroke="var(--color-accent)" stroke-width="1" />
+          <text x="57" y="40" text-anchor="middle" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)" font-weight="bold">NEON (128-bit)</text>
+          <text x="57" y="52" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">TBL ≈ PSHUFB</text>
+          <text x="57" y="63" text-anchor="middle" fill="var(--color-accent)" font-size="5.5" font-family="var(--font-mono)">3-6 GB/s/core</text>
+          <text x="57" y="78" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="4.5" font-family="var(--font-mono)">Every ARMv8 CPU</text>
+
+          <!-- SVE -->
+          <rect x="105" y="28" width="75" height="55" rx="3" fill="var(--color-surface-alt)" stroke="var(--color-accent)" stroke-width="1" />
+          <text x="142" y="40" text-anchor="middle" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)" font-weight="bold">SVE (scalable)</text>
+          <text x="142" y="52" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">128-2048 bit</text>
+          <text x="142" y="63" text-anchor="middle" fill="var(--color-accent)" font-size="5.5" font-family="var(--font-mono)">5-10 GB/s/core</text>
+          <text x="142" y="78" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="4.5" font-family="var(--font-mono)">Graviton 3+</text>
+
+          <!-- 128-core -->
+          <text x="100" y="100" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="6" font-family="var(--font-mono)">128-core Ampere Altra:</text>
+          <text x="100" y="114" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)" font-weight="bold">384-768 GB/s aggregate EC</text>
+
+          <text x="100" y="178" text-anchor="middle" fill="var(--color-accent)" font-size="10" font-family="var(--font-sans)">ARM Is Real</text>
+          <text x="100" y="193" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">Not x86-lite anymore</text>
+        </g>
+
+        <!-- Stage 8: Decode + Pipeline -->
+        <g id="simd-stage-8" class="simd-stage">
+          <text x="100" y="18" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)" font-weight="bold">The Full Pipeline</text>
+
+          <!-- Pipeline bars -->
+          <rect x="20" y="30" width="55" height="14" rx="2" fill="var(--color-text-tertiary)" fill-opacity="0.15" stroke="var(--color-text-tertiary)" stroke-width="0.8" />
+          <text x="47" y="40" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">Compress</text>
+
+          <rect x="20" y="48" width="40" height="14" rx="2" fill="var(--color-text-tertiary)" fill-opacity="0.15" stroke="var(--color-text-tertiary)" stroke-width="0.8" />
+          <text x="40" y="58" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">Encrypt</text>
+
+          <rect x="20" y="66" width="30" height="14" rx="2" fill="var(--color-accent)" fill-opacity="0.3" stroke="var(--color-accent)" stroke-width="1" />
+          <text x="35" y="76" text-anchor="middle" fill="var(--color-accent)" font-size="5" font-family="var(--font-mono)">EC</text>
+          <text x="58" y="76" fill="var(--color-accent)" font-size="5" font-family="var(--font-mono)">8ms (SIMD)</text>
+
+          <rect x="20" y="84" width="25" height="14" rx="2" fill="var(--color-text-tertiary)" fill-opacity="0.15" stroke="var(--color-text-tertiary)" stroke-width="0.8" />
+          <text x="32" y="94" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">Hash</text>
+
+          <rect x="20" y="102" width="35" height="14" rx="2" fill="var(--color-text-tertiary)" fill-opacity="0.15" stroke="var(--color-text-tertiary)" stroke-width="0.8" />
+          <text x="37" y="112" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">Write</text>
+
+          <!-- Comparison -->
+          <text x="120" y="55" text-anchor="middle" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)">SIMD: 35ms</text>
+          <text x="120" y="68" text-anchor="middle" fill="var(--color-accent)" font-size="5" font-family="var(--font-mono)">EC = 23% of pipeline</text>
+
+          <text x="120" y="90" text-anchor="middle" fill="#e74c3c" font-size="6" font-family="var(--font-mono)">Scalar: 225ms</text>
+          <text x="120" y="103" text-anchor="middle" fill="#e74c3c" font-size="5" font-family="var(--font-mono)">EC = 89% of pipeline</text>
+
+          <!-- Verdict -->
+          <rect x="25" y="120" width="150" height="18" rx="3" fill="var(--color-accent)" fill-opacity="0.08" stroke="var(--color-accent)" stroke-width="1" />
+          <text x="100" y="132" text-anchor="middle" fill="var(--color-accent)" font-size="6.5" font-family="var(--font-mono)">SIMD: rounding error. Scalar: bottleneck.</text>
+
+          <text x="100" y="178" text-anchor="middle" fill="var(--color-accent)" font-size="10" font-family="var(--font-sans)" font-weight="600">Ship SIMD-Only</text>
+          <text x="100" y="193" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">No fallback. No flag. No apology.</text>
+        </g>
+      </svg>
+    </div>
+
+    <!-- Metric panel -->
+    <div class="mt-4 rounded-lg bg-[var(--color-surface-alt)] px-3 py-2.5 text-center">
+      <p class="text-[9px] uppercase tracking-widest text-[var(--color-text-tertiary)]" id="simd-metric-label">GF(2^8) Elements</p>
+      <p class="mt-1 font-mono text-lg font-bold text-[var(--color-accent)]">
+        <span id="simd-metric-value">256</span>
+        <span id="simd-metric-unit" class="text-sm font-normal"> values</span>
+      </p>
+      <p id="simd-metric-sub" class="text-[9px] text-[var(--color-text-tertiary)]">every byte is a field element</p>
+    </div>
+
+    <!-- Stage dots -->
+    <div class="mt-3 flex justify-center gap-1.5">
+      <div class="simd-dot active" data-stage="1"></div>
+      <div class="simd-dot" data-stage="2"></div>
+      <div class="simd-dot" data-stage="3"></div>
+      <div class="simd-dot" data-stage="4"></div>
+      <div class="simd-dot" data-stage="5"></div>
+      <div class="simd-dot" data-stage="6"></div>
+      <div class="simd-dot" data-stage="7"></div>
+      <div class="simd-dot" data-stage="8"></div>
+    </div>
+
+    <!-- ELI10 -->
+    <div class="mt-5 rounded-lg border border-[var(--color-border)]/30 bg-[var(--color-surface-alt)]/50 px-3.5 py-3">
+      <p class="text-[9px] font-semibold uppercase tracking-widest text-[var(--color-text-tertiary)]">
+        Explain Like I'm 10
+      </p>
+      <p id="simd-eli10-text" class="simd-eli10-fade mt-2 text-xs leading-relaxed text-[var(--color-text-secondary)]">
+        Imagine you need to add up a huge stack of numbers, but every number is written in a secret code. Before you can add, you have to look up each number in a codebook. That's what erasure coding does, millions of times, for every file you save.
+      </p>
+    </div>
+  </div>
+</aside>
+
+<style>
+  .simd-stage {
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
+  }
+
+  .simd-stage.active {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+  }
+
+  .simd-stage.past {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+
+  .simd-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-border);
+    transition: background 0.3s, transform 0.3s;
+  }
+
+  .simd-dot.active {
+    background: var(--color-accent);
+    transform: scale(1.4);
+  }
+
+  .simd-dot.past {
+    background: var(--color-accent);
+    opacity: 0.4;
+  }
+
+  .simd-eli10-fade {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+
+  .simd-eli10-fade.changing {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .simd-stage { transition: none; }
+    .simd-dot { transition: none; }
+    .simd-eli10-fade { transition: none; }
+  }
+</style>
+
+<script>
+  function initSIMDEvolution() {
+    const prose = document.querySelector(".prose");
+    if (!prose) return;
+
+    const allHeadings = prose.querySelectorAll("h2, h3");
+    if (allHeadings.length === 0) return;
+
+    const stageMap: { el: Element; stage: number }[] = [];
+
+    allHeadings.forEach((h) => {
+      const text = (h.textContent || "").toLowerCase();
+      let stage = -1;
+
+      if (text.includes("math that makes")) stage = 1;
+      else if (text.includes("gf(2^8) multiply is expensive")) stage = 2;
+      else if (text.includes("simd transforms")) stage = 3;
+      else if (text.includes("throughput gap")) stage = 4;
+      else if (text.includes("how production systems")) stage = 5;
+      else if (text.includes("isa-l")) stage = 5;
+      else if (text.includes("klauspost")) stage = 5;
+      else if (text.includes("reed-solomon-simd")) stage = 5;
+      else if (text.includes("fallback trap")) stage = 6;
+      else if (text.includes("cauchy")) stage = 6;
+      else if (text.includes("vandermonde")) stage = 6;
+      else if (text.includes("arm isn")) stage = 7;
+      else if (text.includes("decode side")) stage = 8;
+      else if (text.includes("mandatory")) stage = 8;
+      else if (text.includes("counter-argument")) stage = 8;
+      else if (text.includes("real-world pipeline")) stage = 8;
+      else if (text.includes("industry has already")) stage = 8;
+      else if (text.includes("conclusion")) stage = 8;
+
+      if (stage > 0) {
+        stageMap.push({ el: h, stage });
+      }
+    });
+
+    if (stageMap.length === 0) return;
+
+    let currentStage = 1;
+
+    const stages = document.querySelectorAll(".simd-stage");
+    const dots = document.querySelectorAll(".simd-dot");
+    const metricLabel = document.getElementById("simd-metric-label");
+    const metricValue = document.getElementById("simd-metric-value");
+    const metricUnit = document.getElementById("simd-metric-unit");
+    const metricSub = document.getElementById("simd-metric-sub");
+
+    const metricData = [
+      { label: "GF(2^8) Elements", value: "256", unit: " values", sub: "every byte is a field element" },
+      { label: "Scalar Throughput", value: "0.3", unit: " GB/s", sub: "limited by table lookups" },
+      { label: "PSHUFB per Cycle", value: "32", unit: " mults", sub: "AVX2 split-table technique" },
+      { label: "SIMD vs Scalar", value: "50-100x", unit: "", sub: "throughput improvement per core" },
+      { label: "ISA-L (AVX-512)", value: "15+", unit: " GB/s", sub: "per core, Sapphire Rapids" },
+      { label: "Scalar Degradation", value: "50x", unit: " slower", sub: "silent performance cliff" },
+      { label: "Ampere Altra EC", value: "768", unit: " GB/s", sub: "128 cores × NEON" },
+      { label: "EC in Pipeline", value: "23%", unit: "", sub: "SIMD: rounding error" },
+    ];
+
+    const eli10El = document.getElementById("simd-eli10-text");
+    const eli10Data = [
+      "Imagine you need to add up a huge stack of numbers, but every number is written in a secret code. Before you can add, you have to look up each number in a codebook. That's what erasure coding does, millions of times, for every file you save.",
+      "The old way is like looking up words in a dictionary, one at a time. You flip through pages, find the word, write down the answer, then start over. The dictionary is so fat it won't fit on your desk, so you keep walking to the bookshelf. That walking is what slows everything down.",
+      "The SIMD trick is like having 32 tiny elves, each with their own mini-dictionary that fits in their pocket. You hand all 32 elves a number at the same time, they all look up their answers at the same time, and you get 32 results instead of 1. Same work, 32x faster.",
+      "Your hard drive can spit out data at 7 gigabytes per second. The old way of protecting that data can only handle 0.3 gigabytes per second. That's like having a fire hose connected to a straw. The water just backs up.",
+      "Three big libraries do this SIMD trick for real systems. They're written in C, Go, and Rust, but they all use the exact same cheat code: the PSHUFB shuffle instruction. It's the secret sauce behind every fast storage system.",
+      "Some people say 'keep the slow path just in case.' That's like keeping a horse in the garage in case your car breaks down. Except the horse is 50 times slower and nobody will notice it's being used until your whole delivery service grinds to a halt.",
+      "ARM chips (the kind in your phone, and now in servers too) have their own version of the cheat code called TBL. It works the same way. A server with 128 ARM cores can protect data faster than 100 hard drives can write it.",
+      "In the full pipeline, SIMD erasure coding takes 8 milliseconds out of a 35 millisecond write. That's like one step in a short walk. Without SIMD, it takes 200 milliseconds out of 225. Now it's basically the whole walk, and you're crawling.",
+    ];
+
+    function setStage(stage: number) {
+      if (stage === currentStage) return;
+      currentStage = stage;
+
+      stages.forEach((s, i) => {
+        const stageNum = i + 1;
+        s.classList.remove("active", "past");
+        if (stageNum === stage) s.classList.add("active");
+        else if (stageNum < stage) s.classList.add("past");
+      });
+
+      dots.forEach((d, i) => {
+        const dotStage = i + 1;
+        d.classList.remove("active", "past");
+        if (dotStage === stage) d.classList.add("active");
+        else if (dotStage < stage) d.classList.add("past");
+      });
+
+      const data = metricData[stage - 1];
+      if (data && metricLabel && metricValue && metricUnit && metricSub) {
+        metricLabel.textContent = data.label;
+        metricValue.textContent = data.value;
+        metricUnit.textContent = data.unit;
+        metricSub.textContent = data.sub;
+      }
+
+      if (eli10El && eli10Data[stage - 1]) {
+        eli10El.classList.add("changing");
+        setTimeout(() => {
+          eli10El.textContent = eli10Data[stage - 1];
+          eli10El.classList.remove("changing");
+        }, 200);
+      }
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const match = stageMap.find((s) => s.el === entry.target);
+          if (match) setStage(match.stage);
+        }
+      });
+    }, { rootMargin: "-15% 0px -75% 0px" });
+
+    stageMap.forEach(({ el }) => observer.observe(el));
+    setStage(1);
+  }
+
+  initSIMDEvolution();
+</script>
