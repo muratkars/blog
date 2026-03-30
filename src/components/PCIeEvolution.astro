@@ -1,0 +1,454 @@
+---
+---
+
+<aside class="pcie-evolution hidden lg:block">
+  <div class="sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto">
+    <p class="mb-3 text-[10px] font-semibold uppercase tracking-widest text-[var(--color-text-tertiary)]">
+      PCIe &amp; NUMA Guide
+    </p>
+
+    <div class="svg-container">
+      <svg viewBox="0 0 200 230" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full">
+
+        <!-- Stage 1: The Lane Crisis -->
+        <g id="pcie-stage-1" class="pcie-stage active">
+          <text x="100" y="18" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)" font-weight="bold">Drives vs. Lanes</text>
+
+          <!-- Table header -->
+          <rect x="15" y="28" width="170" height="16" rx="2" fill="var(--color-accent)" fill-opacity="0.1" />
+          <text x="50" y="39" text-anchor="middle" fill="var(--color-accent)" font-size="5.5" font-family="var(--font-mono)" font-weight="bold">Drives</text>
+          <text x="105" y="39" text-anchor="middle" fill="var(--color-accent)" font-size="5.5" font-family="var(--font-mono)" font-weight="bold">PCIe Lanes</text>
+          <text x="160" y="39" text-anchor="middle" fill="var(--color-accent)" font-size="5.5" font-family="var(--font-mono)" font-weight="bold">+ Net</text>
+
+          <!-- Row 1: 24 drives -->
+          <line x1="15" y1="46" x2="185" y2="46" stroke="var(--color-border)" stroke-width="0.5" />
+          <text x="50" y="57" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="6" font-family="var(--font-mono)">24</text>
+          <text x="105" y="57" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="6" font-family="var(--font-mono)">96</text>
+          <text x="160" y="57" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="6" font-family="var(--font-mono)">132</text>
+
+          <!-- Row 2: 32 drives -->
+          <line x1="15" y1="63" x2="185" y2="63" stroke="var(--color-border)" stroke-width="0.5" />
+          <text x="50" y="74" text-anchor="middle" fill="#e74c3c" font-size="6" font-family="var(--font-mono)" font-weight="bold">32</text>
+          <text x="105" y="74" text-anchor="middle" fill="#e74c3c" font-size="6" font-family="var(--font-mono)" font-weight="bold">128</text>
+          <text x="160" y="74" text-anchor="middle" fill="#e74c3c" font-size="6" font-family="var(--font-mono)" font-weight="bold">164</text>
+
+          <!-- Row 3: 48 drives -->
+          <line x1="15" y1="80" x2="185" y2="80" stroke="var(--color-border)" stroke-width="0.5" />
+          <text x="50" y="91" text-anchor="middle" fill="#e74c3c" font-size="6" font-family="var(--font-mono)">48</text>
+          <text x="105" y="91" text-anchor="middle" fill="#e74c3c" font-size="6" font-family="var(--font-mono)">192</text>
+          <text x="160" y="91" text-anchor="middle" fill="#e74c3c" font-size="6" font-family="var(--font-mono)">228</text>
+          <line x1="15" y1="97" x2="185" y2="97" stroke="var(--color-border)" stroke-width="0.5" />
+
+          <!-- Formula -->
+          <text x="100" y="113" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5.5" font-family="var(--font-mono)">Each NVMe = 4 PCIe lanes</text>
+          <text x="100" y="125" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5.5" font-family="var(--font-mono)">+ 2x 100GbE NIC = 32 lanes</text>
+
+          <!-- Warning -->
+          <rect x="25" y="133" width="150" height="20" rx="3" fill="#e74c3c" fill-opacity="0.08" stroke="#e74c3c" stroke-width="1" />
+          <text x="100" y="146" text-anchor="middle" fill="#e74c3c" font-size="6" font-family="var(--font-mono)">No single CPU has 164 lanes</text>
+
+          <text x="100" y="178" text-anchor="middle" fill="var(--color-accent)" font-size="10" font-family="var(--font-sans)">The Lane Crisis</text>
+          <text x="100" y="193" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">More drives than exits</text>
+        </g>
+
+        <!-- Stage 2: PCIe Switches -->
+        <g id="pcie-stage-2" class="pcie-stage">
+          <text x="100" y="18" text-anchor="middle" fill="#e74c3c" font-size="7" font-family="var(--font-mono)" font-weight="bold">PCIe Switch Costs</text>
+
+          <!-- Switch diagram -->
+          <rect x="70" y="28" width="60" height="24" rx="4" stroke="#e74c3c" stroke-width="1.5" fill="#e74c3c" fill-opacity="0.08" />
+          <text x="100" y="44" text-anchor="middle" fill="#e74c3c" font-size="6.5" font-family="var(--font-mono)" font-weight="bold">SWITCH</text>
+
+          <!-- Upstream lines -->
+          <line x1="85" y1="28" x2="85" y2="18" stroke="var(--color-accent)" stroke-width="1" />
+          <line x1="115" y1="28" x2="115" y2="18" stroke="var(--color-accent)" stroke-width="1" />
+          <text x="100" y="15" text-anchor="middle" fill="var(--color-accent)" font-size="4.5" font-family="var(--font-mono)">CPU</text>
+
+          <!-- Downstream lines -->
+          <line x1="75" y1="52" x2="40" y2="65" stroke="var(--color-text-tertiary)" stroke-width="0.8" />
+          <line x1="88" y1="52" x2="70" y2="65" stroke="var(--color-text-tertiary)" stroke-width="0.8" />
+          <line x1="100" y1="52" x2="100" y2="65" stroke="var(--color-text-tertiary)" stroke-width="0.8" />
+          <line x1="112" y1="52" x2="130" y2="65" stroke="var(--color-text-tertiary)" stroke-width="0.8" />
+          <line x1="125" y1="52" x2="160" y2="65" stroke="var(--color-text-tertiary)" stroke-width="0.8" />
+
+          <!-- Drive icons -->
+          <rect x="30" y="65" width="20" height="10" rx="2" fill="var(--color-surface-alt)" stroke="var(--color-text-tertiary)" stroke-width="0.5" />
+          <rect x="60" y="65" width="20" height="10" rx="2" fill="var(--color-surface-alt)" stroke="var(--color-text-tertiary)" stroke-width="0.5" />
+          <rect x="90" y="65" width="20" height="10" rx="2" fill="var(--color-surface-alt)" stroke="var(--color-text-tertiary)" stroke-width="0.5" />
+          <rect x="120" y="65" width="20" height="10" rx="2" fill="var(--color-surface-alt)" stroke="var(--color-text-tertiary)" stroke-width="0.5" />
+          <rect x="150" y="65" width="20" height="10" rx="2" fill="var(--color-surface-alt)" stroke="var(--color-text-tertiary)" stroke-width="0.5" />
+
+          <!-- Cost breakdown -->
+          <text x="30" y="98" fill="#e74c3c" font-size="6" font-family="var(--font-mono)">Latency:    +700 ns per hop</text>
+          <text x="30" y="112" fill="#e74c3c" font-size="6" font-family="var(--font-mono)">Bandwidth:  -30% degradation</text>
+          <text x="30" y="126" fill="#e74c3c" font-size="6" font-family="var(--font-mono)">Price:      $1-2K per switch</text>
+          <text x="30" y="140" fill="#e74c3c" font-size="6" font-family="var(--font-mono)">Power:      60-150W extra</text>
+
+          <text x="100" y="178" text-anchor="middle" fill="#e74c3c" font-size="10" font-family="var(--font-sans)">PCIe Switches</text>
+          <text x="100" y="193" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">The hidden bottleneck tax</text>
+        </g>
+
+        <!-- Stage 3: Dual-Socket Solution -->
+        <g id="pcie-stage-3" class="pcie-stage">
+          <text x="100" y="18" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)" font-weight="bold">Xeon 6760P Dual-Socket</text>
+
+          <!-- Socket 0 -->
+          <rect x="15" y="30" width="78" height="55" rx="4" stroke="var(--color-accent)" stroke-width="1.5" fill="var(--color-accent)" fill-opacity="0.05" />
+          <text x="54" y="44" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)" font-weight="bold">Socket 0</text>
+          <text x="54" y="57" text-anchor="middle" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)">88 PCIe lanes</text>
+          <text x="54" y="69" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5.5" font-family="var(--font-mono)">16 drives</text>
+          <text x="54" y="80" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5.5" font-family="var(--font-mono)">+ 1x 100GbE</text>
+
+          <!-- UPI link -->
+          <line x1="93" y1="50" x2="107" y2="50" stroke="var(--color-accent)" stroke-width="2" stroke-dasharray="3,2" />
+          <line x1="93" y1="58" x2="107" y2="58" stroke="var(--color-accent)" stroke-width="2" stroke-dasharray="3,2" />
+          <text x="100" y="72" text-anchor="middle" fill="var(--color-accent)" font-size="4.5" font-family="var(--font-mono)">UPI</text>
+
+          <!-- Socket 1 -->
+          <rect x="107" y="30" width="78" height="55" rx="4" stroke="var(--color-accent)" stroke-width="1.5" fill="var(--color-accent)" fill-opacity="0.05" />
+          <text x="146" y="44" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)" font-weight="bold">Socket 1</text>
+          <text x="146" y="57" text-anchor="middle" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)">88 PCIe lanes</text>
+          <text x="146" y="69" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5.5" font-family="var(--font-mono)">16 drives</text>
+          <text x="146" y="80" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5.5" font-family="var(--font-mono)">+ 1x 100GbE</text>
+
+          <!-- Totals -->
+          <rect x="25" y="95" width="150" height="22" rx="3" fill="var(--color-accent)" fill-opacity="0.08" stroke="var(--color-accent)" stroke-width="1" />
+          <text x="100" y="109" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)" font-weight="bold">176 total lanes, 0 switches</text>
+
+          <text x="100" y="130" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="6" font-family="var(--font-mono)">UPI is separate from PCIe</text>
+          <text x="100" y="143" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="6" font-family="var(--font-mono)">32 drives direct-attached</text>
+
+          <text x="100" y="178" text-anchor="middle" fill="var(--color-accent)" font-size="10" font-family="var(--font-sans)">Dual-Socket</text>
+          <text x="100" y="193" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">More lanes, no switches</text>
+        </g>
+
+        <!-- Stage 4: The NUMA Problem -->
+        <g id="pcie-stage-4" class="pcie-stage">
+          <text x="100" y="18" text-anchor="middle" fill="#e74c3c" font-size="7" font-family="var(--font-mono)" font-weight="bold">The NUMA Tax</text>
+
+          <!-- Local access -->
+          <rect x="20" y="30" width="70" height="40" rx="4" stroke="var(--color-accent)" stroke-width="1" fill="var(--color-surface-alt)" />
+          <text x="55" y="45" text-anchor="middle" fill="var(--color-accent)" font-size="6.5" font-family="var(--font-mono)" font-weight="bold">Local</text>
+          <text x="55" y="58" text-anchor="middle" fill="var(--color-accent)" font-size="8" font-family="var(--font-mono)" font-weight="bold">90 ns</text>
+
+          <!-- Arrow -->
+          <text x="100" y="55" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="10">vs</text>
+
+          <!-- Remote access -->
+          <rect x="110" y="30" width="70" height="40" rx="4" stroke="#e74c3c" stroke-width="1" fill="#e74c3c" fill-opacity="0.05" />
+          <text x="145" y="45" text-anchor="middle" fill="#e74c3c" font-size="6.5" font-family="var(--font-mono)" font-weight="bold">Remote</text>
+          <text x="145" y="58" text-anchor="middle" fill="#e74c3c" font-size="8" font-family="var(--font-mono)" font-weight="bold">120-180 ns</text>
+
+          <!-- Overhead bar -->
+          <text x="100" y="86" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="6" font-family="var(--font-mono)">Cross-socket overhead:</text>
+
+          <!-- Penalty spectrum -->
+          <rect x="25" y="92" width="50" height="14" rx="2" fill="#e74c3c" fill-opacity="0.15" stroke="#e74c3c" stroke-width="0.8" />
+          <text x="50" y="102" text-anchor="middle" fill="#e74c3c" font-size="6" font-family="var(--font-mono)">+30%</text>
+
+          <rect x="80" y="92" width="95" height="14" rx="2" fill="#e74c3c" fill-opacity="0.3" stroke="#e74c3c" stroke-width="0.8" />
+          <text x="127" y="102" text-anchor="middle" fill="#e74c3c" font-size="6" font-family="var(--font-mono)">up to +100%</text>
+
+          <text x="25" y="120" fill="var(--color-text-tertiary)" font-size="5.5" font-family="var(--font-mono)">Every remote memory access pays</text>
+          <text x="25" y="132" fill="var(--color-text-tertiary)" font-size="5.5" font-family="var(--font-mono)">the UPI tax. Frequent cross-socket</text>
+          <text x="25" y="144" fill="#e74c3c" font-size="5.5" font-family="var(--font-mono)">traffic erases the dual-socket gains.</text>
+
+          <text x="100" y="178" text-anchor="middle" fill="#e74c3c" font-size="10" font-family="var(--font-sans)">NUMA Problem</text>
+          <text x="100" y="193" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">Same data, longer walk</text>
+        </g>
+
+        <!-- Stage 5: Go's NUMA Blindness -->
+        <g id="pcie-stage-5" class="pcie-stage">
+          <text x="100" y="18" text-anchor="middle" fill="#e74c3c" font-size="7" font-family="var(--font-mono)" font-weight="bold">Go's NUMA Blindness</text>
+
+          <!-- Problem list -->
+          <rect x="15" y="28" width="170" height="18" rx="3" fill="#e74c3c" fill-opacity="0.06" stroke="#e74c3c" stroke-width="0.8" />
+          <text x="25" y="40" fill="#e74c3c" font-size="5.5" font-family="var(--font-mono)">1. Work stealing crosses sockets</text>
+
+          <rect x="15" y="50" width="170" height="18" rx="3" fill="#e74c3c" fill-opacity="0.06" stroke="#e74c3c" stroke-width="0.8" />
+          <text x="25" y="62" fill="#e74c3c" font-size="5.5" font-family="var(--font-mono)">2. GC generates cross-socket traffic</text>
+
+          <rect x="15" y="72" width="170" height="18" rx="3" fill="#e74c3c" fill-opacity="0.06" stroke="#e74c3c" stroke-width="0.8" />
+          <text x="25" y="84" fill="#e74c3c" font-size="5.5" font-family="var(--font-mono)">3. Memory allocator NUMA-oblivious</text>
+
+          <rect x="15" y="94" width="170" height="18" rx="3" fill="#e74c3c" fill-opacity="0.06" stroke="#e74c3c" stroke-width="0.8" />
+          <text x="25" y="106" fill="#e74c3c" font-size="5.5" font-family="var(--font-mono)">4. LockOSThread still migrates mem</text>
+
+          <!-- Proposal callout -->
+          <rect x="25" y="122" width="150" height="28" rx="3" fill="#e74c3c" fill-opacity="0.1" stroke="#e74c3c" stroke-width="1" />
+          <text x="100" y="135" text-anchor="middle" fill="#e74c3c" font-size="6" font-family="var(--font-mono)" font-weight="bold">Proposal #14086 (2014)</text>
+          <text x="100" y="146" text-anchor="middle" fill="#e74c3c" font-size="5.5" font-family="var(--font-mono)">NUMA awareness: never implemented</text>
+
+          <text x="100" y="178" text-anchor="middle" fill="#e74c3c" font-size="10" font-family="var(--font-sans)">Go + NUMA</text>
+          <text x="100" y="193" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">Four problems, zero fixes</text>
+        </g>
+
+        <!-- Stage 6: Rust Eliminates NUMA Tax -->
+        <g id="pcie-stage-6" class="pcie-stage">
+          <text x="100" y="18" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)" font-weight="bold">Rust Eliminates NUMA Tax</text>
+
+          <!-- Solution list -->
+          <rect x="15" y="30" width="170" height="20" rx="3" fill="var(--color-accent)" fill-opacity="0.06" stroke="var(--color-accent)" stroke-width="0.8" />
+          <text x="25" y="43" fill="var(--color-accent)" font-size="5.5" font-family="var(--font-mono)">Thread pinning to specific cores</text>
+
+          <rect x="15" y="54" width="170" height="20" rx="3" fill="var(--color-accent)" fill-opacity="0.06" stroke="var(--color-accent)" stroke-width="0.8" />
+          <text x="25" y="67" fill="var(--color-accent)" font-size="5.5" font-family="var(--font-mono)">NUMA-local memory allocation</text>
+
+          <rect x="15" y="78" width="170" height="20" rx="3" fill="var(--color-accent)" fill-opacity="0.06" stroke="var(--color-accent)" stroke-width="0.8" />
+          <text x="25" y="91" fill="var(--color-accent)" font-size="5.5" font-family="var(--font-mono)">No GC crossing socket boundaries</text>
+
+          <rect x="15" y="102" width="170" height="20" rx="3" fill="var(--color-accent)" fill-opacity="0.06" stroke="var(--color-accent)" stroke-width="0.8" />
+          <text x="25" y="115" fill="var(--color-accent)" font-size="5.5" font-family="var(--font-mono)">Deterministic object lifecycle</text>
+
+          <!-- Result -->
+          <rect x="25" y="132" width="150" height="22" rx="3" fill="var(--color-accent)" fill-opacity="0.1" stroke="var(--color-accent)" stroke-width="1" />
+          <text x="100" y="146" text-anchor="middle" fill="var(--color-accent)" font-size="6.5" font-family="var(--font-mono)" font-weight="bold">Each socket stays local</text>
+
+          <text x="100" y="178" text-anchor="middle" fill="var(--color-accent)" font-size="10" font-family="var(--font-sans)">Rust + NUMA</text>
+          <text x="100" y="193" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">Full control, zero tax</text>
+        </g>
+
+        <!-- Stage 7: The Verdict -->
+        <g id="pcie-stage-7" class="pcie-stage">
+          <text x="100" y="18" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)" font-weight="bold">The Verdict</text>
+
+          <!-- Rust box -->
+          <rect x="15" y="30" width="170" height="45" rx="4" stroke="var(--color-accent)" stroke-width="1.5" fill="var(--color-accent)" fill-opacity="0.05" />
+          <text x="100" y="44" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)" font-weight="bold">Rust Dual-Socket</text>
+          <text x="100" y="57" text-anchor="middle" fill="var(--color-accent)" font-size="9" font-family="var(--font-mono)" font-weight="bold">32 drives</text>
+          <text x="100" y="69" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5.5" font-family="var(--font-mono)">direct-attached, 0 switches, NUMA-safe</text>
+
+          <!-- Go box -->
+          <rect x="15" y="82" width="170" height="45" rx="4" stroke="#e74c3c" stroke-width="1.5" fill="#e74c3c" fill-opacity="0.05" />
+          <text x="100" y="96" text-anchor="middle" fill="#e74c3c" font-size="7" font-family="var(--font-mono)" font-weight="bold">Go Single-Socket</text>
+          <text x="100" y="109" text-anchor="middle" fill="#e74c3c" font-size="9" font-family="var(--font-mono)" font-weight="bold">24 drives</text>
+          <text x="100" y="121" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5.5" font-family="var(--font-mono)">max without switches, NUMA-blind</text>
+
+          <!-- Advantage callout -->
+          <rect x="35" y="137" width="130" height="22" rx="3" fill="var(--color-accent)" fill-opacity="0.1" stroke="var(--color-accent)" stroke-width="1" />
+          <text x="100" y="151" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)" font-weight="bold">+33% more drives</text>
+
+          <text x="100" y="178" text-anchor="middle" fill="var(--color-accent)" font-size="10" font-family="var(--font-sans)" font-weight="600">The Verdict</text>
+          <text x="100" y="193" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">Use all the hardware you paid for</text>
+        </g>
+      </svg>
+    </div>
+
+    <!-- Metric panel -->
+    <div class="mt-4 rounded-lg bg-[var(--color-surface-alt)] px-3 py-2.5 text-center">
+      <p class="text-[9px] uppercase tracking-widest text-[var(--color-text-tertiary)]" id="pcie-metric-label">32 Drives Need</p>
+      <p class="mt-1 font-mono text-lg font-bold text-[var(--color-accent)]">
+        <span id="pcie-metric-value">164</span>
+        <span id="pcie-metric-unit" class="text-sm font-normal"> lanes</span>
+      </p>
+      <p id="pcie-metric-sub" class="text-[9px] text-[var(--color-text-tertiary)]">no single socket provides this</p>
+    </div>
+
+    <!-- Stage dots -->
+    <div class="mt-3 flex justify-center gap-1.5">
+      <div class="pcie-dot active" data-stage="1"></div>
+      <div class="pcie-dot" data-stage="2"></div>
+      <div class="pcie-dot" data-stage="3"></div>
+      <div class="pcie-dot" data-stage="4"></div>
+      <div class="pcie-dot" data-stage="5"></div>
+      <div class="pcie-dot" data-stage="6"></div>
+      <div class="pcie-dot" data-stage="7"></div>
+    </div>
+
+    <!-- ELI10 -->
+    <div class="mt-5 rounded-lg border border-[var(--color-border)]/30 bg-[var(--color-surface-alt)]/50 px-3.5 py-3">
+      <p class="text-[9px] font-semibold uppercase tracking-widest text-[var(--color-text-tertiary)]">
+        Explain Like I'm 10
+      </p>
+      <p id="pcie-eli10-text" class="pcie-eli10-fade mt-2 text-xs leading-relaxed text-[var(--color-text-secondary)]">
+        Each NVMe drive needs 4 highway lanes to talk to the CPU. With 32 drives, that's 128 lanes just for storage. Add networking and you need 164 lanes. No single CPU has that many exits.
+      </p>
+    </div>
+  </div>
+</aside>
+
+<style>
+  .pcie-stage {
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
+  }
+
+  .pcie-stage.active {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+  }
+
+  .pcie-stage.past {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+
+  .pcie-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-border);
+    transition: background 0.3s, transform 0.3s;
+  }
+
+  .pcie-dot.active {
+    background: var(--color-accent);
+    transform: scale(1.4);
+  }
+
+  .pcie-dot.past {
+    background: var(--color-accent);
+    opacity: 0.4;
+  }
+
+  .pcie-eli10-fade {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+
+  .pcie-eli10-fade.changing {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pcie-stage { transition: none; }
+    .pcie-dot { transition: none; }
+    .pcie-eli10-fade { transition: none; }
+  }
+</style>
+
+<script>
+  function initPCIeEvolution() {
+    const prose = document.querySelector(".prose");
+    if (!prose) return;
+
+    const allHeadings = prose.querySelectorAll("h2, h3");
+    if (allHeadings.length === 0) return;
+
+    const stageMap: { el: Element; stage: number }[] = [];
+
+    allHeadings.forEach((h) => {
+      const text = (h.textContent || "").toLowerCase();
+      let stage = -1;
+
+      if (text.includes("lane crisis")) stage = 1;
+      else if (text.includes("pcie switches")) stage = 2;
+      else if (text.includes("option 1")) stage = 2;
+      else if (text.includes("hidden bottleneck")) stage = 2;
+      else if (text.includes("latency tax")) stage = 2;
+      else if (text.includes("bandwidth bottleneck")) stage = 2;
+      else if (text.includes("the cost")) stage = 2;
+      else if (text.includes("dual-socket")) stage = 3;
+      else if (text.includes("option 2")) stage = 3;
+      else if (text.includes("more lanes")) stage = 3;
+      else if (text.includes("xeon 6760")) stage = 3;
+      else if (text.includes("lane count king")) stage = 3;
+      else if (text.includes("numa problem")) stage = 4;
+      else if (text.includes("go's numa")) stage = 5;
+      else if (text.includes("goroutine scheduler")) stage = 5;
+      else if (text.includes("work stealing")) stage = 5;
+      else if (text.includes("memory allocation")) stage = 5;
+      else if (text.includes("gc generates")) stage = 5;
+      else if (text.includes("lockosthread")) stage = 5;
+      else if (text.includes("single-socket amd")) stage = 5;
+      else if (text.includes("rust eliminates")) stage = 6;
+      else if (text.includes("thread-to-core")) stage = 6;
+      else if (text.includes("numa-aware memory")) stage = 6;
+      else if (text.includes("no gc crossing")) stage = 6;
+      else if (text.includes("dual-socket rust")) stage = 6;
+      else if (text.includes("looking forward")) stage = 7;
+      else if (text.includes("lane arms race")) stage = 7;
+      else if (text.includes("bottom line")) stage = 7;
+      else if (text.includes("conclusion")) stage = 7;
+
+      if (stage > 0) {
+        stageMap.push({ el: h, stage });
+      }
+    });
+
+    if (stageMap.length === 0) return;
+
+    let currentStage = 1;
+
+    const stages = document.querySelectorAll(".pcie-stage");
+    const dots = document.querySelectorAll(".pcie-dot");
+    const metricLabel = document.getElementById("pcie-metric-label");
+    const metricValue = document.getElementById("pcie-metric-value");
+    const metricUnit = document.getElementById("pcie-metric-unit");
+    const metricSub = document.getElementById("pcie-metric-sub");
+
+    const metricData = [
+      { label: "32 Drives Need", value: "164", unit: " lanes", sub: "no single socket provides this" },
+      { label: "Switch Latency", value: "+700", unit: " ns", sub: "per PCIe switch hop" },
+      { label: "Xeon 6760P Dual", value: "176", unit: " lanes", sub: "88 per socket, UPI separate" },
+      { label: "NUMA Penalty", value: "30-100%", unit: "", sub: "cross-socket memory overhead" },
+      { label: "NUMA Fix Proposal", value: "2014", unit: "", sub: "never implemented in Go" },
+      { label: "GC Cross-Socket", value: "0", unit: "", sub: "Rust has no GC to migrate" },
+      { label: "Drive Advantage", value: "33%", unit: " more", sub: "Rust dual-socket vs Go single" },
+    ];
+
+    const eli10El = document.getElementById("pcie-eli10-text");
+    const eli10Data = [
+      "Each NVMe drive needs 4 highway lanes to talk to the CPU. With 32 drives, that\u2019s 128 lanes just for storage. Add networking and you need 164 lanes. No single CPU has that many exits.",
+      "PCIe switches are like traffic roundabouts. They let more cars through, but every car has to slow down and wait. Each roundabout adds 700 nanoseconds of delay, and under heavy traffic, you lose 30% of your speed.",
+      "Intel\u2019s fix: use two CPUs, each with 88 lanes. That\u2019s 176 lanes total. Enough for 32 drives plus networking with room to spare. The two CPUs talk to each other through their own private road (UPI), so the PCIe lanes stay free.",
+      "With two CPUs, each one has its own memory. When CPU #1 needs to read CPU #2\u2019s memory, it\u2019s like walking to the neighbor\u2019s house instead of your own fridge. Same food, but it takes 30-100% longer to get it.",
+      "Go\u2019s scheduler is like a teacher who randomly assigns kids to desks without checking which supplies are at which desk. A kid might end up across the room from their backpack, reaching over everyone to get their pencils. A proposal to fix this was written in 2014. It was never built.",
+      "Rust lets you say \u2018this thread works at this desk, with these supplies, forever.\u2019 No random shuffling. No janitor (garbage collector) wandering between desks and bumping into kids. Everything stays where you put it.",
+      "The Rust system runs 32 drives at full speed with zero switches. The Go system caps at 24 drives, or adds switches that slow everything down. It\u2019s not about language speed. It\u2019s about using all the hardware you paid for.",
+    ];
+
+    function setStage(stage: number) {
+      if (stage === currentStage) return;
+      currentStage = stage;
+
+      stages.forEach((s, i) => {
+        const stageNum = i + 1;
+        s.classList.remove("active", "past");
+        if (stageNum === stage) s.classList.add("active");
+        else if (stageNum < stage) s.classList.add("past");
+      });
+
+      dots.forEach((d, i) => {
+        const dotStage = i + 1;
+        d.classList.remove("active", "past");
+        if (dotStage === stage) d.classList.add("active");
+        else if (dotStage < stage) d.classList.add("past");
+      });
+
+      const data = metricData[stage - 1];
+      if (data && metricLabel && metricValue && metricUnit && metricSub) {
+        metricLabel.textContent = data.label;
+        metricValue.textContent = data.value;
+        metricUnit.textContent = data.unit;
+        metricSub.textContent = data.sub;
+      }
+
+      if (eli10El && eli10Data[stage - 1]) {
+        eli10El.classList.add("changing");
+        setTimeout(() => {
+          eli10El.textContent = eli10Data[stage - 1];
+          eli10El.classList.remove("changing");
+        }, 200);
+      }
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const match = stageMap.find((s) => s.el === entry.target);
+          if (match) setStage(match.stage);
+        }
+      });
+    }, { rootMargin: "-15% 0px -75% 0px" });
+
+    stageMap.forEach(({ el }) => observer.observe(el));
+    setStage(1);
+  }
+
+  initPCIeEvolution();
+</script>

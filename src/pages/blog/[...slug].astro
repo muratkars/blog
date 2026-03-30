@@ -11,6 +11,8 @@ import SDCEvolution from "../../components/SDCEvolution.astro";
 import HashEvolution from "../../components/HashEvolution.astro";
 import SIMDEvolution from "../../components/SIMDEvolution.astro";
 import RebuildEvolution from "../../components/RebuildEvolution.astro";
+import EDSFFEvolution from "../../components/EDSFFEvolution.astro";
+import PCIeEvolution from "../../components/PCIeEvolution.astro";
 
 export async function getStaticPaths() {
   const posts = await getCollection("blog");
@@ -34,6 +36,8 @@ const showSDCEvolution = post.id === "silent-data-corruption-the-invisible-threa
 const showHashEvolution = post.id === "hashing-algorithms-the-next-five-years";
 const showSIMDEvolution = post.id === "simd-mandatory-erasure-coding";
 const showRebuildEvolution = post.id === "rebuild-time-crisis";
+const showEDSFFEvolution = post.id === "edsff-e2-next-gen-drives";
+const showPCIeEvolution = post.id === "pcie-lanes-numa-rust-storage";
 ---
 
 <Layout
@@ -72,5 +76,11 @@ const showRebuildEvolution = post.id === "rebuild-time-crisis";
   )}
   {showRebuildEvolution && (
     <RebuildEvolution slot="right-sidebar" />
+  )}
+  {showEDSFFEvolution && (
+    <EDSFFEvolution slot="right-sidebar" />
+  )}
+  {showPCIeEvolution && (
+    <PCIeEvolution slot="right-sidebar" />
   )}
 </Layout>
