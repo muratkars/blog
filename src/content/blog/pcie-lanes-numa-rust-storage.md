@@ -111,7 +111,7 @@ The question is: can your storage software actually do this?
 
 ## Go's NUMA Blindness: A Structural Problem
 
-Go, the language behind several major object storage systems (MinIO, AIStore, SeaweedFS), has a fundamental problem with NUMA. It's not a bug. It's a design decision that permeates the runtime.
+Go, the language behind several major object storage systems, has a fundamental problem with NUMA. It's not a bug. It's a design decision that permeates the runtime.
 
 ### The Goroutine Scheduler Doesn't Know About Sockets
 
