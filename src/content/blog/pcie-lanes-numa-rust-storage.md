@@ -5,11 +5,11 @@ description: "As NVMe counts per chassis climb past 24, 32, and toward 48 drives
 tags: ["storage", "nvme", "numa", "rust", "performance"]
 type: "standard"
 featured: false
-image: "/images/blog/network-fiber.jpg"
+image: "/images/blog/pcie-numa.png"
 readTime: "14 min read"
 ---
 
-![Network fiber optic cables](/images/blog/network-fiber.jpg)
+![PCIe Lanes and NUMA architecture for Rust storage](/images/blog/pcie-numa.png)
 
 *As NVMe counts per chassis climb past 24, 32, and toward 48 drives, the bottleneck shifts from disk speed to PCIe topology. The solution is dual-socket CPUs with massive lane counts, but only if your storage software can actually exploit them without a NUMA penalty. Here's why Go can't, and Rust can.*
 
