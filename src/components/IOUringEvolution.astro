@@ -1,0 +1,453 @@
+---
+---
+
+<aside class="iouring-evolution hidden lg:block">
+  <div class="sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto">
+    <p class="mb-3 text-[10px] font-semibold uppercase tracking-widest text-[var(--color-text-tertiary)]">
+      io_uring vs SPDK Guide
+    </p>
+
+    <div class="svg-container">
+      <svg viewBox="0 0 200 230" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full">
+
+        <!-- Stage 1: The Syscall Tax -->
+        <g id="iouring-stage-1" class="iouring-stage active">
+          <text x="100" y="18" text-anchor="middle" fill="#e74c3c" font-size="7" font-family="var(--font-mono)" font-weight="bold">The Syscall Tax</text>
+
+          <!-- Latency bar: NVMe -->
+          <text x="15" y="40" fill="var(--color-text-tertiary)" font-size="5.5" font-family="var(--font-mono)">NVMe device</text>
+          <rect x="15" y="44" width="100" height="14" rx="2" fill="var(--color-accent)" fill-opacity="0.15" stroke="var(--color-accent)" stroke-width="0.8" />
+          <text x="65" y="54" text-anchor="middle" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)" font-weight="bold">10 μs</text>
+
+          <!-- Latency bar: Kernel overhead -->
+          <text x="15" y="72" fill="var(--color-text-tertiary)" font-size="5.5" font-family="var(--font-mono)">Kernel overhead</text>
+          <rect x="15" y="76" width="40" height="14" rx="2" fill="#e74c3c" fill-opacity="0.2" stroke="#e74c3c" stroke-width="0.8" />
+          <text x="35" y="86" text-anchor="middle" fill="#e74c3c" font-size="6" font-family="var(--font-mono)" font-weight="bold">4 μs</text>
+
+          <!-- Breakdown -->
+          <text x="15" y="106" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">syscall entry/exit    ~1 μs</text>
+          <text x="15" y="116" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">VFS layer             ~1 μs</text>
+          <text x="15" y="126" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">block layer           ~1 μs</text>
+          <text x="15" y="136" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">interrupt handling     ~1 μs</text>
+
+          <!-- Warning -->
+          <rect x="25" y="144" width="150" height="20" rx="3" fill="#e74c3c" fill-opacity="0.08" stroke="#e74c3c" stroke-width="1" />
+          <text x="100" y="157" text-anchor="middle" fill="#e74c3c" font-size="6" font-family="var(--font-mono)">40% of latency is kernel tax</text>
+
+          <text x="100" y="185" text-anchor="middle" fill="#e74c3c" font-size="10" font-family="var(--font-sans)">Syscall Tax</text>
+          <text x="100" y="200" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">4 μs wasted per I/O</text>
+        </g>
+
+        <!-- Stage 2: SPDK Nuclear Option -->
+        <g id="iouring-stage-2" class="iouring-stage">
+          <text x="100" y="18" text-anchor="middle" fill="#e74c3c" font-size="7" font-family="var(--font-mono)" font-weight="bold">SPDK: The Nuclear Option</text>
+
+          <!-- SPDK architecture -->
+          <rect x="55" y="28" width="90" height="20" rx="3" fill="#e74c3c" fill-opacity="0.08" stroke="#e74c3c" stroke-width="1.5" />
+          <text x="100" y="41" text-anchor="middle" fill="#e74c3c" font-size="6" font-family="var(--font-mono)" font-weight="bold">User-space driver</text>
+
+          <line x1="100" y1="48" x2="100" y2="58" stroke="#e74c3c" stroke-width="1" />
+          <text x="100" y="56" text-anchor="middle" fill="#e74c3c" font-size="4" font-family="var(--font-mono)">direct</text>
+
+          <rect x="55" y="60" width="90" height="20" rx="3" fill="var(--color-accent)" fill-opacity="0.08" stroke="var(--color-accent)" stroke-width="1" />
+          <text x="100" y="73" text-anchor="middle" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)">NVMe hardware</text>
+
+          <!-- Cost list -->
+          <text x="15" y="98" fill="#e74c3c" font-size="5.5" font-family="var(--font-mono)">✗ Hugepages required</text>
+          <text x="15" y="110" fill="#e74c3c" font-size="5.5" font-family="var(--font-mono)">✗ Dedicated CPU cores</text>
+          <text x="15" y="122" fill="#e74c3c" font-size="5.5" font-family="var(--font-mono)">✗ No filesystem access</text>
+          <text x="15" y="134" fill="#e74c3c" font-size="5.5" font-family="var(--font-mono)">✗ No kernel protections</text>
+
+          <!-- Waste stat -->
+          <rect x="25" y="144" width="150" height="20" rx="3" fill="#e74c3c" fill-opacity="0.08" stroke="#e74c3c" stroke-width="1" />
+          <text x="100" y="157" text-anchor="middle" fill="#e74c3c" font-size="6" font-family="var(--font-mono)">84.8% CPU cycles wasted polling</text>
+
+          <text x="100" y="185" text-anchor="middle" fill="#e74c3c" font-size="10" font-family="var(--font-sans)">SPDK Costs</text>
+          <text x="100" y="200" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">Fast, but at what price?</text>
+        </g>
+
+        <!-- Stage 3: io_uring Ring Architecture -->
+        <g id="iouring-stage-3" class="iouring-stage">
+          <text x="100" y="18" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)" font-weight="bold">io_uring Ring Buffers</text>
+
+          <!-- User space -->
+          <rect x="15" y="30" width="78" height="55" rx="4" stroke="var(--color-accent)" stroke-width="1.5" fill="var(--color-accent)" fill-opacity="0.05" />
+          <text x="54" y="43" text-anchor="middle" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)" font-weight="bold">User Space</text>
+
+          <!-- SQ ring -->
+          <rect x="22" y="48" width="64" height="14" rx="2" fill="var(--color-accent)" fill-opacity="0.12" stroke="var(--color-accent)" stroke-width="0.8" />
+          <text x="54" y="58" text-anchor="middle" fill="var(--color-accent)" font-size="5" font-family="var(--font-mono)">SQ: submit N ops</text>
+
+          <!-- CQ ring -->
+          <rect x="22" y="65" width="64" height="14" rx="2" fill="var(--color-accent)" fill-opacity="0.12" stroke="var(--color-accent)" stroke-width="0.8" />
+          <text x="54" y="75" text-anchor="middle" fill="var(--color-accent)" font-size="5" font-family="var(--font-mono)">CQ: reap N results</text>
+
+          <!-- Kernel space -->
+          <rect x="107" y="30" width="78" height="55" rx="4" stroke="var(--color-text-tertiary)" stroke-width="1.5" fill="var(--color-surface-alt)" />
+          <text x="146" y="43" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="6" font-family="var(--font-mono)" font-weight="bold">Kernel</text>
+          <text x="146" y="58" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">processes SQEs</text>
+          <text x="146" y="70" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">posts CQEs</text>
+
+          <!-- Shared memory arrow -->
+          <line x1="93" y1="50" x2="107" y2="50" stroke="var(--color-accent)" stroke-width="1.5" />
+          <line x1="107" y1="70" x2="93" y2="70" stroke="var(--color-accent)" stroke-width="1.5" />
+          <text x="100" y="63" text-anchor="middle" fill="var(--color-accent)" font-size="4" font-family="var(--font-mono)">shared</text>
+          <text x="100" y="83" text-anchor="middle" fill="var(--color-accent)" font-size="4" font-family="var(--font-mono)">memory</text>
+
+          <!-- Key insight -->
+          <rect x="15" y="95" width="170" height="16" rx="2" fill="var(--color-accent)" fill-opacity="0.1" />
+          <text x="100" y="106" text-anchor="middle" fill="var(--color-accent)" font-size="5.5" font-family="var(--font-mono)" font-weight="bold">Old: N ops = N syscalls</text>
+
+          <rect x="15" y="115" width="170" height="16" rx="2" fill="var(--color-accent)" fill-opacity="0.15" stroke="var(--color-accent)" stroke-width="1" />
+          <text x="100" y="126" text-anchor="middle" fill="var(--color-accent)" font-size="5.5" font-family="var(--font-mono)" font-weight="bold">New: N ops = 1 syscall</text>
+
+          <!-- SQPOLL note -->
+          <text x="100" y="148" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5.5" font-family="var(--font-mono)">SQPOLL mode: 0 syscalls</text>
+
+          <text x="100" y="185" text-anchor="middle" fill="var(--color-accent)" font-size="10" font-family="var(--font-sans)">Ring Buffers</text>
+          <text x="100" y="200" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">Batch everything, cross once</text>
+        </g>
+
+        <!-- Stage 4: The Numbers -->
+        <g id="iouring-stage-4" class="iouring-stage">
+          <text x="100" y="18" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)" font-weight="bold">IOPS Comparison</text>
+
+          <!-- Table header -->
+          <rect x="15" y="28" width="170" height="16" rx="2" fill="var(--color-accent)" fill-opacity="0.1" />
+          <text x="65" y="39" text-anchor="middle" fill="var(--color-accent)" font-size="5.5" font-family="var(--font-mono)" font-weight="bold">Method</text>
+          <text x="150" y="39" text-anchor="middle" fill="var(--color-accent)" font-size="5.5" font-family="var(--font-mono)" font-weight="bold">IOPS</text>
+
+          <!-- Row 1: SPDK -->
+          <line x1="15" y1="46" x2="185" y2="46" stroke="var(--color-border)" stroke-width="0.5" />
+          <text x="65" y="57" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="6" font-family="var(--font-mono)">SPDK</text>
+          <text x="150" y="57" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="6" font-family="var(--font-mono)">~100%</text>
+
+          <!-- Row 2: io_uring -->
+          <line x1="15" y1="63" x2="185" y2="63" stroke="var(--color-border)" stroke-width="0.5" />
+          <text x="65" y="74" text-anchor="middle" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)" font-weight="bold">io_uring</text>
+          <text x="150" y="74" text-anchor="middle" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)" font-weight="bold">~80%</text>
+
+          <!-- Row 3: libaio -->
+          <line x1="15" y1="80" x2="185" y2="80" stroke="var(--color-border)" stroke-width="0.5" />
+          <text x="65" y="91" text-anchor="middle" fill="#e74c3c" font-size="6" font-family="var(--font-mono)">libaio</text>
+          <text x="150" y="91" text-anchor="middle" fill="#e74c3c" font-size="6" font-family="var(--font-mono)">~50%</text>
+
+          <!-- Row 4: sync -->
+          <line x1="15" y1="97" x2="185" y2="97" stroke="var(--color-border)" stroke-width="0.5" />
+          <text x="65" y="108" text-anchor="middle" fill="#e74c3c" font-size="6" font-family="var(--font-mono)">sync read/write</text>
+          <text x="150" y="108" text-anchor="middle" fill="#e74c3c" font-size="6" font-family="var(--font-mono)">~30%</text>
+          <line x1="15" y1="114" x2="185" y2="114" stroke="var(--color-border)" stroke-width="0.5" />
+
+          <!-- Key insight -->
+          <rect x="25" y="124" width="150" height="28" rx="3" fill="var(--color-accent)" fill-opacity="0.08" stroke="var(--color-accent)" stroke-width="1" />
+          <text x="100" y="137" text-anchor="middle" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)" font-weight="bold">80% of speed, 0% ops burden</text>
+          <text x="100" y="148" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">keeps filesystem, tools, debuggers</text>
+
+          <text x="100" y="185" text-anchor="middle" fill="var(--color-accent)" font-size="10" font-family="var(--font-sans)">The Numbers</text>
+          <text x="100" y="200" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">Close enough to win</text>
+        </g>
+
+        <!-- Stage 5: The Security Elephant -->
+        <g id="iouring-stage-5" class="iouring-stage">
+          <text x="100" y="18" text-anchor="middle" fill="#e74c3c" font-size="7" font-family="var(--font-mono)" font-weight="bold">Security Elephant</text>
+
+          <!-- CVE count -->
+          <rect x="40" y="30" width="120" height="40" rx="6" fill="#e74c3c" fill-opacity="0.08" stroke="#e74c3c" stroke-width="1.5" />
+          <text x="100" y="48" text-anchor="middle" fill="#e74c3c" font-size="14" font-family="var(--font-mono)" font-weight="bold">~75 CVEs</text>
+          <text x="100" y="62" text-anchor="middle" fill="#e74c3c" font-size="5.5" font-family="var(--font-mono)">in 5 years (2021-2025)</text>
+
+          <!-- Google verdict -->
+          <rect x="15" y="80" width="170" height="20" rx="3" fill="#e74c3c" fill-opacity="0.06" stroke="#e74c3c" stroke-width="0.8" />
+          <text x="100" y="93" text-anchor="middle" fill="#e74c3c" font-size="5.5" font-family="var(--font-mono)">Google: disabled on Android + servers</text>
+
+          <!-- Curing rootkit -->
+          <rect x="15" y="104" width="170" height="20" rx="3" fill="#e74c3c" fill-opacity="0.06" stroke="#e74c3c" stroke-width="0.8" />
+          <text x="100" y="117" text-anchor="middle" fill="#e74c3c" font-size="5.5" font-family="var(--font-mono)">Curing rootkit: undetectable in 2024</text>
+
+          <!-- Containers -->
+          <rect x="15" y="128" width="170" height="20" rx="3" fill="#e74c3c" fill-opacity="0.06" stroke="#e74c3c" stroke-width="0.8" />
+          <text x="100" y="141" text-anchor="middle" fill="#e74c3c" font-size="5.5" font-family="var(--font-mono)">Docker/K8s: disabled by default</text>
+
+          <text x="100" y="185" text-anchor="middle" fill="#e74c3c" font-size="10" font-family="var(--font-sans)">Security</text>
+          <text x="100" y="200" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">Power comes with risk</text>
+        </g>
+
+        <!-- Stage 6: Rust Ecosystem -->
+        <g id="iouring-stage-6" class="iouring-stage">
+          <text x="100" y="18" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)" font-weight="bold">Rust io_uring Runtimes</text>
+
+          <!-- Runtime 1: tokio-uring -->
+          <rect x="15" y="30" width="170" height="28" rx="3" fill="var(--color-accent)" fill-opacity="0.06" stroke="var(--color-accent)" stroke-width="0.8" />
+          <text x="25" y="43" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)" font-weight="bold">tokio-uring</text>
+          <text x="25" y="53" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">Tokio-compatible, single-threaded ring</text>
+
+          <!-- Runtime 2: glommio -->
+          <rect x="15" y="62" width="170" height="28" rx="3" fill="var(--color-accent)" fill-opacity="0.06" stroke="var(--color-accent)" stroke-width="0.8" />
+          <text x="25" y="75" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)" font-weight="bold">glommio</text>
+          <text x="25" y="85" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">Thread-per-core, production-tested</text>
+
+          <!-- Runtime 3: monoio -->
+          <rect x="15" y="94" width="170" height="28" rx="3" fill="var(--color-accent)" fill-opacity="0.06" stroke="var(--color-accent)" stroke-width="0.8" />
+          <text x="25" y="107" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)" font-weight="bold">monoio</text>
+          <text x="25" y="117" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">ByteDance, ~3x Tokio throughput</text>
+
+          <!-- Common problem -->
+          <rect x="25" y="132" width="150" height="28" rx="3" fill="#e74c3c" fill-opacity="0.08" stroke="#e74c3c" stroke-width="1" />
+          <text x="100" y="145" text-anchor="middle" fill="#e74c3c" font-size="5.5" font-family="var(--font-mono)" font-weight="bold">Shared problem: cancellation</text>
+          <text x="100" y="156" text-anchor="middle" fill="#e74c3c" font-size="5" font-family="var(--font-mono)">kernel owns the buffer until done</text>
+
+          <text x="100" y="185" text-anchor="middle" fill="var(--color-accent)" font-size="10" font-family="var(--font-sans)">Rust Runtimes</text>
+          <text x="100" y="200" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">Three blueprints, one problem</text>
+        </g>
+
+        <!-- Stage 7: The Middle Path -->
+        <g id="iouring-stage-7" class="iouring-stage">
+          <text x="100" y="18" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)" font-weight="bold">The Middle Path</text>
+
+          <!-- io_uring layer -->
+          <rect x="15" y="30" width="170" height="45" rx="4" stroke="var(--color-accent)" stroke-width="1.5" fill="var(--color-accent)" fill-opacity="0.05" />
+          <text x="100" y="44" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)" font-weight="bold">io_uring</text>
+          <text x="100" y="57" text-anchor="middle" fill="var(--color-accent)" font-size="9" font-family="var(--font-mono)" font-weight="bold">Disk I/O</text>
+          <text x="100" y="69" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5.5" font-family="var(--font-mono)">bulk reads, writes, NVMe commands</text>
+
+          <!-- Tokio layer -->
+          <rect x="15" y="82" width="170" height="45" rx="4" stroke="var(--color-text-tertiary)" stroke-width="1.5" fill="var(--color-surface-alt)" />
+          <text x="100" y="96" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="7" font-family="var(--font-mono)" font-weight="bold">Tokio</text>
+          <text x="100" y="109" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="9" font-family="var(--font-mono)" font-weight="bold">Networking</text>
+          <text x="100" y="121" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5.5" font-family="var(--font-mono)">TCP, gRPC, HTTP, metadata</text>
+
+          <!-- Result -->
+          <rect x="25" y="137" width="150" height="22" rx="3" fill="var(--color-accent)" fill-opacity="0.1" stroke="var(--color-accent)" stroke-width="1" />
+          <text x="100" y="151" text-anchor="middle" fill="var(--color-accent)" font-size="6.5" font-family="var(--font-mono)" font-weight="bold">Best tool for each job</text>
+
+          <text x="100" y="185" text-anchor="middle" fill="var(--color-accent)" font-size="10" font-family="var(--font-sans)">Architecture</text>
+          <text x="100" y="200" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">Two layers, zero compromise</text>
+        </g>
+
+        <!-- Stage 8: The Trajectory -->
+        <g id="iouring-stage-8" class="iouring-stage">
+          <text x="100" y="18" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)" font-weight="bold">The Trajectory</text>
+
+          <!-- io_uring trend -->
+          <rect x="15" y="30" width="170" height="40" rx="4" stroke="var(--color-accent)" stroke-width="1.5" fill="var(--color-accent)" fill-opacity="0.05" />
+          <text x="100" y="44" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)" font-weight="bold">io_uring</text>
+          <text x="100" y="57" text-anchor="middle" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)">Getting faster every release</text>
+          <text x="100" y="66" text-anchor="middle" fill="var(--color-accent)" font-size="5" font-family="var(--font-mono)">↑ SQPOLL, io_uring_cmd, zerocopy</text>
+
+          <!-- SPDK trend -->
+          <rect x="15" y="78" width="170" height="40" rx="4" stroke="#e74c3c" stroke-width="1.5" fill="#e74c3c" fill-opacity="0.05" />
+          <text x="100" y="92" text-anchor="middle" fill="#e74c3c" font-size="7" font-family="var(--font-mono)" font-weight="bold">SPDK</text>
+          <text x="100" y="105" text-anchor="middle" fill="#e74c3c" font-size="6" font-family="var(--font-mono)">Can't get simpler</text>
+          <text x="100" y="114" text-anchor="middle" fill="#e74c3c" font-size="5" font-family="var(--font-mono)">complexity is architectural</text>
+
+          <!-- Gap indicator -->
+          <text x="100" y="135" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="6" font-family="var(--font-mono)">Performance gap:</text>
+          <rect x="40" y="140" width="120" height="14" rx="2" fill="var(--color-accent)" fill-opacity="0.15" stroke="var(--color-accent)" stroke-width="1" />
+          <text x="100" y="150" text-anchor="middle" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)" font-weight="bold">↓ 20% and shrinking</text>
+
+          <text x="100" y="185" text-anchor="middle" fill="var(--color-accent)" font-size="10" font-family="var(--font-sans)" font-weight="600">The Verdict</text>
+          <text x="100" y="200" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">The tortoise catches the hare</text>
+        </g>
+      </svg>
+    </div>
+
+    <!-- Metric panel -->
+    <div class="mt-4 rounded-lg bg-[var(--color-surface-alt)] px-3 py-2.5 text-center">
+      <p class="text-[9px] uppercase tracking-widest text-[var(--color-text-tertiary)]" id="iouring-metric-label">Kernel Overhead</p>
+      <p class="mt-1 font-mono text-lg font-bold text-[var(--color-accent)]">
+        <span id="iouring-metric-value">40%</span>
+        <span id="iouring-metric-unit" class="text-sm font-normal"></span>
+      </p>
+      <p id="iouring-metric-sub" class="text-[9px] text-[var(--color-text-tertiary)]">of NVMe I/O latency is kernel tax</p>
+    </div>
+
+    <!-- Stage dots -->
+    <div class="mt-3 flex justify-center gap-1.5">
+      <div class="iouring-dot active" data-stage="1"></div>
+      <div class="iouring-dot" data-stage="2"></div>
+      <div class="iouring-dot" data-stage="3"></div>
+      <div class="iouring-dot" data-stage="4"></div>
+      <div class="iouring-dot" data-stage="5"></div>
+      <div class="iouring-dot" data-stage="6"></div>
+      <div class="iouring-dot" data-stage="7"></div>
+      <div class="iouring-dot" data-stage="8"></div>
+    </div>
+
+    <!-- ELI10 -->
+    <div class="mt-5 rounded-lg border border-[var(--color-border)]/30 bg-[var(--color-surface-alt)]/50 px-3.5 py-3">
+      <p class="text-[9px] font-semibold uppercase tracking-widest text-[var(--color-text-tertiary)]">
+        Explain Like I'm 10
+      </p>
+      <p id="iouring-eli10-text" class="iouring-eli10-fade mt-2 text-xs leading-relaxed text-[var(--color-text-secondary)]">
+        Every time your computer wants to read something from a fast drive, it has to go through a bunch of security checkpoints first. The drive can answer in 10 millionths of a second, but the checkpoints take 4 millionths. That's like waiting in a 40-minute line for a 60-minute ride.
+      </p>
+    </div>
+  </div>
+</aside>
+
+<style>
+  .iouring-stage {
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
+  }
+
+  .iouring-stage.active {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+  }
+
+  .iouring-stage.past {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+
+  .iouring-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-border);
+    transition: background 0.3s, transform 0.3s;
+  }
+
+  .iouring-dot.active {
+    background: var(--color-accent);
+    transform: scale(1.4);
+  }
+
+  .iouring-dot.past {
+    background: var(--color-accent);
+    opacity: 0.4;
+  }
+
+  .iouring-eli10-fade {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+
+  .iouring-eli10-fade.changing {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .iouring-stage { transition: none; }
+    .iouring-dot { transition: none; }
+    .iouring-eli10-fade { transition: none; }
+  }
+</style>
+
+<script>
+  function initIOUringEvolution() {
+    const prose = document.querySelector(".prose");
+    if (!prose) return;
+
+    const allHeadings = prose.querySelectorAll("h2, h3");
+    if (allHeadings.length === 0) return;
+
+    const stageMap: { el: Element; stage: number }[] = [];
+
+    allHeadings.forEach((h) => {
+      const text = (h.textContent || "").toLowerCase();
+      let stage = -1;
+
+      if (text.includes("syscall tax") || text.includes("kernel is the bottleneck")) stage = 1;
+      else if (text.includes("spdk") || text.includes("nuclear option") || text.includes("what spdk costs")) stage = 2;
+      else if (text.includes("io_uring") || text.includes("making the kernel") || text.includes("ring buffer") || text.includes("sqpoll") || text.includes("io_uring_cmd")) stage = 3;
+      else if (text.includes("the numbers") || text.includes("raw iops") || text.includes("multi-drive") || text.includes("real comparison")) stage = 4;
+      else if (text.includes("security") || text.includes("cve") || text.includes("google") || text.includes("curing") || text.includes("container")) stage = 5;
+      else if (text.includes("rust and io_uring") || text.includes("rust") || text.includes("foundation") || text.includes("runtime") || text.includes("cancellation")) stage = 6;
+      else if (text.includes("middle path") || text.includes("bulk data") || text.includes("metadata i/o") || text.includes("nvme-dense") || text.includes("networking") || text.includes("architecture")) stage = 7;
+      else if (text.includes("trajectory") || text.includes("conclusion") || text.includes("kernel bypass wars")) stage = 8;
+
+      if (stage > 0) {
+        stageMap.push({ el: h, stage });
+      }
+    });
+
+    if (stageMap.length === 0) return;
+
+    let currentStage = 1;
+
+    const stages = document.querySelectorAll(".iouring-stage");
+    const dots = document.querySelectorAll(".iouring-dot");
+    const metricLabel = document.getElementById("iouring-metric-label");
+    const metricValue = document.getElementById("iouring-metric-value");
+    const metricUnit = document.getElementById("iouring-metric-unit");
+    const metricSub = document.getElementById("iouring-metric-sub");
+
+    const metricData = [
+      { label: "Kernel Overhead", value: "40%", unit: "", sub: "of NVMe I/O latency is kernel tax" },
+      { label: "SPDK Waste", value: "84.8%", unit: "", sub: "of CPU cycles spent polling empty queues" },
+      { label: "Syscall Reduction", value: "1", unit: " call", sub: "for N operations vs N calls" },
+      { label: "io_uring vs SPDK", value: "80%", unit: "", sub: "of SPDK IOPS, 0% operational burden" },
+      { label: "io_uring CVEs", value: "~75", unit: "", sub: "in 5 years (2021-2025)" },
+      { label: "monoio Peak", value: "~3x", unit: "", sub: "Tokio throughput under 16 cores" },
+      { label: "Architecture", value: "2", unit: " layers", sub: "io_uring for disk, Tokio for network" },
+      { label: "IOPS Gap", value: "\u211920%", unit: "", sub: "and shrinking every kernel release" },
+    ];
+
+    const eli10El = document.getElementById("iouring-eli10-text");
+    const eli10Data = [
+      "Every time your computer wants to read something from a fast drive, it has to go through a bunch of security checkpoints first. The drive can answer in 10 millionths of a second, but the checkpoints take 4 millionths. That\u2019s like waiting in a 40-minute line for a 60-minute ride.",
+      "SPDK\u2019s solution is to tear down ALL the security checkpoints. Your program talks directly to the drive. Super fast! But now you can\u2019t use any of the normal tools, can\u2019t see your files, and you burn whole CPUs just sitting there waiting. It\u2019s like hiring a butler who refuses to share the kitchen.",
+      "io_uring is like a shared mailbox between your program and the computer\u2019s brain. You drop a bunch of letters in, ring the doorbell once, and pick up all the replies later. One doorbell ring instead of one for every single letter.",
+      "io_uring gets about 80% of SPDK\u2019s top speed, but you keep all your normal tools working. It\u2019s like a race car that\u2019s slightly slower than a Formula 1 car, but you can actually drive it on regular roads and park it in your garage.",
+      "io_uring has had a LOT of security bugs. Google found so many that they turned it off completely. It\u2019s like finding out the cool new shortcut through the park has no streetlights. Great if you know the path, risky if you don\u2019t.",
+      "Rust programmers have three different ways to use io_uring, and none of them agree with each other. It\u2019s like three kids who all want to build a treehouse but each one brought a different blueprint.",
+      "The smart move is to use io_uring only for reading and writing data to drives, and use regular networking for everything else. Don\u2019t try to use the race car for grocery shopping when the minivan works fine.",
+      "io_uring keeps getting faster with every Linux update. SPDK can\u2019t get simpler because its complexity is built into how it works. The tortoise is catching the hare, and this time the hare can\u2019t speed up.",
+    ];
+
+    function setStage(stage: number) {
+      if (stage === currentStage) return;
+      currentStage = stage;
+
+      stages.forEach((s, i) => {
+        const stageNum = i + 1;
+        s.classList.remove("active", "past");
+        if (stageNum === stage) s.classList.add("active");
+        else if (stageNum < stage) s.classList.add("past");
+      });
+
+      dots.forEach((d, i) => {
+        const dotStage = i + 1;
+        d.classList.remove("active", "past");
+        if (dotStage === stage) d.classList.add("active");
+        else if (dotStage < stage) d.classList.add("past");
+      });
+
+      const data = metricData[stage - 1];
+      if (data && metricLabel && metricValue && metricUnit && metricSub) {
+        metricLabel.textContent = data.label;
+        metricValue.textContent = data.value;
+        metricUnit.textContent = data.unit;
+        metricSub.textContent = data.sub;
+      }
+
+      if (eli10El && eli10Data[stage - 1]) {
+        eli10El.classList.add("changing");
+        setTimeout(() => {
+          eli10El.textContent = eli10Data[stage - 1];
+          eli10El.classList.remove("changing");
+        }, 200);
+      }
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const match = stageMap.find((s) => s.el === entry.target);
+          if (match) setStage(match.stage);
+        }
+      });
+    }, { rootMargin: "-15% 0px -75% 0px" });
+
+    stageMap.forEach(({ el }) => observer.observe(el));
+    setStage(1);
+  }
+
+  initIOUringEvolution();
+</script>
