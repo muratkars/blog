@@ -5,11 +5,11 @@ description: "The 2.5-inch drive bay is 26 years old. It was designed for laptop
 tags: ["storage", "hardware", "edsff", "nvme"]
 type: "standard"
 featured: false
-image: "/images/blog/gpu-cluster.jpg"
+image: "/images/blog/edsff-e2.png"
 readTime: "18 min read"
 ---
 
-![GPU cluster hardware](/images/blog/gpu-cluster.jpg)
+![EDSFF E2 next-gen enterprise SSD](/images/blog/edsff-e2.png)
 
 *The 2.5-inch drive bay is 26 years old. It was designed for laptop hard drives spinning at 5,400 RPM. Today we're shoving 122 TB of QLC flash into that same rectangular hole, bolting on a PCIe Gen4 x4 interface, and pretending nothing has changed. Something has changed. EDSFF is the first SSD form factor designed for data centers from scratch, and its newest member, E2, will put a petabyte on a single drive and 40 petabytes in a single 2U server. That's not just a hardware story. It's a storage software story, because every assumption your code makes about drive count, failure domains, rebuild times, and power budgets is about to be wrong.*
 

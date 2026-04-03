@@ -5,11 +5,11 @@ description: "Drive capacities are growing exponentially. Rebuild speeds aren't.
 tags: ["storage", "durability", "erasure-coding", "infrastructure"]
 type: "standard"
 featured: false
-image: "/images/blog/server-cables.jpg"
+image: "/images/blog/rebuild-time-crisis.png"
 readTime: "20 min read"
 ---
 
-![Server cables and infrastructure](/images/blog/server-cables.jpg)
+![The rebuild time crisis](/images/blog/rebuild-time-crisis.png)
 
 *Drive capacities are growing exponentially. Rebuild speeds aren't. A 20TB HDD rebuild takes 2-5 days. A 60TB HDD rebuild takes 6-9 days. A 122TB QLC SSD, already shipping, takes 5-14 hours even on NVMe Gen4. During every hour of that rebuild window, a second drive failure means data loss. The storage industry's dirty secret: RAID and traditional erasure coding were designed for drives that rebuild in minutes, not days. We're still using those designs. The drives moved on.*
 
