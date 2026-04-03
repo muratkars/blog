@@ -5,11 +5,11 @@ description: "The Linux kernel I/O stack was designed when a disk seek took 10 m
 tags: ["storage", "linux", "io_uring", "spdk", "performance"]
 type: "standard"
 featured: false
-image: "/images/blog/network-fiber.jpg"
+image: "/images/blog/io-uring-spdk.png"
 readTime: "16 min read"
 ---
 
-![io_uring and SPDK kernel bypass](/images/blog/network-fiber.jpg)
+![io_uring vs SPDK kernel bypass wars](/images/blog/io-uring-spdk.png)
 
 *The Linux kernel I/O stack was designed when a disk seek took 10 milliseconds. NVMe completes I/O in 10 microseconds. The kernel overhead (context switches, VFS traversal, page cache, block layer, scheduler) now consumes 40% of your I/O latency. Two approaches emerged to fix this: SPDK (rip out the kernel entirely) and io_uring (make the kernel fast enough that you don't need to). SPDK won the benchmarks. io_uring is winning the war. Here's why.*
 
