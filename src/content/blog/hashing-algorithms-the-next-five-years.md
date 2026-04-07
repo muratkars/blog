@@ -5,11 +5,11 @@ description: "A practitioner's guide to CRC32, MD5, SHA-256, XXHash, HighwayHash
 tags: ["storage", "data-integrity", "hashing", "performance"]
 type: "standard"
 featured: false
-image: "/images/blog/hash-browns.png"
+image: "/images/blog/hashing-algorithms.png"
 readTime: "16 min read"
 ---
 
-![A hash brown character holding your data together](/images/blog/hash-browns.png)
+![Hashing algorithms the next five years](/images/blog/hashing-algorithms.png)
 
 *A practitioner's guide to CRC32, MD5, SHA-256, XXHash, SipHash, HighwayHash, BLAKE2, and BLAKE3. What each was designed for, where each breaks down, and which one you should bet your architecture on for the next five years.*
 

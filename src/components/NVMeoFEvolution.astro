@@ -1,0 +1,472 @@
+---
+---
+
+<aside class="nvmeof-evolution hidden lg:block">
+  <div class="sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto">
+    <p class="mb-3 text-[10px] font-semibold uppercase tracking-widest text-[var(--color-text-tertiary)]">
+      NVMe-oF Guide
+    </p>
+
+    <div class="svg-container">
+      <svg viewBox="0 0 200 230" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full">
+
+        <!-- Stage 1: The Promise -->
+        <g id="nvmeof-stage-1" class="nvmeof-stage active">
+          <text x="100" y="18" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)" font-weight="bold">Disaggregation Dream</text>
+
+          <!-- Compute pool -->
+          <rect x="10" y="32" width="50" height="40" rx="4" stroke="var(--color-accent)" stroke-width="1.2" fill="var(--color-accent)" fill-opacity="0.06" />
+          <text x="35" y="47" text-anchor="middle" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)" font-weight="bold">Compute</text>
+          <text x="35" y="58" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">CPU/GPU</text>
+          <text x="35" y="67" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">nodes</text>
+
+          <!-- Fabric -->
+          <rect x="70" y="38" width="60" height="28" rx="3" stroke="var(--color-accent)" stroke-width="1" stroke-dasharray="3,2" fill="var(--color-accent)" fill-opacity="0.03" />
+          <text x="100" y="53" text-anchor="middle" fill="var(--color-accent)" font-size="6.5" font-family="var(--font-mono)" font-weight="bold">Fabric</text>
+          <text x="100" y="62" text-anchor="middle" fill="var(--color-accent)" font-size="5" font-family="var(--font-mono)">RDMA/TCP</text>
+
+          <!-- Arrows -->
+          <line x1="60" y1="52" x2="70" y2="52" stroke="var(--color-accent)" stroke-width="1" />
+          <line x1="130" y1="52" x2="140" y2="52" stroke="var(--color-accent)" stroke-width="1" />
+
+          <!-- Storage pool -->
+          <rect x="140" y="32" width="50" height="40" rx="4" stroke="var(--color-accent)" stroke-width="1.2" fill="var(--color-accent)" fill-opacity="0.06" />
+          <text x="165" y="47" text-anchor="middle" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)" font-weight="bold">Storage</text>
+          <text x="165" y="58" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">NVMe</text>
+          <text x="165" y="67" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">shelves</text>
+
+          <!-- Promise callout -->
+          <rect x="30" y="85" width="140" height="24" rx="3" fill="var(--color-accent)" fill-opacity="0.08" stroke="var(--color-accent)" stroke-width="1" />
+          <text x="100" y="97" text-anchor="middle" fill="var(--color-accent)" font-size="8" font-family="var(--font-mono)" font-weight="bold">&lt;10 μs over fabric</text>
+          <text x="100" y="106" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">"as fast as local NVMe"</text>
+
+          <!-- Scale independently -->
+          <text x="35" y="125" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">Scale compute</text>
+          <text x="35" y="133" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">independently</text>
+          <text x="165" y="125" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">Scale storage</text>
+          <text x="165" y="133" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">independently</text>
+
+          <text x="100" y="178" text-anchor="middle" fill="var(--color-accent)" font-size="10" font-family="var(--font-sans)">The Promise</text>
+          <text x="100" y="193" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">Disaggregation dream</text>
+        </g>
+
+        <!-- Stage 2: Three Transports -->
+        <g id="nvmeof-stage-2" class="nvmeof-stage">
+          <text x="100" y="18" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)" font-weight="bold">Transport Latency</text>
+
+          <!-- RDMA bar -->
+          <rect x="20" y="32" width="30" height="12" rx="2" fill="var(--color-accent)" fill-opacity="0.15" stroke="var(--color-accent)" stroke-width="0.8" />
+          <text x="60" y="42" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)" font-weight="bold">RDMA</text>
+          <text x="120" y="42" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)">~15 μs</text>
+          <rect x="145" y="34" width="40" height="8" rx="1" fill="var(--color-accent)" fill-opacity="0.3" />
+
+          <!-- FC bar -->
+          <rect x="20" y="52" width="50" height="12" rx="2" fill="#f39c12" fill-opacity="0.15" stroke="#f39c12" stroke-width="0.8" />
+          <text x="80" y="62" fill="#f39c12" font-size="6" font-family="var(--font-mono)" font-weight="bold">FC-NVMe</text>
+          <text x="130" y="62" fill="#f39c12" font-size="6" font-family="var(--font-mono)">15-30 μs</text>
+          <rect x="145" y="54" width="40" height="8" rx="1" fill="#f39c12" fill-opacity="0.3" />
+
+          <!-- TCP bar -->
+          <rect x="20" y="72" width="120" height="12" rx="2" fill="#e74c3c" fill-opacity="0.15" stroke="#e74c3c" stroke-width="0.8" />
+          <text x="150" y="82" fill="#e74c3c" font-size="6" font-family="var(--font-mono)" font-weight="bold">TCP</text>
+          <text x="120" y="82" fill="#e74c3c" font-size="6" font-family="var(--font-mono)">40-80 μs</text>
+          <rect x="145" y="74" width="40" height="8" rx="1" fill="#e74c3c" fill-opacity="0.3" />
+
+          <!-- Notes -->
+          <text x="20" y="102" fill="var(--color-accent)" font-size="5.5" font-family="var(--font-mono)">RDMA: RoCEv2 or InfiniBand</text>
+          <text x="20" y="114" fill="#f39c12" font-size="5.5" font-family="var(--font-mono)">FC: existing SAN investment</text>
+          <text x="20" y="126" fill="#e74c3c" font-size="5.5" font-family="var(--font-mono)">TCP: works on any Ethernet</text>
+
+          <rect x="25" y="135" width="150" height="18" rx="3" fill="var(--color-accent)" fill-opacity="0.06" stroke="var(--color-accent)" stroke-width="0.8" />
+          <text x="100" y="147" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5.5" font-family="var(--font-mono)">Local NVMe: ~5 μs baseline</text>
+
+          <text x="100" y="178" text-anchor="middle" fill="var(--color-accent)" font-size="10" font-family="var(--font-sans)">Three Transports</text>
+          <text x="100" y="193" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">Speed vs. compatibility</text>
+        </g>
+
+        <!-- Stage 3: Operational Reality -->
+        <g id="nvmeof-stage-3" class="nvmeof-stage">
+          <text x="100" y="18" text-anchor="middle" fill="#e74c3c" font-size="7" font-family="var(--font-mono)" font-weight="bold">Operational Problems</text>
+
+          <!-- Problem 1 -->
+          <rect x="15" y="30" width="170" height="18" rx="3" fill="#e74c3c" fill-opacity="0.06" stroke="#e74c3c" stroke-width="0.8" />
+          <text x="25" y="42" fill="#e74c3c" font-size="5.5" font-family="var(--font-mono)">1. Discovery: how to find targets?</text>
+
+          <!-- Problem 2 -->
+          <rect x="15" y="52" width="170" height="18" rx="3" fill="#e74c3c" fill-opacity="0.06" stroke="#e74c3c" stroke-width="0.8" />
+          <text x="25" y="64" fill="#e74c3c" font-size="5.5" font-family="var(--font-mono)">2. Multipath (ANA): complex failover</text>
+
+          <!-- Problem 3 -->
+          <rect x="15" y="74" width="170" height="18" rx="3" fill="#e74c3c" fill-opacity="0.06" stroke="#e74c3c" stroke-width="0.8" />
+          <text x="25" y="86" fill="#e74c3c" font-size="5.5" font-family="var(--font-mono)">3. Timeouts: 600s ctrl_loss_tmo</text>
+
+          <!-- Problem 4 -->
+          <rect x="15" y="96" width="170" height="18" rx="3" fill="#e74c3c" fill-opacity="0.06" stroke="#e74c3c" stroke-width="0.8" />
+          <text x="25" y="108" fill="#e74c3c" font-size="5.5" font-family="var(--font-mono)">4. Security: no auth by default</text>
+
+          <!-- Warning callout -->
+          <rect x="25" y="124" width="150" height="28" rx="3" fill="#e74c3c" fill-opacity="0.1" stroke="#e74c3c" stroke-width="1" />
+          <text x="100" y="137" text-anchor="middle" fill="#e74c3c" font-size="6" font-family="var(--font-mono)" font-weight="bold">10 min frozen I/O default</text>
+          <text x="100" y="148" text-anchor="middle" fill="#e74c3c" font-size="5.5" font-family="var(--font-mono)">before path declared dead</text>
+
+          <text x="100" y="178" text-anchor="middle" fill="#e74c3c" font-size="10" font-family="var(--font-sans)">Operational Reality</text>
+          <text x="100" y="193" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">The fine print nobody reads</text>
+        </g>
+
+        <!-- Stage 4: What Works -->
+        <g id="nvmeof-stage-4" class="nvmeof-stage">
+          <text x="100" y="18" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)" font-weight="bold">What Works Today</text>
+
+          <!-- Box 1: Flash Arrays -->
+          <rect x="15" y="32" width="170" height="30" rx="4" stroke="var(--color-accent)" stroke-width="1.2" fill="var(--color-accent)" fill-opacity="0.06" />
+          <text x="100" y="46" text-anchor="middle" fill="var(--color-accent)" font-size="6.5" font-family="var(--font-mono)" font-weight="bold">All-Flash Arrays</text>
+          <text x="100" y="57" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">NetApp, Pure, Dell: managed NVMe-oF</text>
+
+          <!-- Box 2: AI Clusters -->
+          <rect x="15" y="68" width="170" height="30" rx="4" stroke="var(--color-accent)" stroke-width="1.2" fill="var(--color-accent)" fill-opacity="0.06" />
+          <text x="100" y="82" text-anchor="middle" fill="var(--color-accent)" font-size="6.5" font-family="var(--font-mono)" font-weight="bold">AI/GPU Clusters</text>
+          <text x="100" y="93" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">DGX SuperPOD: RDMA already there</text>
+
+          <!-- Box 3: Hyperscalers -->
+          <rect x="15" y="104" width="170" height="30" rx="4" stroke="var(--color-accent)" stroke-width="1.2" fill="var(--color-accent)" fill-opacity="0.06" />
+          <text x="100" y="118" text-anchor="middle" fill="var(--color-accent)" font-size="6.5" font-family="var(--font-mono)" font-weight="bold">Hyperscalers</text>
+          <text x="100" y="129" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">Custom stacks, custom everything</text>
+
+          <!-- Common thread -->
+          <rect x="30" y="142" width="140" height="16" rx="3" fill="var(--color-accent)" fill-opacity="0.08" stroke="var(--color-accent)" stroke-width="0.8" />
+          <text x="100" y="153" text-anchor="middle" fill="var(--color-accent)" font-size="5.5" font-family="var(--font-mono)">All have dedicated teams for NVMe-oF</text>
+
+          <text x="100" y="178" text-anchor="middle" fill="var(--color-accent)" font-size="10" font-family="var(--font-sans)">What Works</text>
+          <text x="100" y="193" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">Three proven tiers</text>
+        </g>
+
+        <!-- Stage 5: What Doesn't Work -->
+        <g id="nvmeof-stage-5" class="nvmeof-stage">
+          <text x="100" y="18" text-anchor="middle" fill="#e74c3c" font-size="7" font-family="var(--font-mono)" font-weight="bold">What Doesn't Work (Yet)</text>
+
+          <!-- Problem 1: Disaggregation -->
+          <rect x="15" y="32" width="170" height="30" rx="4" stroke="#e74c3c" stroke-width="1.2" fill="#e74c3c" fill-opacity="0.06" />
+          <text x="100" y="46" text-anchor="middle" fill="#e74c3c" font-size="6.5" font-family="var(--font-mono)" font-weight="bold">Full Disaggregation</text>
+          <text x="100" y="57" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">Tail latency kills the dream</text>
+
+          <!-- Problem 2: Cross-DC -->
+          <rect x="15" y="68" width="170" height="30" rx="4" stroke="#e74c3c" stroke-width="1.2" fill="#e74c3c" fill-opacity="0.06" />
+          <text x="100" y="82" text-anchor="middle" fill="#e74c3c" font-size="6.5" font-family="var(--font-mono)" font-weight="bold">Cross-Datacenter</text>
+          <text x="100" y="93" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">Physics: speed of light is slow</text>
+
+          <!-- Problem 3: Multi-tenant -->
+          <rect x="15" y="104" width="170" height="30" rx="4" stroke="#e74c3c" stroke-width="1.2" fill="#e74c3c" fill-opacity="0.06" />
+          <text x="100" y="118" text-anchor="middle" fill="#e74c3c" font-size="6.5" font-family="var(--font-mono)" font-weight="bold">Multi-Tenant</text>
+          <text x="100" y="129" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">Noisy neighbor, no QoS isolation</text>
+
+          <rect x="30" y="142" width="140" height="16" rx="3" fill="#e74c3c" fill-opacity="0.08" stroke="#e74c3c" stroke-width="0.8" />
+          <text x="100" y="153" text-anchor="middle" fill="#e74c3c" font-size="5.5" font-family="var(--font-mono)">10x more complex than DAS/HCI</text>
+
+          <text x="100" y="178" text-anchor="middle" fill="#e74c3c" font-size="10" font-family="var(--font-sans)">What Doesn't Work</text>
+          <text x="100" y="193" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">Ambition vs. reality</text>
+        </g>
+
+        <!-- Stage 6: Software Stack -->
+        <g id="nvmeof-stage-6" class="nvmeof-stage">
+          <text x="100" y="18" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)" font-weight="bold">Target IOPS Comparison</text>
+
+          <!-- SPDK bar -->
+          <rect x="20" y="35" width="160" height="28" rx="4" fill="var(--color-accent)" fill-opacity="0.08" stroke="var(--color-accent)" stroke-width="1.2" />
+          <text x="30" y="50" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)" font-weight="bold">SPDK</text>
+          <text x="30" y="59" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">userspace, poll-mode</text>
+          <text x="165" y="53" text-anchor="end" fill="var(--color-accent)" font-size="9" font-family="var(--font-mono)" font-weight="bold">10M+</text>
+
+          <!-- Kernel bar -->
+          <rect x="20" y="70" width="80" height="28" rx="4" fill="var(--color-text-tertiary)" fill-opacity="0.08" stroke="var(--color-text-tertiary)" stroke-width="1" />
+          <text x="30" y="85" fill="var(--color-text-tertiary)" font-size="7" font-family="var(--font-mono)" font-weight="bold">nvmet</text>
+          <text x="30" y="94" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">kernel target</text>
+          <text x="95" y="88" text-anchor="end" fill="var(--color-text-tertiary)" font-size="9" font-family="var(--font-mono)" font-weight="bold">3-5M</text>
+
+          <!-- Tradeoffs -->
+          <text x="20" y="118" fill="var(--color-accent)" font-size="5.5" font-family="var(--font-mono)">SPDK: 2-4x faster, dedicated cores</text>
+          <text x="20" y="130" fill="var(--color-text-tertiary)" font-size="5.5" font-family="var(--font-mono)">nvmet: simpler, shared resources</text>
+          <text x="20" y="142" fill="var(--color-text-tertiary)" font-size="5.5" font-family="var(--font-mono)">io_uring: middle ground, emerging</text>
+
+          <rect x="30" y="148" width="140" height="16" rx="3" fill="var(--color-accent)" fill-opacity="0.06" stroke="var(--color-accent)" stroke-width="0.8" />
+          <text x="100" y="159" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5.5" font-family="var(--font-mono)">Most production uses kernel nvmet</text>
+
+          <text x="100" y="178" text-anchor="middle" fill="var(--color-accent)" font-size="10" font-family="var(--font-sans)">Software Stack</text>
+          <text x="100" y="193" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">SPDK speed vs. kernel simplicity</text>
+        </g>
+
+        <!-- Stage 7: Speed Ladder -->
+        <g id="nvmeof-stage-7" class="nvmeof-stage">
+          <text x="100" y="18" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)" font-weight="bold">TCP Gap Shrinking</text>
+
+          <!-- Speed tiers -->
+          <text x="20" y="38" fill="var(--color-text-tertiary)" font-size="5.5" font-family="var(--font-mono)">Ethernet</text>
+          <text x="80" y="38" fill="#e74c3c" font-size="5.5" font-family="var(--font-mono)">TCP/RDMA gap</text>
+          <text x="150" y="38" fill="var(--color-text-tertiary)" font-size="5.5" font-family="var(--font-mono)">Trend</text>
+
+          <!-- 25GbE -->
+          <line x1="15" y1="43" x2="185" y2="43" stroke="var(--color-border)" stroke-width="0.5" />
+          <text x="20" y="55" fill="var(--color-text-tertiary)" font-size="6" font-family="var(--font-mono)">25G</text>
+          <rect x="75" y="47" width="70" height="8" rx="1" fill="#e74c3c" fill-opacity="0.3" />
+          <text x="110" y="54" text-anchor="middle" fill="#e74c3c" font-size="5" font-family="var(--font-mono)" font-weight="bold">4-8x</text>
+          <text x="160" y="55" fill="#e74c3c" font-size="5" font-family="var(--font-mono)">big gap</text>
+
+          <!-- 100GbE -->
+          <line x1="15" y1="60" x2="185" y2="60" stroke="var(--color-border)" stroke-width="0.5" />
+          <text x="20" y="72" fill="var(--color-text-tertiary)" font-size="6" font-family="var(--font-mono)">100G</text>
+          <rect x="75" y="64" width="45" height="8" rx="1" fill="#f39c12" fill-opacity="0.3" />
+          <text x="97" y="71" text-anchor="middle" fill="#f39c12" font-size="5" font-family="var(--font-mono)" font-weight="bold">3-4x</text>
+          <text x="160" y="72" fill="#f39c12" font-size="5" font-family="var(--font-mono)">shrinking</text>
+
+          <!-- 200GbE -->
+          <line x1="15" y1="77" x2="185" y2="77" stroke="var(--color-border)" stroke-width="0.5" />
+          <text x="20" y="89" fill="var(--color-text-tertiary)" font-size="6" font-family="var(--font-mono)">200G</text>
+          <rect x="75" y="81" width="30" height="8" rx="1" fill="#f39c12" fill-opacity="0.3" />
+          <text x="90" y="88" text-anchor="middle" fill="#f39c12" font-size="5" font-family="var(--font-mono)" font-weight="bold">2-3x</text>
+          <text x="160" y="89" fill="var(--color-accent)" font-size="5" font-family="var(--font-mono)">closing</text>
+
+          <!-- 400GbE -->
+          <line x1="15" y1="94" x2="185" y2="94" stroke="var(--color-border)" stroke-width="0.5" />
+          <text x="20" y="106" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)" font-weight="bold">400G</text>
+          <rect x="75" y="98" width="18" height="8" rx="1" fill="var(--color-accent)" fill-opacity="0.3" />
+          <text x="84" y="105" text-anchor="middle" fill="var(--color-accent)" font-size="5" font-family="var(--font-mono)" font-weight="bold">~2x</text>
+          <text x="150" y="106" fill="var(--color-accent)" font-size="5" font-family="var(--font-mono)" font-weight="bold">almost parity</text>
+          <line x1="15" y1="111" x2="185" y2="111" stroke="var(--color-border)" stroke-width="0.5" />
+
+          <!-- Arrow showing trend -->
+          <text x="100" y="128" text-anchor="middle" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)" font-weight="bold">Faster Ethernet = smaller gap</text>
+          <text x="100" y="140" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5.5" font-family="var(--font-mono)">Why build RDMA when TCP works?</text>
+
+          <text x="100" y="178" text-anchor="middle" fill="var(--color-accent)" font-size="10" font-family="var(--font-sans)">Speed Ladder</text>
+          <text x="100" y="193" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">TCP catching up fast</text>
+        </g>
+
+        <!-- Stage 8: The Verdict -->
+        <g id="nvmeof-stage-8" class="nvmeof-stage">
+          <text x="100" y="18" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)" font-weight="bold">What to Bet On</text>
+
+          <!-- Have RDMA? -->
+          <rect x="15" y="32" width="170" height="28" rx="4" stroke="var(--color-accent)" stroke-width="1" fill="var(--color-accent)" fill-opacity="0.06" />
+          <text x="25" y="45" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)" font-weight="bold">Have RDMA fabric?</text>
+          <text x="25" y="55" fill="var(--color-text-tertiary)" font-size="5.5" font-family="var(--font-mono)">Use it. Lowest latency, proven.</text>
+
+          <!-- Building new? -->
+          <rect x="15" y="66" width="170" height="28" rx="4" stroke="var(--color-accent)" stroke-width="1" fill="var(--color-accent)" fill-opacity="0.06" />
+          <text x="25" y="79" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)" font-weight="bold">Building new?</text>
+          <text x="25" y="89" fill="var(--color-text-tertiary)" font-size="5.5" font-family="var(--font-mono)">NVMe/TCP. Simpler, fast enough.</text>
+
+          <!-- FC installed? -->
+          <rect x="15" y="100" width="170" height="28" rx="4" stroke="var(--color-accent)" stroke-width="1" fill="var(--color-accent)" fill-opacity="0.06" />
+          <text x="25" y="113" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)" font-weight="bold">FC installed?</text>
+          <text x="25" y="123" fill="var(--color-text-tertiary)" font-size="5.5" font-family="var(--font-mono)">FC-NVMe overlay. Don't rip it out.</text>
+
+          <!-- Trajectory -->
+          <rect x="25" y="136" width="150" height="22" rx="3" fill="var(--color-accent)" fill-opacity="0.1" stroke="var(--color-accent)" stroke-width="1" />
+          <text x="100" y="147" text-anchor="middle" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)" font-weight="bold">TCP wins by ~2028</text>
+          <text x="100" y="155" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">dominant transport for new deployments</text>
+
+          <text x="100" y="178" text-anchor="middle" fill="var(--color-accent)" font-size="10" font-family="var(--font-sans)" font-weight="600">The Verdict</text>
+          <text x="100" y="193" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">Use what you have, bet on TCP</text>
+        </g>
+      </svg>
+    </div>
+
+    <!-- Metric panel -->
+    <div class="mt-4 rounded-lg bg-[var(--color-surface-alt)] px-3 py-2.5 text-center">
+      <p class="text-[9px] uppercase tracking-widest text-[var(--color-text-tertiary)]" id="nvmeof-metric-label">RDMA Promise</p>
+      <p class="mt-1 font-mono text-lg font-bold text-[var(--color-accent)]">
+        <span id="nvmeof-metric-value">&lt;10</span>
+        <span id="nvmeof-metric-unit" class="text-sm font-normal"> μs</span>
+      </p>
+      <p id="nvmeof-metric-sub" class="text-[9px] text-[var(--color-text-tertiary)]">additional latency over fabric</p>
+    </div>
+
+    <!-- Stage dots -->
+    <div class="mt-3 flex justify-center gap-1.5">
+      <div class="nvmeof-dot active" data-stage="1"></div>
+      <div class="nvmeof-dot" data-stage="2"></div>
+      <div class="nvmeof-dot" data-stage="3"></div>
+      <div class="nvmeof-dot" data-stage="4"></div>
+      <div class="nvmeof-dot" data-stage="5"></div>
+      <div class="nvmeof-dot" data-stage="6"></div>
+      <div class="nvmeof-dot" data-stage="7"></div>
+      <div class="nvmeof-dot" data-stage="8"></div>
+    </div>
+
+    <!-- ELI10 -->
+    <div class="mt-5 rounded-lg border border-[var(--color-border)]/30 bg-[var(--color-surface-alt)]/50 px-3.5 py-3">
+      <p class="text-[9px] font-semibold uppercase tracking-widest text-[var(--color-text-tertiary)]">
+        Explain Like I'm 10
+      </p>
+      <p id="nvmeof-eli10-text" class="nvmeof-eli10-fade mt-2 text-xs leading-relaxed text-[var(--color-text-secondary)]">
+        Imagine your toy box is across the room instead of next to your bed. NVMe-oF is like building a super-fast conveyor belt so you can grab toys almost as fast as reaching into your own box. The promise: you wouldn't even notice the difference.
+      </p>
+    </div>
+  </div>
+</aside>
+
+<style>
+  .nvmeof-stage {
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
+  }
+
+  .nvmeof-stage.active {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+  }
+
+  .nvmeof-stage.past {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+
+  .nvmeof-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-border);
+    transition: background 0.3s, transform 0.3s;
+  }
+
+  .nvmeof-dot.active {
+    background: var(--color-accent);
+    transform: scale(1.4);
+  }
+
+  .nvmeof-dot.past {
+    background: var(--color-accent);
+    opacity: 0.4;
+  }
+
+  .nvmeof-eli10-fade {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+
+  .nvmeof-eli10-fade.changing {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .nvmeof-stage { transition: none; }
+    .nvmeof-dot { transition: none; }
+    .nvmeof-eli10-fade { transition: none; }
+  }
+</style>
+
+<script>
+  function initNVMeoFEvolution() {
+    const prose = document.querySelector(".prose");
+    if (!prose) return;
+
+    const allHeadings = prose.querySelectorAll("h2, h3");
+    if (allHeadings.length === 0) return;
+
+    const stageMap: { el: Element; stage: number }[] = [];
+
+    allHeadings.forEach((h) => {
+      const text = (h.textContent || "").toLowerCase();
+      let stage = -1;
+
+      if (text.includes("promise") || text.includes("thousand slides") || text.includes("launched")) stage = 1;
+      else if (text.includes("three transports") || text.includes("transport 1") || text.includes("transport 2") || text.includes("transport 3") || text.includes("rdma") || text.includes("nvme/tcp") || text.includes("fc-nvme") || text.includes("roce")) stage = 2;
+      else if (text.includes("discovery") || text.includes("multipath") || text.includes("operational reality") || text.includes("zoning") || text.includes("security") || text.includes("timeout")) stage = 3;
+      else if (text.includes("what works today") || text.includes("all-flash") || text.includes("dgx") || text.includes("nvidia") || text.includes("hyperscaler")) stage = 4;
+      else if (text.includes("what doesn't work") || text.includes("disaggregat") || text.includes("cross-datacenter") || text.includes("multi-tenant")) stage = 5;
+      else if (text.includes("software stack") || text.includes("kernel") || text.includes("nvmet") || text.includes("spdk") || text.includes("middle path") || text.includes("io_uring")) stage = 6;
+      else if (text.includes("ethernet speed") || text.includes("speed ladder") || text.includes("cxl vs") || text.includes("complementary")) stage = 7;
+      else if (text.includes("what to bet") || text.includes("honest summary") || text.includes("conclusion")) stage = 8;
+
+      if (stage > 0) {
+        stageMap.push({ el: h, stage });
+      }
+    });
+
+    if (stageMap.length === 0) return;
+
+    let currentStage = 1;
+
+    const stages = document.querySelectorAll(".nvmeof-stage");
+    const dots = document.querySelectorAll(".nvmeof-dot");
+    const metricLabel = document.getElementById("nvmeof-metric-label");
+    const metricValue = document.getElementById("nvmeof-metric-value");
+    const metricUnit = document.getElementById("nvmeof-metric-unit");
+    const metricSub = document.getElementById("nvmeof-metric-sub");
+
+    const metricData = [
+      { label: "RDMA Promise", value: "<10", unit: " μs", sub: "additional latency over fabric" },
+      { label: "NVMe/TCP Latency", value: "40-80", unit: " μs", sub: "3-8x slower than RDMA" },
+      { label: "Default Ctrl Loss", value: "600", unit: " sec", sub: "timeout before path declared dead" },
+      { label: "Production Users", value: "3", unit: " tiers", sub: "arrays, AI clusters, hyperscalers" },
+      { label: "Disaggregation", value: "10x", unit: "", sub: "more complex than DAS/HCI" },
+      { label: "SPDK vs Kernel", value: "2-4x", unit: "", sub: "IOPS advantage for SPDK target" },
+      { label: "400GbE TCP Gap", value: "~2x", unit: "", sub: "vs RDMA (down from 4-8x)" },
+      { label: "TCP Offload", value: "2028", unit: "", sub: "dominant transport prediction" },
+    ];
+
+    const eli10El = document.getElementById("nvmeof-eli10-text");
+    const eli10Data = [
+      "Imagine your toy box is across the room instead of next to your bed. NVMe-oF is like building a super-fast conveyor belt so you can grab toys almost as fast as reaching into your own box. The promise: you wouldn\u2019t even notice the difference.",
+      "There are three conveyor belt types. RDMA is the fancy express lane, super fast but needs a special track. TCP is the regular road, works everywhere but slower. Fibre Channel is the old train track that still works fine if you already built it.",
+      "How does a toy know which conveyor belt to take? That\u2019s the discovery problem. And what if a belt breaks? You need backup routes. And what if the belt just stops for 10 minutes before telling you? Yeah, that\u2019s a real problem.",
+      "The conveyor belt works great in three places: fancy storage boxes that manage everything for you, NVIDIA\u2019s GPU supercomputers that already have the express lane, and giant cloud companies that built their own custom everything.",
+      "Sharing all toys across all rooms sounds amazing until one room\u2019s mess blocks everyone else\u2019s conveyor belt. Also, sending toys to a friend\u2019s house across town? Way too far for this belt. It was built for one building, not the whole neighborhood.",
+      "You can run the belt with the building\u2019s built-in motor (kernel) or bring your own super motor (SPDK). The super motor is 2-4x faster but takes up a whole room and needs special fuel. Most people stick with the building\u2019s motor.",
+      "As the conveyor belts get wider (faster Ethernet), the speed difference between the fancy belt and the regular belt shrinks. At 400 lanes wide, the regular belt is almost as fast. Why build a special track when the road works fine?",
+      "Start with what you have. Already own an express lane? Use it. Building new? Regular TCP road is fine and getting faster every year. The fancy belt isn\u2019t going away, but the regular road is catching up.",
+    ];
+
+    function setStage(stage: number) {
+      if (stage === currentStage) return;
+      currentStage = stage;
+
+      stages.forEach((s, i) => {
+        const stageNum = i + 1;
+        s.classList.remove("active", "past");
+        if (stageNum === stage) s.classList.add("active");
+        else if (stageNum < stage) s.classList.add("past");
+      });
+
+      dots.forEach((d, i) => {
+        const dotStage = i + 1;
+        d.classList.remove("active", "past");
+        if (dotStage === stage) d.classList.add("active");
+        else if (dotStage < stage) d.classList.add("past");
+      });
+
+      const data = metricData[stage - 1];
+      if (data && metricLabel && metricValue && metricUnit && metricSub) {
+        metricLabel.textContent = data.label;
+        metricValue.textContent = data.value;
+        metricUnit.textContent = data.unit;
+        metricSub.textContent = data.sub;
+      }
+
+      if (eli10El && eli10Data[stage - 1]) {
+        eli10El.classList.add("changing");
+        setTimeout(() => {
+          eli10El.textContent = eli10Data[stage - 1];
+          eli10El.classList.remove("changing");
+        }, 200);
+      }
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const match = stageMap.find((s) => s.el === entry.target);
+          if (match) setStage(match.stage);
+        }
+      });
+    }, { rootMargin: "-15% 0px -75% 0px" });
+
+    stageMap.forEach(({ el }) => observer.observe(el));
+    setStage(1);
+  }
+
+  initNVMeoFEvolution();
+</script>
