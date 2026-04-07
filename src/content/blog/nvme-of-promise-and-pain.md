@@ -5,11 +5,11 @@ description: "NVMe over Fabrics was supposed to make remote flash indistinguisha
 tags: ["storage", "nvme", "networking", "infrastructure"]
 type: "standard"
 featured: false
-image: "/images/blog/network-fiber.jpg"
+image: "/images/blog/nvme-of.png"
 readTime: "18 min read"
 ---
 
-![NVMe over Fabrics networking](/images/blog/network-fiber.jpg)
+![NVMe-oF promise and pain](/images/blog/nvme-of.png)
 
 *NVMe over Fabrics was supposed to make remote flash indistinguishable from local flash. Six years in, the reality is messier: TCP added latency that nobody budgeted for, RDMA requires a network engineering PhD, and half the industry is deploying NVMe-oF without understanding what they're buying. Here's what actually works, what quietly doesn't, and what you should bet on for the next five years.*
 
