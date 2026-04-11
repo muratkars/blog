@@ -2,3 +2,8 @@ User-agent: *
 Allow: /
 
 Sitemap: https://muratkarslioglu.com/sitemap-index.xml
+
+# LLM content index
+# See https://llmstxt.org for specification
+# llms.txt: structured index of all content
+# llms-full.txt: complete text of all blog posts
