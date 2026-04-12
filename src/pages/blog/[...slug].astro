@@ -15,6 +15,7 @@ import EDSFFEvolution from "../../components/EDSFFEvolution.astro";
 import PCIeEvolution from "../../components/PCIeEvolution.astro";
 import IOUringEvolution from "../../components/IOUringEvolution.astro";
 import NVMeoFEvolution from "../../components/NVMeoFEvolution.astro";
+import CXLEvolution from "../../components/CXLEvolution.astro";
 
 export async function getStaticPaths() {
   const posts = await getCollection("blog");
@@ -42,6 +43,7 @@ const showEDSFFEvolution = post.id === "edsff-e2-next-gen-drives";
 const showPCIeEvolution = post.id === "pcie-lanes-numa-rust-storage";
 const showIOUringEvolution = post.id === "io-uring-spdk-kernel-bypass";
 const showNVMeoFEvolution = post.id === "nvme-of-promise-and-pain";
+const showCXLEvolution = post.id === "cxl-death-of-memory-hierarchy";
 ---
 
 <Layout
@@ -92,5 +94,8 @@ const showNVMeoFEvolution = post.id === "nvme-of-promise-and-pain";
   )}
   {showNVMeoFEvolution && (
     <NVMeoFEvolution slot="right-sidebar" />
+  )}
+  {showCXLEvolution && (
+    <CXLEvolution slot="right-sidebar" />
   )}
 </Layout>

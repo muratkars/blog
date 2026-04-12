@@ -1,0 +1,502 @@
+---
+---
+
+<aside class="cxl-evolution hidden lg:block">
+  <div class="sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto">
+    <p class="mb-3 text-[10px] font-semibold uppercase tracking-widest text-[var(--color-text-tertiary)]">
+      CXL &amp; Memory Guide
+    </p>
+
+    <div class="svg-container">
+      <svg viewBox="0 0 200 230" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full">
+
+        <!-- Stage 1: Memory Hierarchy Pyramid -->
+        <g id="cxl-stage-1" class="cxl-stage active">
+          <text x="100" y="18" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)" font-weight="bold">Memory Hierarchy</text>
+
+          <!-- Pyramid layers -->
+          <polygon points="100,30 120,55 80,55" fill="var(--color-accent)" fill-opacity="0.15" stroke="var(--color-accent)" stroke-width="0.8" />
+          <text x="100" y="48" text-anchor="middle" fill="var(--color-accent)" font-size="4.5" font-family="var(--font-mono)" font-weight="bold">Registers</text>
+
+          <polygon points="80,55 120,55 135,75 65,75" fill="var(--color-accent)" fill-opacity="0.1" stroke="var(--color-accent)" stroke-width="0.8" />
+          <text x="100" y="68" text-anchor="middle" fill="var(--color-accent)" font-size="4.5" font-family="var(--font-mono)">L1/L2/L3</text>
+
+          <polygon points="65,75 135,75 150,95 50,95" fill="var(--color-accent)" fill-opacity="0.08" stroke="var(--color-accent)" stroke-width="0.8" />
+          <text x="100" y="88" text-anchor="middle" fill="var(--color-accent)" font-size="5" font-family="var(--font-mono)" font-weight="bold">DRAM ~80ns</text>
+
+          <!-- The gap -->
+          <rect x="40" y="97" width="120" height="18" rx="2" fill="#e74c3c" fill-opacity="0.08" stroke="#e74c3c" stroke-width="1" stroke-dasharray="4,2" />
+          <text x="100" y="109" text-anchor="middle" fill="#e74c3c" font-size="6" font-family="var(--font-mono)" font-weight="bold">100x GAP</text>
+
+          <polygon points="40,117 160,117 175,142 25,142" fill="var(--color-text-tertiary)" fill-opacity="0.08" stroke="var(--color-text-tertiary)" stroke-width="0.8" />
+          <text x="100" y="133" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">NVMe ~10,000ns</text>
+
+          <text x="100" y="178" text-anchor="middle" fill="#e74c3c" font-size="10" font-family="var(--font-sans)">The 100x Gap</text>
+          <text x="100" y="193" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">Nothing fills this today</text>
+        </g>
+
+        <!-- Stage 2: CXL Protocols -->
+        <g id="cxl-stage-2" class="cxl-stage">
+          <text x="100" y="18" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)" font-weight="bold">CXL Protocols</text>
+
+          <!-- CXL.io box -->
+          <rect x="15" y="30" width="50" height="35" rx="3" fill="var(--color-surface-alt)" stroke="var(--color-text-tertiary)" stroke-width="0.8" />
+          <text x="40" y="44" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="6" font-family="var(--font-mono)" font-weight="bold">CXL.io</text>
+          <text x="40" y="56" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="4.5" font-family="var(--font-mono)">discovery</text>
+
+          <!-- CXL.cache box -->
+          <rect x="75" y="30" width="50" height="35" rx="3" fill="var(--color-surface-alt)" stroke="var(--color-text-tertiary)" stroke-width="0.8" />
+          <text x="100" y="44" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5.5" font-family="var(--font-mono)" font-weight="bold">CXL.cache</text>
+          <text x="100" y="56" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="4.5" font-family="var(--font-mono)">coherence</text>
+
+          <!-- CXL.mem box (highlighted) -->
+          <rect x="135" y="30" width="50" height="35" rx="3" fill="var(--color-accent)" fill-opacity="0.1" stroke="var(--color-accent)" stroke-width="1.5" />
+          <text x="160" y="44" text-anchor="middle" fill="var(--color-accent)" font-size="5.5" font-family="var(--font-mono)" font-weight="bold">CXL.mem</text>
+          <text x="160" y="56" text-anchor="middle" fill="var(--color-accent)" font-size="4.5" font-family="var(--font-mono)">load/store</text>
+
+          <!-- Type 3 highlight -->
+          <rect x="25" y="80" width="150" height="28" rx="4" fill="var(--color-accent)" fill-opacity="0.08" stroke="var(--color-accent)" stroke-width="1" />
+          <text x="100" y="93" text-anchor="middle" fill="var(--color-accent)" font-size="6.5" font-family="var(--font-mono)" font-weight="bold">Type 3: Memory Expander</text>
+          <text x="100" y="104" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">CXL.io + CXL.mem (no cache)</text>
+
+          <!-- Type 1/2 small -->
+          <text x="40" y="125" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">Type 1: accel</text>
+          <text x="130" y="125" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">Type 2: accel+mem</text>
+
+          <text x="100" y="178" text-anchor="middle" fill="var(--color-accent)" font-size="10" font-family="var(--font-sans)">Three Protocols</text>
+          <text x="100" y="193" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">Type 3 is the storage play</text>
+        </g>
+
+        <!-- Stage 3: Latency Comparison -->
+        <g id="cxl-stage-3" class="cxl-stage">
+          <text x="100" y="18" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)" font-weight="bold">Latency Landscape</text>
+
+          <!-- DRAM bar -->
+          <rect x="70" y="32" width="8" height="8" rx="1" fill="var(--color-accent)" />
+          <text x="65" y="39" text-anchor="end" fill="var(--color-accent)" font-size="5.5" font-family="var(--font-mono)" font-weight="bold">DRAM</text>
+          <text x="82" y="39" fill="var(--color-accent)" font-size="5" font-family="var(--font-mono)">80 ns</text>
+
+          <!-- CXL bar -->
+          <rect x="70" y="48" width="40" height="8" rx="1" fill="var(--color-accent)" fill-opacity="0.7" />
+          <text x="65" y="55" text-anchor="end" fill="var(--color-accent)" font-size="5.5" font-family="var(--font-mono)" font-weight="bold">CXL</text>
+          <text x="114" y="55" fill="var(--color-accent)" font-size="5" font-family="var(--font-mono)">150-400 ns</text>
+
+          <!-- RDMA bar -->
+          <rect x="70" y="64" width="80" height="8" rx="1" fill="#e0a020" fill-opacity="0.6" />
+          <text x="65" y="71" text-anchor="end" fill="#e0a020" font-size="5.5" font-family="var(--font-mono)" font-weight="bold">RDMA</text>
+          <text x="154" y="71" fill="#e0a020" font-size="5" font-family="var(--font-mono)">1,500 ns</text>
+
+          <!-- NVMe bar -->
+          <rect x="70" y="80" width="120" height="8" rx="1" fill="#e74c3c" fill-opacity="0.5" />
+          <text x="65" y="87" text-anchor="end" fill="#e74c3c" font-size="5.5" font-family="var(--font-mono)" font-weight="bold">NVMe</text>
+          <text x="155" y="96" fill="#e74c3c" font-size="5" font-family="var(--font-mono)">10,000 ns</text>
+
+          <!-- Version evolution -->
+          <text x="100" y="115" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5.5" font-family="var(--font-mono)">CXL 1.1 → single attach</text>
+          <text x="100" y="127" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5.5" font-family="var(--font-mono)">CXL 2.0 → switching, pooling</text>
+          <text x="100" y="139" text-anchor="middle" fill="var(--color-accent)" font-size="5.5" font-family="var(--font-mono)" font-weight="bold">CXL 3.0 → fabric, 4096 endpoints</text>
+
+          <text x="100" y="178" text-anchor="middle" fill="var(--color-accent)" font-size="10" font-family="var(--font-sans)">The Sweet Spot</text>
+          <text x="100" y="193" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">2-3x DRAM, 20-40x faster than NVMe</text>
+        </g>
+
+        <!-- Stage 4: Storage Implications -->
+        <g id="cxl-stage-4" class="cxl-stage">
+          <text x="100" y="18" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)" font-weight="bold">Storage Implications</text>
+
+          <!-- Metadata cache -->
+          <rect x="15" y="32" width="170" height="28" rx="3" fill="var(--color-accent)" fill-opacity="0.06" stroke="var(--color-accent)" stroke-width="0.8" />
+          <text x="25" y="45" fill="var(--color-accent)" font-size="5.5" font-family="var(--font-mono)" font-weight="bold">Metadata Cache</text>
+          <text x="25" y="56" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">Cross-node reads: 500ns vs 50,000ns</text>
+
+          <!-- Shared state -->
+          <rect x="15" y="66" width="170" height="28" rx="3" fill="var(--color-accent)" fill-opacity="0.06" stroke="var(--color-accent)" stroke-width="0.8" />
+          <text x="25" y="79" fill="var(--color-accent)" font-size="5.5" font-family="var(--font-mono)" font-weight="bold">Shared State</text>
+          <text x="25" y="90" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">Consensus-free coordination via CAS</text>
+
+          <!-- Memory pooling -->
+          <rect x="15" y="100" width="170" height="28" rx="3" fill="var(--color-accent)" fill-opacity="0.06" stroke="var(--color-accent)" stroke-width="0.8" />
+          <text x="25" y="113" fill="var(--color-accent)" font-size="5.5" font-family="var(--font-mono)" font-weight="bold">Memory Pooling</text>
+          <text x="25" y="124" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">Eliminates 25-50% stranded DRAM</text>
+
+          <text x="100" y="178" text-anchor="middle" fill="var(--color-accent)" font-size="10" font-family="var(--font-sans)">Three Wins</text>
+          <text x="100" y="193" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">Cache, share, pool</text>
+        </g>
+
+        <!-- Stage 5: CXL vs RDMA -->
+        <g id="cxl-stage-5" class="cxl-stage">
+          <text x="100" y="18" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)" font-weight="bold">CXL vs RDMA</text>
+
+          <!-- Header row -->
+          <rect x="15" y="28" width="170" height="14" rx="2" fill="var(--color-accent)" fill-opacity="0.1" />
+          <text x="70" y="38" text-anchor="end" fill="var(--color-accent)" font-size="5" font-family="var(--font-mono)" font-weight="bold">CXL</text>
+          <text x="170" y="38" text-anchor="end" fill="#e0a020" font-size="5" font-family="var(--font-mono)" font-weight="bold">RDMA</text>
+
+          <!-- Latency row -->
+          <line x1="15" y1="44" x2="185" y2="44" stroke="var(--color-border)" stroke-width="0.5" />
+          <text x="15" y="55" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">Latency</text>
+          <text x="70" y="55" text-anchor="end" fill="var(--color-accent)" font-size="5.5" font-family="var(--font-mono)" font-weight="bold">150-400ns</text>
+          <text x="170" y="55" text-anchor="end" fill="#e0a020" font-size="5.5" font-family="var(--font-mono)">1,500ns</text>
+
+          <!-- Scale row -->
+          <line x1="15" y1="60" x2="185" y2="60" stroke="var(--color-border)" stroke-width="0.5" />
+          <text x="15" y="71" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">Scale</text>
+          <text x="70" y="71" text-anchor="end" fill="var(--color-accent)" font-size="5.5" font-family="var(--font-mono)">intra-rack</text>
+          <text x="170" y="71" text-anchor="end" fill="#e0a020" font-size="5.5" font-family="var(--font-mono)">inter-rack</text>
+
+          <!-- Coherence row -->
+          <line x1="15" y1="76" x2="185" y2="76" stroke="var(--color-border)" stroke-width="0.5" />
+          <text x="15" y="87" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">Coherence</text>
+          <text x="70" y="87" text-anchor="end" fill="var(--color-accent)" font-size="5.5" font-family="var(--font-mono)" font-weight="bold">hardware</text>
+          <text x="170" y="87" text-anchor="end" fill="#e0a020" font-size="5.5" font-family="var(--font-mono)">software</text>
+
+          <!-- API row -->
+          <line x1="15" y1="92" x2="185" y2="92" stroke="var(--color-border)" stroke-width="0.5" />
+          <text x="15" y="103" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">API</text>
+          <text x="70" y="103" text-anchor="end" fill="var(--color-accent)" font-size="5.5" font-family="var(--font-mono)">load/store</text>
+          <text x="170" y="103" text-anchor="end" fill="#e0a020" font-size="5.5" font-family="var(--font-mono)">verbs API</text>
+          <line x1="15" y1="108" x2="185" y2="108" stroke="var(--color-border)" stroke-width="0.5" />
+
+          <!-- Conclusion -->
+          <rect x="25" y="118" width="150" height="22" rx="3" fill="var(--color-accent)" fill-opacity="0.08" stroke="var(--color-accent)" stroke-width="1" />
+          <text x="100" y="132" text-anchor="middle" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)" font-weight="bold">Complementary, not competing</text>
+
+          <text x="100" y="178" text-anchor="middle" fill="var(--color-accent)" font-size="10" font-family="var(--font-sans)">Teammates</text>
+          <text x="100" y="193" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">Intra-rack + inter-rack</text>
+        </g>
+
+        <!-- Stage 6: Three Memory Tiers -->
+        <g id="cxl-stage-6" class="cxl-stage">
+          <text x="100" y="18" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)" font-weight="bold">Three Memory Tiers</text>
+
+          <!-- Server outline -->
+          <rect x="25" y="30" width="150" height="120" rx="5" fill="var(--color-surface-alt)" stroke="var(--color-border)" stroke-width="1" />
+          <text x="100" y="42" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">Per-Server Memory Map</text>
+
+          <!-- DRAM tier -->
+          <rect x="35" y="50" width="130" height="22" rx="3" fill="var(--color-accent)" fill-opacity="0.15" stroke="var(--color-accent)" stroke-width="1" />
+          <text x="45" y="64" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)" font-weight="bold">DRAM</text>
+          <text x="155" y="64" text-anchor="end" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)" font-weight="bold">~80 ns</text>
+
+          <!-- NUMA tier -->
+          <rect x="35" y="78" width="130" height="22" rx="3" fill="#e0a020" fill-opacity="0.12" stroke="#e0a020" stroke-width="1" />
+          <text x="45" y="92" fill="#e0a020" font-size="6" font-family="var(--font-mono)" font-weight="bold">NUMA remote</text>
+          <text x="155" y="92" text-anchor="end" fill="#e0a020" font-size="6" font-family="var(--font-mono)" font-weight="bold">~140 ns</text>
+
+          <!-- CXL tier -->
+          <rect x="35" y="106" width="130" height="22" rx="3" fill="#e74c3c" fill-opacity="0.1" stroke="#e74c3c" stroke-width="1" />
+          <text x="45" y="120" fill="#e74c3c" font-size="6" font-family="var(--font-mono)" font-weight="bold">CXL</text>
+          <text x="155" y="120" text-anchor="end" fill="#e74c3c" font-size="6" font-family="var(--font-mono)" font-weight="bold">250-400 ns</text>
+
+          <text x="100" y="178" text-anchor="middle" fill="#e74c3c" font-size="10" font-family="var(--font-sans)">Post-Optane World</text>
+          <text x="100" y="193" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">Software must tier correctly</text>
+        </g>
+
+        <!-- Stage 7: Timeline -->
+        <g id="cxl-stage-7" class="cxl-stage">
+          <text x="100" y="18" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)" font-weight="bold">CXL Timeline</text>
+
+          <!-- Timeline line -->
+          <line x1="40" y1="40" x2="40" y2="140" stroke="var(--color-border)" stroke-width="1.5" />
+
+          <!-- Phase 1 -->
+          <circle cx="40" cy="50" r="4" fill="var(--color-accent)" />
+          <text x="50" y="48" fill="var(--color-accent)" font-size="5.5" font-family="var(--font-mono)" font-weight="bold">2025-26: Expansion</text>
+          <text x="50" y="58" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">CXL.mem Type 3, capacity tier</text>
+
+          <!-- Phase 2 -->
+          <circle cx="40" cy="85" r="4" fill="var(--color-accent)" fill-opacity="0.6" />
+          <text x="50" y="83" fill="var(--color-accent)" font-size="5.5" font-family="var(--font-mono)" font-weight="bold">2026-27: Pooling</text>
+          <text x="50" y="93" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">CXL 2.0 switches, shared pools</text>
+
+          <!-- Phase 3 -->
+          <circle cx="40" cy="120" r="4" fill="var(--color-accent)" fill-opacity="0.3" />
+          <text x="50" y="118" fill="var(--color-accent)" font-size="5.5" font-family="var(--font-mono)" font-weight="bold">2027+: Fabric</text>
+          <text x="50" y="128" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">CXL 3.0, 4096 endpoints, GFD</text>
+
+          <!-- Linux note -->
+          <rect x="25" y="140" width="150" height="16" rx="2" fill="var(--color-accent)" fill-opacity="0.06" stroke="var(--color-accent)" stroke-width="0.8" />
+          <text x="100" y="151" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">Linux CXL: drivers ready, apps lagging</text>
+
+          <text x="100" y="178" text-anchor="middle" fill="var(--color-accent)" font-size="10" font-family="var(--font-sans)">The Road Ahead</text>
+          <text x="100" y="193" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">Hardware leads, software follows</text>
+        </g>
+
+        <!-- Stage 8: CXL Rack Architecture -->
+        <g id="cxl-stage-8" class="cxl-stage">
+          <text x="100" y="18" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)" font-weight="bold">CXL Rack Architecture</text>
+
+          <!-- Compute nodes -->
+          <rect x="15" y="30" width="35" height="25" rx="3" fill="var(--color-accent)" fill-opacity="0.1" stroke="var(--color-accent)" stroke-width="1" />
+          <text x="32" y="40" text-anchor="middle" fill="var(--color-accent)" font-size="5" font-family="var(--font-mono)" font-weight="bold">Node 1</text>
+          <text x="32" y="50" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="4" font-family="var(--font-mono)">DRAM</text>
+
+          <rect x="58" y="30" width="35" height="25" rx="3" fill="var(--color-accent)" fill-opacity="0.1" stroke="var(--color-accent)" stroke-width="1" />
+          <text x="75" y="40" text-anchor="middle" fill="var(--color-accent)" font-size="5" font-family="var(--font-mono)" font-weight="bold">Node 2</text>
+          <text x="75" y="50" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="4" font-family="var(--font-mono)">DRAM</text>
+
+          <rect x="101" y="30" width="35" height="25" rx="3" fill="var(--color-accent)" fill-opacity="0.1" stroke="var(--color-accent)" stroke-width="1" />
+          <text x="118" y="40" text-anchor="middle" fill="var(--color-accent)" font-size="5" font-family="var(--font-mono)" font-weight="bold">Node 3</text>
+          <text x="118" y="50" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="4" font-family="var(--font-mono)">DRAM</text>
+
+          <rect x="144" y="30" width="35" height="25" rx="3" fill="var(--color-accent)" fill-opacity="0.1" stroke="var(--color-accent)" stroke-width="1" />
+          <text x="161" y="40" text-anchor="middle" fill="var(--color-accent)" font-size="5" font-family="var(--font-mono)" font-weight="bold">Node 4</text>
+          <text x="161" y="50" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="4" font-family="var(--font-mono)">DRAM</text>
+
+          <!-- CXL fabric lines -->
+          <line x1="32" y1="55" x2="32" y2="75" stroke="var(--color-accent)" stroke-width="1" />
+          <line x1="75" y1="55" x2="75" y2="75" stroke="var(--color-accent)" stroke-width="1" />
+          <line x1="118" y1="55" x2="118" y2="75" stroke="var(--color-accent)" stroke-width="1" />
+          <line x1="161" y1="55" x2="161" y2="75" stroke="var(--color-accent)" stroke-width="1" />
+
+          <!-- CXL switch bar -->
+          <rect x="15" y="75" width="170" height="14" rx="2" fill="var(--color-accent)" fill-opacity="0.15" stroke="var(--color-accent)" stroke-width="1" />
+          <text x="100" y="85" text-anchor="middle" fill="var(--color-accent)" font-size="5.5" font-family="var(--font-mono)" font-weight="bold">CXL 3.0 Fabric Switch</text>
+
+          <!-- Lines to shared pool -->
+          <line x1="60" y1="89" x2="60" y2="100" stroke="var(--color-accent)" stroke-width="1" />
+          <line x1="100" y1="89" x2="100" y2="100" stroke="var(--color-accent)" stroke-width="1" />
+          <line x1="140" y1="89" x2="140" y2="100" stroke="var(--color-accent)" stroke-width="1" />
+
+          <!-- Shared memory pool -->
+          <rect x="25" y="100" width="150" height="35" rx="4" fill="var(--color-accent)" fill-opacity="0.08" stroke="var(--color-accent)" stroke-width="1.5" />
+          <text x="100" y="114" text-anchor="middle" fill="var(--color-accent)" font-size="6.5" font-family="var(--font-mono)" font-weight="bold">Shared Memory Pool</text>
+          <text x="100" y="126" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">metadata + overflow + shared state</text>
+
+          <text x="100" y="178" text-anchor="middle" fill="var(--color-accent)" font-size="10" font-family="var(--font-sans)" font-weight="600">The Vision</text>
+          <text x="100" y="193" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">No wasted memory, no phone calls</text>
+        </g>
+      </svg>
+    </div>
+
+    <!-- Metric panel -->
+    <div class="mt-4 rounded-lg bg-[var(--color-surface-alt)] px-3 py-2.5 text-center">
+      <p class="text-[9px] uppercase tracking-widest text-[var(--color-text-tertiary)]" id="cxl-metric-label">DRAM-NVMe Gap</p>
+      <p class="mt-1 font-mono text-lg font-bold text-[var(--color-accent)]">
+        <span id="cxl-metric-value">100x</span>
+        <span id="cxl-metric-unit" class="text-sm font-normal"></span>
+      </p>
+      <p id="cxl-metric-sub" class="text-[9px] text-[var(--color-text-tertiary)]">nothing fills this gap today</p>
+    </div>
+
+    <!-- Stage dots -->
+    <div class="mt-3 flex justify-center gap-1.5">
+      <div class="cxl-dot active" data-stage="1"></div>
+      <div class="cxl-dot" data-stage="2"></div>
+      <div class="cxl-dot" data-stage="3"></div>
+      <div class="cxl-dot" data-stage="4"></div>
+      <div class="cxl-dot" data-stage="5"></div>
+      <div class="cxl-dot" data-stage="6"></div>
+      <div class="cxl-dot" data-stage="7"></div>
+      <div class="cxl-dot" data-stage="8"></div>
+    </div>
+
+    <!-- ELI10 -->
+    <div class="mt-5 rounded-lg border border-[var(--color-border)]/30 bg-[var(--color-surface-alt)]/50 px-3.5 py-3">
+      <p class="text-[9px] font-semibold uppercase tracking-widest text-[var(--color-text-tertiary)]">
+        Explain Like I'm 10
+      </p>
+      <p id="cxl-eli10-text" class="cxl-eli10-fade mt-2 text-xs leading-relaxed text-[var(--color-text-secondary)]">
+        Your computer has a speed ladder for storing things. Registers at the top are lightning fast but tiny. DRAM is pretty fast. SSDs are huge but 100 times slower than DRAM. There's a giant empty gap between DRAM and SSD where nothing lives. That gap is the problem.
+      </p>
+    </div>
+  </div>
+</aside>
+
+<style>
+  .cxl-stage {
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
+  }
+
+  .cxl-stage.active {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+  }
+
+  .cxl-stage.past {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+
+  .cxl-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-border);
+    transition: background 0.3s, transform 0.3s;
+  }
+
+  .cxl-dot.active {
+    background: var(--color-accent);
+    transform: scale(1.4);
+  }
+
+  .cxl-dot.past {
+    background: var(--color-accent);
+    opacity: 0.4;
+  }
+
+  .cxl-eli10-fade {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+
+  .cxl-eli10-fade.changing {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cxl-stage { transition: none; }
+    .cxl-dot { transition: none; }
+    .cxl-eli10-fade { transition: none; }
+  }
+</style>
+
+<script>
+  function initCXLEvolution() {
+    const prose = document.querySelector(".prose");
+    if (!prose) return;
+
+    const allHeadings = prose.querySelectorAll("h2, h3");
+    if (allHeadings.length === 0) return;
+
+    const stageMap: { el: Element; stage: number }[] = [];
+
+    allHeadings.forEach((h) => {
+      const text = (h.textContent || "").toLowerCase();
+      let stage = -1;
+
+      if (text.includes("hierarchy that was")) stage = 1;
+      else if (text.includes("textbook")) stage = 1;
+      else if (text.includes("what cxl actually")) stage = 2;
+      else if (text.includes("cxl.io")) stage = 2;
+      else if (text.includes("cxl.cache")) stage = 2;
+      else if (text.includes("cxl.mem")) stage = 2;
+      else if (text.includes("three device")) stage = 2;
+      else if (text.includes("type 1")) stage = 2;
+      else if (text.includes("type 2")) stage = 2;
+      else if (text.includes("type 3")) stage = 2;
+      else if (text.includes("latency question")) stage = 3;
+      else if (text.includes("cxl 1.1")) stage = 3;
+      else if (text.includes("cxl 2.0")) stage = 3;
+      else if (text.includes("cxl 3.0")) stage = 3;
+      else if (text.includes("3.1")) stage = 3;
+      else if (text.includes("3.2")) stage = 3;
+      else if (text.includes("4.0")) stage = 3;
+      else if (text.includes("what this means")) stage = 4;
+      else if (text.includes("metadata cache")) stage = 4;
+      else if (text.includes("shared state")) stage = 4;
+      else if (text.includes("memory pooling")) stage = 4;
+      else if (text.includes("never evicts")) stage = 4;
+      else if (text.includes("without consensus")) stage = 4;
+      else if (text.includes("kills stranding")) stage = 4;
+      else if (text.includes("cxl vs rdma")) stage = 5;
+      else if (text.includes("complementary")) stage = 5;
+      else if (text.includes("post-optane")) stage = 6;
+      else if (text.includes("what breaks")) stage = 6;
+      else if (text.includes("numa gets more")) stage = 6;
+      else if (text.includes("pointer")) stage = 6;
+      else if (text.includes("memory ordering")) stage = 6;
+      else if (text.includes("software gap")) stage = 7;
+      else if (text.includes("timeline")) stage = 7;
+      else if (text.includes("linux cxl")) stage = 7;
+      else if (text.includes("application problem")) stage = 7;
+      else if (text.includes("what to build")) stage = 7;
+      else if (text.includes("cxl-aware storage")) stage = 8;
+      else if (text.includes("conclusion")) stage = 8;
+      else if (text.includes("staircase")) stage = 8;
+
+      if (stage > 0) {
+        stageMap.push({ el: h, stage });
+      }
+    });
+
+    if (stageMap.length === 0) return;
+
+    let currentStage = 1;
+
+    const stages = document.querySelectorAll(".cxl-stage");
+    const dots = document.querySelectorAll(".cxl-dot");
+    const metricLabel = document.getElementById("cxl-metric-label");
+    const metricValue = document.getElementById("cxl-metric-value");
+    const metricUnit = document.getElementById("cxl-metric-unit");
+    const metricSub = document.getElementById("cxl-metric-sub");
+
+    const metricData = [
+      { label: "DRAM-NVMe Gap", value: "100x", unit: "", sub: "nothing fills this gap today" },
+      { label: "CXL.mem Access", value: "load", unit: "/store", sub: "regular CPU instructions, no API" },
+      { label: "CXL Latency", value: "150-400", unit: " ns", sub: "2-3x DRAM, 20-40x faster than NVMe" },
+      { label: "Metadata Speedup", value: "10-400x", unit: "", sub: "vs RDMA/TCP for cross-node reads" },
+      { label: "CXL vs RDMA", value: "10x", unit: "", sub: "faster, with hardware coherence" },
+      { label: "Memory Tiers", value: "3", unit: "", sub: "DRAM + NUMA + CXL per server" },
+      { label: "CXL 3.0 Scale", value: "4,096", unit: "", sub: "endpoints in a single fabric" },
+      { label: "Stranded DRAM", value: "25-50%", unit: "", sub: "eliminated by CXL pooling" },
+    ];
+
+    const eli10El = document.getElementById("cxl-eli10-text");
+    const eli10Data = [
+      "Your computer has a speed ladder for storing things. Registers at the top are lightning fast but tiny. DRAM is pretty fast. SSDs are huge but 100 times slower than DRAM. There\u2019s a giant empty gap between DRAM and SSD where nothing lives. That gap is the problem.",
+      "CXL is like adding a shared shelf between your desk drawer (DRAM) and the filing cabinet across the room (SSD). Any computer in the room can reach this shelf using normal hands, not special robot arms. Three flavors: basic (.io), caching (.cache), and the big one: shared memory (.mem).",
+      "CXL memory takes about 200-400 billionths of a second to access. That\u2019s 2-3 times slower than DRAM but 20-40 times faster than an SSD. Think of it as the express elevator that\u2019s not quite as fast as the stairs for one floor, but way faster than walking to the basement.",
+      "For storage systems, CXL is magical. All your computers can share one giant notebook of where everything is stored. Instead of calling each other on the phone (slow!), they just look at the shared notebook. Reading the notebook takes 500 billionths of a second instead of 50,000.",
+      "CXL and RDMA aren\u2019t enemies, they\u2019re teammates. CXL is for talking to neighbors in your building (super fast, small area). RDMA is for talking across campus (pretty fast, long distance). You need both.",
+      "Adding CXL means your computer now has THREE speeds of memory instead of two. Fast DRAM, medium NUMA, and the new CXL shelf. Software needs to learn which stuff goes where, like knowing heavy books go on the bottom shelf.",
+      "The CXL hardware is already in stores. The software to use it well? Still being written. It\u2019s like buying a new game console on launch day. The console works, but the really good games come out later.",
+      "Picture a rack of computers all connected to one big shared memory pool. Hot data stays in each computer\u2019s own fast memory. The shared pool holds the map of where everything is, plus extra space anyone can borrow when they\u2019re busy. No wasted memory. No phone calls to coordinate. Just look at the shared map.",
+    ];
+
+    function setStage(stage: number) {
+      if (stage === currentStage) return;
+      currentStage = stage;
+
+      stages.forEach((s, i) => {
+        const stageNum = i + 1;
+        s.classList.remove("active", "past");
+        if (stageNum === stage) s.classList.add("active");
+        else if (stageNum < stage) s.classList.add("past");
+      });
+
+      dots.forEach((d, i) => {
+        const dotStage = i + 1;
+        d.classList.remove("active", "past");
+        if (dotStage === stage) d.classList.add("active");
+        else if (dotStage < stage) d.classList.add("past");
+      });
+
+      const data = metricData[stage - 1];
+      if (data && metricLabel && metricValue && metricUnit && metricSub) {
+        metricLabel.textContent = data.label;
+        metricValue.textContent = data.value;
+        metricUnit.textContent = data.unit;
+        metricSub.textContent = data.sub;
+      }
+
+      if (eli10El && eli10Data[stage - 1]) {
+        eli10El.classList.add("changing");
+        setTimeout(() => {
+          eli10El.textContent = eli10Data[stage - 1];
+          eli10El.classList.remove("changing");
+        }, 200);
+      }
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const match = stageMap.find((s) => s.el === entry.target);
+          if (match) setStage(match.stage);
+        }
+      });
+    }, { rootMargin: "-15% 0px -75% 0px" });
+
+    stageMap.forEach(({ el }) => observer.observe(el));
+    setStage(1);
+  }
+
+  initCXLEvolution();
+</script>
