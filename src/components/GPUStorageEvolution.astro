@@ -1,0 +1,528 @@
+---
+---
+
+<aside class="gpu-evo hidden lg:block">
+  <div class="sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto">
+    <p class="mb-3 text-[10px] font-semibold uppercase tracking-widest text-[var(--color-text-tertiary)]">
+      GPU &amp; Storage I/O Guide
+    </p>
+
+    <div class="svg-container">
+      <svg viewBox="0 0 200 230" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full">
+
+        <!-- Stage 1: CPU as I/O controller (traditional model) -->
+        <g id="gpu-stage-1" class="gpu-stage active">
+          <text x="100" y="18" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)" font-weight="bold">Traditional I/O Model</text>
+
+          <!-- CPU box -->
+          <rect x="65" y="30" width="70" height="30" rx="4" fill="var(--color-accent)" fill-opacity="0.15" stroke="var(--color-accent)" stroke-width="1.2" />
+          <text x="100" y="43" text-anchor="middle" fill="var(--color-accent)" font-size="8" font-family="var(--font-mono)" font-weight="bold">CPU</text>
+          <text x="100" y="54" text-anchor="middle" fill="var(--color-accent)" font-size="4.5" font-family="var(--font-mono)">I/O initiator</text>
+
+          <!-- Arrows down from CPU -->
+          <line x1="75" y1="60" x2="50" y2="80" stroke="var(--color-text-tertiary)" stroke-width="1" marker-end="url(#gpu-arrow)" />
+          <line x1="100" y1="60" x2="100" y2="80" stroke="var(--color-text-tertiary)" stroke-width="1" marker-end="url(#gpu-arrow)" />
+          <line x1="125" y1="60" x2="150" y2="80" stroke="var(--color-text-tertiary)" stroke-width="1" marker-end="url(#gpu-arrow)" />
+
+          <!-- Devices -->
+          <rect x="30" y="82" width="40" height="20" rx="3" fill="var(--color-surface-alt)" stroke="var(--color-text-tertiary)" stroke-width="0.8" />
+          <text x="50" y="95" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5.5" font-family="var(--font-mono)">NVMe</text>
+
+          <rect x="80" y="82" width="40" height="20" rx="3" fill="var(--color-surface-alt)" stroke="var(--color-text-tertiary)" stroke-width="0.8" />
+          <text x="100" y="95" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5.5" font-family="var(--font-mono)">DRAM</text>
+
+          <rect x="130" y="82" width="40" height="20" rx="3" fill="var(--color-surface-alt)" stroke="var(--color-text-tertiary)" stroke-width="0.8" />
+          <text x="150" y="95" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5.5" font-family="var(--font-mono)">GPU</text>
+
+          <!-- GPU is just a consumer -->
+          <text x="150" y="112" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="4" font-family="var(--font-mono)" opacity="0.7">↑ waits for data</text>
+
+          <text x="100" y="178" text-anchor="middle" fill="var(--color-accent)" font-size="10" font-family="var(--font-sans)">40 Years of CPU Control</text>
+          <text x="100" y="193" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">CPU decides what, when, where</text>
+
+          <!-- Arrow marker -->
+          <defs>
+            <marker id="gpu-arrow" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+              <path d="M0,0 L6,3 L0,6 Z" fill="var(--color-text-tertiary)" />
+            </marker>
+            <marker id="gpu-arrow-accent" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+              <path d="M0,0 L6,3 L0,6 Z" fill="var(--color-accent)" />
+            </marker>
+            <marker id="gpu-arrow-red" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+              <path d="M0,0 L6,3 L0,6 Z" fill="#e74c3c" />
+            </marker>
+          </defs>
+        </g>
+
+        <!-- Stage 2: KV Cache explosion -->
+        <g id="gpu-stage-2" class="gpu-stage">
+          <text x="100" y="18" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)" font-weight="bold">KV Cache Growth</text>
+
+          <!-- GPU HBM box -->
+          <rect x="25" y="30" width="150" height="35" rx="4" fill="var(--color-accent)" fill-opacity="0.1" stroke="var(--color-accent)" stroke-width="1" />
+          <text x="35" y="44" fill="var(--color-accent)" font-size="5.5" font-family="var(--font-mono)" font-weight="bold">GPU HBM (80-192 GB)</text>
+
+          <!-- Model weights block -->
+          <rect x="32" y="48" width="55" height="12" rx="2" fill="var(--color-accent)" fill-opacity="0.2" />
+          <text x="59" y="57" text-anchor="middle" fill="var(--color-accent)" font-size="4.5" font-family="var(--font-mono)">Weights ~140 GB</text>
+
+          <!-- KV cache block growing -->
+          <rect x="92" y="48" width="76" height="12" rx="2" fill="#e74c3c" fill-opacity="0.2" stroke="#e74c3c" stroke-width="0.8" stroke-dasharray="3,2" />
+          <text x="130" y="57" text-anchor="middle" fill="#e74c3c" font-size="4.5" font-family="var(--font-mono)">KV cache: growing!</text>
+
+          <!-- Context scaling -->
+          <text x="30" y="82" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">32K ctx:</text>
+          <rect x="70" y="76" width="15" height="8" rx="1" fill="var(--color-accent)" fill-opacity="0.3" />
+          <text x="90" y="83" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">~4 GB</text>
+
+          <text x="30" y="96" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">128K ctx:</text>
+          <rect x="70" y="90" width="50" height="8" rx="1" fill="#e0a020" fill-opacity="0.4" />
+          <text x="125" y="97" fill="#e0a020" font-size="5" font-family="var(--font-mono)">~40 GB</text>
+
+          <text x="30" y="110" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">1M ctx:</text>
+          <rect x="70" y="104" width="100" height="8" rx="1" fill="#e74c3c" fill-opacity="0.3" />
+          <text x="175" y="111" fill="#e74c3c" font-size="5" font-family="var(--font-mono)">150+ GB</text>
+
+          <!-- Overflow indicator -->
+          <text x="100" y="130" text-anchor="middle" fill="#e74c3c" font-size="6" font-family="var(--font-mono)" font-weight="bold">HBM is not enough.</text>
+          <text x="100" y="140" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">KV cache must spill somewhere</text>
+
+          <text x="100" y="178" text-anchor="middle" fill="#e74c3c" font-size="10" font-family="var(--font-sans)">The Memory Crunch</text>
+          <text x="100" y="193" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">KV cache outgrows GPU memory</text>
+        </g>
+
+        <!-- Stage 3: CPU tax / bounce buffer path -->
+        <g id="gpu-stage-3" class="gpu-stage">
+          <text x="100" y="18" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)" font-weight="bold">The CPU Bounce Path</text>
+
+          <!-- GPU -->
+          <rect x="130" y="28" width="55" height="22" rx="3" fill="var(--color-accent)" fill-opacity="0.1" stroke="var(--color-accent)" stroke-width="1" />
+          <text x="157" y="42" text-anchor="middle" fill="var(--color-accent)" font-size="6" font-family="var(--font-mono)" font-weight="bold">GPU</text>
+
+          <!-- CPU -->
+          <rect x="70" y="60" width="55" height="22" rx="3" fill="#e74c3c" fill-opacity="0.1" stroke="#e74c3c" stroke-width="1" />
+          <text x="97" y="74" text-anchor="middle" fill="#e74c3c" font-size="6" font-family="var(--font-mono)" font-weight="bold">CPU</text>
+
+          <!-- DRAM bounce -->
+          <rect x="15" y="60" width="45" height="22" rx="3" fill="#e0a020" fill-opacity="0.1" stroke="#e0a020" stroke-width="0.8" />
+          <text x="37" y="70" text-anchor="middle" fill="#e0a020" font-size="5" font-family="var(--font-mono)" font-weight="bold">DRAM</text>
+          <text x="37" y="78" text-anchor="middle" fill="#e0a020" font-size="4" font-family="var(--font-mono)">bounce buf</text>
+
+          <!-- NVMe -->
+          <rect x="70" y="96" width="55" height="22" rx="3" fill="var(--color-surface-alt)" stroke="var(--color-text-tertiary)" stroke-width="0.8" />
+          <text x="97" y="110" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="6" font-family="var(--font-mono)">NVMe SSD</text>
+
+          <!-- Path arrows (numbered) -->
+          <path d="M 157 50 L 157 55 L 110 55 L 110 58" stroke="#e74c3c" stroke-width="0.8" fill="none" marker-end="url(#gpu-arrow-red)" />
+          <text x="140" y="54" fill="#e74c3c" font-size="4" font-family="var(--font-mono)">1. request</text>
+
+          <line x1="97" y1="82" x2="97" y2="94" stroke="#e74c3c" stroke-width="0.8" marker-end="url(#gpu-arrow-red)" />
+          <text x="110" y="90" fill="#e74c3c" font-size="4" font-family="var(--font-mono)">2. cmd</text>
+
+          <path d="M 78 96 L 55 96 L 55 82" stroke="#e74c3c" stroke-width="0.8" fill="none" marker-end="url(#gpu-arrow-red)" />
+          <text x="56" y="94" fill="#e74c3c" font-size="4" font-family="var(--font-mono)">3. DMA</text>
+
+          <path d="M 37 60 L 37 55 L 135 55 L 135 50" stroke="#e74c3c" stroke-width="0.8" fill="none" marker-end="url(#gpu-arrow-red)" />
+          <text x="75" y="46" fill="#e74c3c" font-size="4" font-family="var(--font-mono)">4. copy to GPU</text>
+
+          <!-- Latency callout -->
+          <rect x="25" y="126" width="150" height="18" rx="3" fill="#e74c3c" fill-opacity="0.08" stroke="#e74c3c" stroke-width="0.8" />
+          <text x="100" y="138" text-anchor="middle" fill="#e74c3c" font-size="6" font-family="var(--font-mono)" font-weight="bold">~100-200 μs total overhead</text>
+
+          <text x="100" y="178" text-anchor="middle" fill="#e74c3c" font-size="10" font-family="var(--font-sans)">The Detour</text>
+          <text x="100" y="193" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">CPU mediates every I/O request</text>
+        </g>
+
+        <!-- Stage 4: GPU-initiated I/O (direct path) -->
+        <g id="gpu-stage-4" class="gpu-stage">
+          <text x="100" y="18" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)" font-weight="bold">GPU-Initiated I/O</text>
+
+          <!-- GPU -->
+          <rect x="25" y="30" width="70" height="32" rx="4" fill="var(--color-accent)" fill-opacity="0.15" stroke="var(--color-accent)" stroke-width="1.5" />
+          <text x="60" y="44" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)" font-weight="bold">GPU</text>
+          <text x="60" y="55" text-anchor="middle" fill="var(--color-accent)" font-size="4.5" font-family="var(--font-mono)">SQ + CQ in HBM</text>
+
+          <!-- NVMe -->
+          <rect x="110" y="30" width="70" height="32" rx="4" fill="var(--color-accent)" fill-opacity="0.08" stroke="var(--color-accent)" stroke-width="1" />
+          <text x="145" y="44" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)" font-weight="bold">NVMe</text>
+          <text x="145" y="55" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="4.5" font-family="var(--font-mono)">BAR0 doorbells</text>
+
+          <!-- P2P DMA double arrow -->
+          <line x1="95" y1="42" x2="110" y2="42" stroke="var(--color-accent)" stroke-width="1.5" marker-end="url(#gpu-arrow-accent)" />
+          <line x1="110" y1="50" x2="95" y2="50" stroke="var(--color-accent)" stroke-width="1.5" marker-end="url(#gpu-arrow-accent)" />
+          <text x="102" y="38" text-anchor="middle" fill="var(--color-accent)" font-size="4" font-family="var(--font-mono)">P2P</text>
+          <text x="102" y="58" text-anchor="middle" fill="var(--color-accent)" font-size="4" font-family="var(--font-mono)">DMA</text>
+
+          <!-- CPU crossed out -->
+          <rect x="70" y="80" width="60" height="20" rx="3" fill="var(--color-surface-alt)" stroke="var(--color-text-tertiary)" stroke-width="0.6" opacity="0.3" />
+          <text x="100" y="93" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)" opacity="0.3">CPU</text>
+          <line x1="70" y1="80" x2="130" y2="100" stroke="#e74c3c" stroke-width="1.5" opacity="0.5" />
+          <line x1="130" y1="80" x2="70" y2="100" stroke="#e74c3c" stroke-width="1.5" opacity="0.5" />
+          <text x="100" y="113" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">setup only, no data path</text>
+
+          <!-- Steps -->
+          <text x="25" y="130" fill="var(--color-accent)" font-size="4.5" font-family="var(--font-mono)">1. GPU writes SQE to queue</text>
+          <text x="25" y="139" fill="var(--color-accent)" font-size="4.5" font-family="var(--font-mono)">2. GPU rings NVMe doorbell</text>
+          <text x="25" y="148" fill="var(--color-accent)" font-size="4.5" font-family="var(--font-mono)">3. NVMe DMA direct to GPU HBM</text>
+          <text x="25" y="157" fill="var(--color-accent)" font-size="4.5" font-family="var(--font-mono)">4. GPU polls CQ, done</text>
+
+          <text x="100" y="178" text-anchor="middle" fill="var(--color-accent)" font-size="10" font-family="var(--font-sans)">Direct Path</text>
+          <text x="100" y="193" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">No CPU on the data path</text>
+        </g>
+
+        <!-- Stage 5: NVMe spec gaps -->
+        <g id="gpu-stage-5" class="gpu-stage">
+          <text x="100" y="18" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)" font-weight="bold">NVMe Spec Gaps</text>
+
+          <!-- Problem boxes -->
+          <rect x="15" y="32" width="170" height="22" rx="3" fill="#e74c3c" fill-opacity="0.06" stroke="#e74c3c" stroke-width="0.8" />
+          <text x="25" y="42" fill="#e74c3c" font-size="5.5" font-family="var(--font-mono)" font-weight="bold">Queues</text>
+          <text x="65" y="42" fill="var(--color-text-tertiary)" font-size="4.5" font-family="var(--font-mono)">single-writer, CPU threads assumed</text>
+          <text x="25" y="51" fill="var(--color-text-tertiary)" font-size="4" font-family="var(--font-mono)">10K GPU threads = atomic contention storm</text>
+
+          <rect x="15" y="58" width="170" height="22" rx="3" fill="#e74c3c" fill-opacity="0.06" stroke="#e74c3c" stroke-width="0.8" />
+          <text x="25" y="68" fill="#e74c3c" font-size="5.5" font-family="var(--font-mono)" font-weight="bold">Completions</text>
+          <text x="90" y="68" fill="var(--color-text-tertiary)" font-size="4.5" font-family="var(--font-mono)">MSI-X interrupts target CPUs</text>
+          <text x="25" y="77" fill="var(--color-text-tertiary)" font-size="4" font-family="var(--font-mono)">GPU must waste SMs polling CQ</text>
+
+          <rect x="15" y="84" width="170" height="22" rx="3" fill="#e74c3c" fill-opacity="0.06" stroke="#e74c3c" stroke-width="0.8" />
+          <text x="25" y="94" fill="#e74c3c" font-size="5.5" font-family="var(--font-mono)" font-weight="bold">DMA Addressing</text>
+          <text x="112" y="94" fill="var(--color-text-tertiary)" font-size="4.5" font-family="var(--font-mono)">PRP/SGL = host phys addrs</text>
+          <text x="25" y="103" fill="var(--color-text-tertiary)" font-size="4" font-family="var(--font-mono)">GPU BAR memory not in the spec</text>
+
+          <rect x="15" y="110" width="170" height="22" rx="3" fill="#e74c3c" fill-opacity="0.06" stroke="#e74c3c" stroke-width="0.8" />
+          <text x="25" y="120" fill="#e74c3c" font-size="5.5" font-family="var(--font-mono)" font-weight="bold">Error Handling</text>
+          <text x="108" y="120" fill="var(--color-text-tertiary)" font-size="4.5" font-family="var(--font-mono)">needs CPU fallback</text>
+          <text x="25" y="129" fill="var(--color-text-tertiary)" font-size="4" font-family="var(--font-mono)">GPU has no exception handlers</text>
+
+          <text x="100" y="178" text-anchor="middle" fill="#e74c3c" font-size="10" font-family="var(--font-sans)">Built for CPUs</text>
+          <text x="100" y="193" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">NVMe spec assumes a CPU host</text>
+        </g>
+
+        <!-- Stage 6: KV offloading ecosystem -->
+        <g id="gpu-stage-6" class="gpu-stage">
+          <text x="100" y="18" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)" font-weight="bold">KV Cache Offloading</text>
+
+          <!-- vLLM -->
+          <rect x="15" y="32" width="80" height="28" rx="3" fill="var(--color-accent)" fill-opacity="0.08" stroke="var(--color-accent)" stroke-width="0.8" />
+          <text x="25" y="44" fill="var(--color-accent)" font-size="5.5" font-family="var(--font-mono)" font-weight="bold">vLLM</text>
+          <text x="25" y="55" fill="var(--color-text-tertiary)" font-size="4.5" font-family="var(--font-mono)">83 GB/s, 2-22x TTFT</text>
+
+          <!-- InfiniGen -->
+          <rect x="105" y="32" width="80" height="28" rx="3" fill="var(--color-accent)" fill-opacity="0.08" stroke="var(--color-accent)" stroke-width="0.8" />
+          <text x="115" y="44" fill="var(--color-accent)" font-size="5.5" font-family="var(--font-mono)" font-weight="bold">InfiniGen</text>
+          <text x="115" y="55" fill="var(--color-text-tertiary)" font-size="4.5" font-family="var(--font-mono)">sparse KV, 1.6-5.3x</text>
+
+          <!-- InstInfer -->
+          <rect x="15" y="66" width="80" height="28" rx="3" fill="var(--color-accent)" fill-opacity="0.08" stroke="var(--color-accent)" stroke-width="0.8" />
+          <text x="25" y="78" fill="var(--color-accent)" font-size="5.5" font-family="var(--font-mono)" font-weight="bold">InstInfer</text>
+          <text x="25" y="89" fill="var(--color-text-tertiary)" font-size="4.5" font-family="var(--font-mono)">compute-at-SSD, 11x</text>
+
+          <!-- AttentionStore -->
+          <rect x="105" y="66" width="80" height="28" rx="3" fill="var(--color-accent)" fill-opacity="0.08" stroke="var(--color-accent)" stroke-width="0.8" />
+          <text x="115" y="78" fill="var(--color-accent)" font-size="5" font-family="var(--font-mono)" font-weight="bold">CachedAttn</text>
+          <text x="115" y="89" fill="var(--color-text-tertiary)" font-size="4.5" font-family="var(--font-mono)">3-tier hierarchy</text>
+
+          <!-- Common limitation -->
+          <rect x="25" y="106" width="150" height="18" rx="3" fill="#e0a020" fill-opacity="0.08" stroke="#e0a020" stroke-width="0.8" />
+          <text x="100" y="118" text-anchor="middle" fill="#e0a020" font-size="5.5" font-family="var(--font-mono)" font-weight="bold">All still CPU-initiated I/O</text>
+
+          <text x="100" y="178" text-anchor="middle" fill="var(--color-accent)" font-size="10" font-family="var(--font-sans)">Working Around It</text>
+          <text x="100" y="193" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">Prefetch, predict, compress</text>
+        </g>
+
+        <!-- Stage 7: CMX + what's missing -->
+        <g id="gpu-stage-7" class="gpu-stage">
+          <text x="100" y="18" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)" font-weight="bold">CMX + Missing Pieces</text>
+
+          <!-- CMX tier diagram mini -->
+          <rect x="20" y="30" width="160" height="14" rx="2" fill="var(--color-accent)" fill-opacity="0.15" stroke="var(--color-accent)" stroke-width="0.8" />
+          <text x="100" y="40" text-anchor="middle" fill="var(--color-accent)" font-size="5" font-family="var(--font-mono)" font-weight="bold">G1: GPU HBM</text>
+
+          <rect x="20" y="46" width="160" height="14" rx="2" fill="var(--color-accent)" fill-opacity="0.10" stroke="var(--color-accent)" stroke-width="0.8" />
+          <text x="100" y="56" text-anchor="middle" fill="var(--color-accent)" font-size="5" font-family="var(--font-mono)">G2: Host DRAM</text>
+
+          <rect x="20" y="62" width="160" height="14" rx="2" fill="#e0a020" fill-opacity="0.10" stroke="#e0a020" stroke-width="0.8" />
+          <text x="100" y="72" text-anchor="middle" fill="#e0a020" font-size="5" font-family="var(--font-mono)">G3: Local NVMe</text>
+
+          <rect x="20" y="78" width="160" height="14" rx="2" fill="#e0a020" fill-opacity="0.15" stroke="#e0a020" stroke-width="1.2" />
+          <text x="100" y="88" text-anchor="middle" fill="#e0a020" font-size="5" font-family="var(--font-mono)" font-weight="bold">G3.5: CMX (BlueField-4)</text>
+
+          <rect x="20" y="94" width="160" height="14" rx="2" fill="var(--color-text-tertiary)" fill-opacity="0.08" stroke="var(--color-text-tertiary)" stroke-width="0.8" />
+          <text x="100" y="104" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="5" font-family="var(--font-mono)">G4: Object Storage</text>
+
+          <!-- Missing pieces -->
+          <text x="25" y="122" fill="#e74c3c" font-size="5" font-family="var(--font-mono)" font-weight="bold">Still needed:</text>
+          <text x="25" y="132" fill="var(--color-text-tertiary)" font-size="4.5" font-family="var(--font-mono)">• Production GPU NVMe drivers</text>
+          <text x="25" y="141" fill="var(--color-text-tertiary)" font-size="4.5" font-family="var(--font-mono)">• GPU-native object protocol</text>
+          <text x="25" y="150" fill="var(--color-text-tertiary)" font-size="4.5" font-family="var(--font-mono)">• Unified tiering software</text>
+          <text x="25" y="159" fill="var(--color-text-tertiary)" font-size="4.5" font-family="var(--font-mono)">• NVMe spec for GPU hosts</text>
+
+          <text x="100" y="178" text-anchor="middle" fill="#e0a020" font-size="10" font-family="var(--font-sans)">DPU Band-Aid</text>
+          <text x="100" y="193" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">CMX works, but adds hardware</text>
+        </g>
+
+        <!-- Stage 8: Future / where it lands -->
+        <g id="gpu-stage-8" class="gpu-stage">
+          <text x="100" y="18" text-anchor="middle" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)" font-weight="bold">The Road Ahead</text>
+
+          <!-- Timeline -->
+          <line x1="40" y1="34" x2="40" y2="130" stroke="var(--color-border)" stroke-width="1.5" />
+
+          <circle cx="40" cy="42" r="4" fill="var(--color-accent)" />
+          <text x="50" y="40" fill="var(--color-accent)" font-size="5.5" font-family="var(--font-mono)" font-weight="bold">Now: CPU-mediated</text>
+          <text x="50" y="49" fill="var(--color-text-tertiary)" font-size="4.5" font-family="var(--font-mono)">GDS, CMX, DPU workarounds</text>
+
+          <circle cx="40" cy="70" r="4" fill="var(--color-accent)" fill-opacity="0.7" />
+          <text x="50" y="68" fill="var(--color-accent)" font-size="5.5" font-family="var(--font-mono)" font-weight="bold">2027: NVMe GPU queues</text>
+          <text x="50" y="77" fill="var(--color-text-tertiary)" font-size="4.5" font-family="var(--font-mono)">spec extension, first controllers</text>
+
+          <circle cx="40" cy="98" r="4" fill="var(--color-accent)" fill-opacity="0.4" />
+          <text x="50" y="96" fill="var(--color-accent)" font-size="5.5" font-family="var(--font-mono)" font-weight="bold">2028+: GPU as host</text>
+          <text x="50" y="105" fill="var(--color-text-tertiary)" font-size="4.5" font-family="var(--font-mono)">semantic cmds, CXL Type 2</text>
+
+          <circle cx="40" cy="126" r="4" fill="var(--color-accent)" fill-opacity="0.2" />
+          <text x="50" y="124" fill="var(--color-accent)" font-size="5.5" font-family="var(--font-mono)" font-weight="bold">Extension wins over clean break</text>
+          <text x="50" y="133" fill="var(--color-text-tertiary)" font-size="4.5" font-family="var(--font-mono)">NVMe extends, doesn't get replaced</text>
+
+          <text x="100" y="178" text-anchor="middle" fill="var(--color-accent)" font-size="10" font-family="var(--font-sans)">New Controller</text>
+          <text x="100" y="193" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="8" font-family="var(--font-sans)" opacity="0.7">The GPU takes the wheel</text>
+        </g>
+      </svg>
+    </div>
+
+    <!-- Metric panel -->
+    <div class="mt-4 rounded-lg bg-[var(--color-surface-alt)] px-3 py-2.5 text-center">
+      <p class="text-[9px] uppercase tracking-widest text-[var(--color-text-tertiary)]" id="gpu-metric-label">I/O Controller</p>
+      <p class="mt-1 font-mono text-lg font-bold text-[var(--color-accent)]">
+        <span id="gpu-metric-value">CPU</span>
+        <span id="gpu-metric-unit" class="text-sm font-normal"></span>
+      </p>
+      <p id="gpu-metric-sub" class="text-[9px] text-[var(--color-text-tertiary)]">every I/O goes through the CPU</p>
+    </div>
+
+    <!-- Stage dots -->
+    <div class="mt-3 flex justify-center gap-1.5">
+      <div class="gpu-dot active" data-stage="1"></div>
+      <div class="gpu-dot" data-stage="2"></div>
+      <div class="gpu-dot" data-stage="3"></div>
+      <div class="gpu-dot" data-stage="4"></div>
+      <div class="gpu-dot" data-stage="5"></div>
+      <div class="gpu-dot" data-stage="6"></div>
+      <div class="gpu-dot" data-stage="7"></div>
+      <div class="gpu-dot" data-stage="8"></div>
+    </div>
+
+    <!-- ELI10 -->
+    <div class="mt-5 rounded-lg border border-[var(--color-border)]/30 bg-[var(--color-surface-alt)]/50 px-3.5 py-3">
+      <p class="text-[9px] font-semibold uppercase tracking-widest text-[var(--color-text-tertiary)]">
+        Explain Like I'm 10
+      </p>
+      <p id="gpu-eli10-text" class="gpu-eli10-fade mt-2 text-xs leading-relaxed text-[var(--color-text-secondary)]">
+        For 40 years, the CPU has been the boss of reading and writing data. Need something from the hard drive? Ask the CPU. Need to send data to the graphics card? The CPU handles it. Every single request goes through the CPU's desk first. It's like having one secretary handle every phone call in the whole building.
+      </p>
+    </div>
+  </div>
+</aside>
+
+<style>
+  .gpu-stage {
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
+  }
+
+  .gpu-stage.active {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+  }
+
+  .gpu-stage.past {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+
+  .gpu-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-border);
+    transition: background 0.3s, transform 0.3s;
+  }
+
+  .gpu-dot.active {
+    background: var(--color-accent);
+    transform: scale(1.4);
+  }
+
+  .gpu-dot.past {
+    background: var(--color-accent);
+    opacity: 0.4;
+  }
+
+  .gpu-eli10-fade {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+
+  .gpu-eli10-fade.changing {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .gpu-stage { transition: none; }
+    .gpu-dot { transition: none; }
+    .gpu-eli10-fade { transition: none; }
+  }
+</style>
+
+<script>
+  function initGPUStorageEvolution() {
+    const prose = document.querySelector(".prose");
+    if (!prose) return;
+
+    const allHeadings = prose.querySelectorAll("h2, h3");
+    if (allHeadings.length === 0) return;
+
+    const stageMap: { el: Element; stage: number }[] = [];
+
+    allHeadings.forEach((h) => {
+      const text = (h.textContent || "").toLowerCase();
+      let stage = -1;
+
+      // Stage 1: CPU as I/O initiator
+      if (text.includes("cpu was always")) stage = 1;
+      // Stage 2: KV cache problem
+      else if (text.includes("inference breaks")) stage = 2;
+      else if (text.includes("kv cache problem")) stage = 2;
+      else if (text.includes("tiering imperative")) stage = 2;
+      // Stage 3: CPU tax
+      else if (text.includes("cpu tax")) stage = 3;
+      // Stage 4: GPU-initiated I/O
+      else if (text.includes("gpu-initiated i/o")) stage = 4;
+      else if (text.includes("bam:")) stage = 4;
+      else if (text.includes("proof it works")) stage = 4;
+      else if (text.includes("plumbing works")) stage = 4;
+      else if (text.includes("dma-buf")) stage = 4;
+      // Stage 5: NVMe spec gaps
+      else if (text.includes("nvme spec")) stage = 5;
+      else if (text.includes("submission queues assume")) stage = 5;
+      else if (text.includes("completion handling")) stage = 5;
+      else if (text.includes("dma addressing")) stage = 5;
+      else if (text.includes("gpu-native error")) stage = 5;
+      // Stage 6: KV cache offloading ecosystem
+      else if (text.includes("kv cache offloading ecosystem")) stage = 6;
+      else if (text.includes("vllm kv")) stage = 6;
+      else if (text.includes("infinigen")) stage = 6;
+      else if (text.includes("instinfer")) stage = 6;
+      else if (text.includes("attentionstore")) stage = 6;
+      else if (text.includes("the pattern")) stage = 6;
+      // Stage 7: CMX + what's missing
+      else if (text.includes("nvidia cmx")) stage = 7;
+      else if (text.includes("what's actually missing")) stage = 7;
+      else if (text.includes("production-grade gpu")) stage = 7;
+      else if (text.includes("gpu-native object")) stage = 7;
+      else if (text.includes("software tiering across")) stage = 7;
+      else if (text.includes("standards body")) stage = 7;
+      // Stage 8: Topology, debate, implications, conclusion
+      else if (text.includes("topology problem")) stage = 8;
+      else if (text.includes("clean break")) stage = 8;
+      else if (text.includes("nvme extension")) stage = 8;
+      else if (text.includes("what this means")) stage = 8;
+      else if (text.includes("design for semantic")) stage = 8;
+      else if (text.includes("architect for p2p")) stage = 8;
+      else if (text.includes("build the tiering")) stage = 8;
+      else if (text.includes("conclusion")) stage = 8;
+
+      if (stage > 0) {
+        stageMap.push({ el: h, stage });
+      }
+    });
+
+    if (stageMap.length === 0) return;
+
+    let currentStage = 1;
+
+    const stages = document.querySelectorAll(".gpu-stage");
+    const dots = document.querySelectorAll(".gpu-dot");
+    const metricLabel = document.getElementById("gpu-metric-label");
+    const metricValue = document.getElementById("gpu-metric-value");
+    const metricUnit = document.getElementById("gpu-metric-unit");
+    const metricSub = document.getElementById("gpu-metric-sub");
+
+    const metricData = [
+      { label: "I/O Controller", value: "CPU", unit: "", sub: "every I/O goes through the CPU" },
+      { label: "KV Cache (70B, 128K)", value: "40", unit: " GB", sub: "half an H100's entire HBM" },
+      { label: "CPU Bounce Overhead", value: "100-200", unit: " μs", sub: "per I/O request to GPU" },
+      { label: "BaM Speedup", value: "5.3x", unit: "", sub: "GPU-initiated vs CPU-initiated" },
+      { label: "GPU IOPS Demand", value: "200M", unit: "", sub: "per GPU, CPU handles 8-12M/core" },
+      { label: "vLLM TTFT Reduction", value: "2-22x", unit: "", sub: "with KV cache offloading" },
+      { label: "CMX Token Throughput", value: "5x", unit: "", sub: "via BlueField-4 DPU tier" },
+      { label: "New I/O Controller", value: "GPU", unit: "", sub: "extension, not clean break" },
+    ];
+
+    const eli10El = document.getElementById("gpu-eli10-text");
+    const eli10Data = [
+      "For 40 years, the CPU has been the boss of reading and writing data. Need something from the hard drive? Ask the CPU. Need to send data to the graphics card? The CPU handles it. Every single request goes through the CPU\u2019s desk first. It\u2019s like having one secretary handle every phone call in the whole building.",
+      "AI chatbots need to remember your whole conversation. That memory is called the KV cache, and it lives in the GPU\u2019s special fast memory. But long conversations use SO much memory that the GPU runs out. It\u2019s like trying to keep every book you\u2019ve ever read open on your desk at once. Eventually you need to put some on the shelf.",
+      "When the GPU needs data from the hard drive, it has to ask the CPU, who builds the request, sends it, gets the answer in regular memory, then copies it to the GPU. It\u2019s like passing notes through three people to talk to someone sitting right next to you. Every handoff adds delay.",
+      "What if the GPU could just reach over and grab the data itself? That\u2019s GPU-initiated I/O. The GPU writes a request directly to the hard drive\u2019s mailbox and the drive sends data straight back. No middleman. Like cutting the note-passing chain and just talking directly to your neighbor.",
+      "The storage drive\u2019s instruction manual was written for CPUs. It expects one polite request at a time. But a GPU has thousands of tiny workers all shouting requests simultaneously. Imagine a restaurant menu designed for one customer, and then 10,000 people show up at once trying to order. The menu system breaks down.",
+      "Researchers aren\u2019t waiting for the perfect solution. They\u2019re building clever workarounds: predicting what the GPU will need next and fetching it early, only loading the parts of memory that actually matter, and even running calculations inside the hard drive itself. Smart tricks, but still going through the CPU\u2019s desk.",
+      "NVIDIA\u2019s answer is CMX: stick a mini-computer (the DPU) between the GPU and storage to handle the boring parts fast. It works, but it\u2019s like hiring an assistant for the secretary instead of letting people make their own phone calls. The real fix is letting the GPU talk to storage directly. That needs new drivers, new protocols, and new standards.",
+      "The future is the GPU being the storage boss instead of the CPU. It won\u2019t happen overnight. First, the NVMe standard will add GPU-friendly features. Then controllers will ship that understand GPU requests. Eventually, the GPU will talk directly to storage while the CPU just handles setup and errors. The storage controller is trying on a new outfit.",
+    ];
+
+    function setStage(stage: number) {
+      if (stage === currentStage) return;
+      currentStage = stage;
+
+      stages.forEach((s, i) => {
+        const stageNum = i + 1;
+        s.classList.remove("active", "past");
+        if (stageNum === stage) s.classList.add("active");
+        else if (stageNum < stage) s.classList.add("past");
+      });
+
+      dots.forEach((d, i) => {
+        const dotStage = i + 1;
+        d.classList.remove("active", "past");
+        if (dotStage === stage) d.classList.add("active");
+        else if (dotStage < stage) d.classList.add("past");
+      });
+
+      const data = metricData[stage - 1];
+      if (data && metricLabel && metricValue && metricUnit && metricSub) {
+        metricLabel.textContent = data.label;
+        metricValue.textContent = data.value;
+        metricUnit.textContent = data.unit;
+        metricSub.textContent = data.sub;
+      }
+
+      if (eli10El && eli10Data[stage - 1]) {
+        eli10El.classList.add("changing");
+        setTimeout(() => {
+          eli10El.textContent = eli10Data[stage - 1];
+          eli10El.classList.remove("changing");
+        }, 200);
+      }
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const match = stageMap.find((s) => s.el === entry.target);
+          if (match) setStage(match.stage);
+        }
+      });
+    }, { rootMargin: "-15% 0px -75% 0px" });
+
+    stageMap.forEach(({ el }) => observer.observe(el));
+    setStage(1);
+  }
+
+  initGPUStorageEvolution();
+</script>

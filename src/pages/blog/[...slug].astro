@@ -16,6 +16,7 @@ import PCIeEvolution from "../../components/PCIeEvolution.astro";
 import IOUringEvolution from "../../components/IOUringEvolution.astro";
 import NVMeoFEvolution from "../../components/NVMeoFEvolution.astro";
 import CXLEvolution from "../../components/CXLEvolution.astro";
+import GPUStorageEvolution from "../../components/GPUStorageEvolution.astro";
 
 export async function getStaticPaths() {
   const posts = await getCollection("blog");
@@ -44,6 +45,7 @@ const showPCIeEvolution = post.id === "pcie-lanes-numa-rust-storage";
 const showIOUringEvolution = post.id === "io-uring-spdk-kernel-bypass";
 const showNVMeoFEvolution = post.id === "nvme-of-promise-and-pain";
 const showCXLEvolution = post.id === "cxl-death-of-memory-hierarchy";
+const showGPUStorageEvolution = post.id === "gpu-is-the-new-storage-controller";
 ---
 
 <Layout
@@ -97,5 +99,8 @@ const showCXLEvolution = post.id === "cxl-death-of-memory-hierarchy";
   )}
   {showCXLEvolution && (
     <CXLEvolution slot="right-sidebar" />
+  )}
+  {showGPUStorageEvolution && (
+    <GPUStorageEvolution slot="right-sidebar" />
   )}
 </Layout>
